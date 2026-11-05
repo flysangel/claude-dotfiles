@@ -8,7 +8,7 @@ uv run tools/dotfiles.py <deploy|undeploy|status> [--target <path>] [--force]
 
 | 指令 | 行為 | 結束碼 |
 |---|---|---|
-| `deploy` | 將 `home/` 複製到目標；覆蓋前備份；移除 repo 已刪除的受管檔案；重複執行不產生新的備份 | 0 成功；1 失敗；2 有衝突 |
+| `deploy` | 將 `home/` 複製到目標；覆蓋前備份；移除 repo 已刪除的受管檔案；重複執行不產生新的備份；完成時提示機器專屬內容要放在 `~/.claude/rules/` | 0 成功；1 失敗；2 有衝突 |
 | `undeploy` | 還原部署前狀態並刪除部署紀錄；只處理部署紀錄中的檔案 | 0 成功；1 失敗 |
 | `status` | 只讀取，回報 `not-deployed`、`clean`、`local-modified`、`repo-ahead` 或 `incomplete` | 0 |
 

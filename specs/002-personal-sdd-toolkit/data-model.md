@@ -33,7 +33,7 @@
 | `created[]` | 導入時建立的檔案：相對路徑與雜湊值 |
 | `skipped[]` | 因已存在而未建立的檔案 |
 
-移除規則：只刪除 `created` 中雜湊值相符的檔案；已修改的檔案保留並回報。`constitution.md` 預設保留，`specs/` 不受影響。
+移除規則：只刪除 `created` 中雜湊值相符的檔案，包含未修改的 `constitution.md` 範本；已修改的檔案保留並回報。`specs/` 不受影響。
 
 ## Constitution 草稿
 
@@ -56,7 +56,7 @@
 
 ## 決策摘要
 
-由 `sdd-grill` 產生，只在對話中呈現。
+由 `sdd-grill` 產生；維護者確認前不寫入 constitution 或 spec，中途的內容存在「討論進度」。
 
 | 分類 | 去向 |
 |---|---|

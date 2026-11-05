@@ -19,7 +19,7 @@ uv run "${CLAUDE_SKILL_DIR}/scripts/sdd_init.py" <init|remove> [--project <path>
 
 ## `remove`
 
-依 `.specify/sdd-init.json` 刪除未修改的檔案。預設保留 `constitution.md`，加 `--all` 才一併移除；一律不動 `specs/`。
+依 `.specify/sdd-init.json` 刪除未修改的檔案，包含未修改的 `constitution.md` 範本，並移除紀錄檔與空目錄。已修改的檔案保留並回報，加 `--all` 才一併移除；一律不動 `specs/`。
 
 ## 結束碼
 

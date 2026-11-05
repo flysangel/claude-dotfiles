@@ -34,4 +34,4 @@
 - CLAUDE.md、skill、Spec Kit 是此功能的產品本身，屬領域用語，不視為實作細節；部署方式、腳本語言與 skill 名稱留給 plan。
 - 讀者設定為維護者本人，「non-technical stakeholders」一項依此判定。
 - SC-005 依賴維護者主觀判斷，以實際驗收時的修改比例衡量。
-- 已知待處理：憲章原則 IV 與「一律使用最新版」之間的差異，記錄於 spec 的 Assumptions，需在 plan 的 Constitution Check 處理。
+- 憲章原則 IV 與「一律使用最新版」之間的差異，記錄於 plan 的 Complexity Tracking。

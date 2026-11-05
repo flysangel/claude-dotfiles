@@ -1,6 +1,11 @@
 # Quickstart: 驗證個人化 SDD 工具組
 
-**以下每一段都要在 Windows 與 Linux 各跑一次才算完成。** 部署步驟會改動 `~/.claude/`，建議先用 `--target` 指向暫存目錄。指令介面見 [contracts/](contracts/)。
+**以下每一段都要在 Windows 與 Linux 各跑一次才算完成。** 指令介面見 [contracts/](contracts/)。
+
+## 驗收環境
+
+- **開發中**：不碰真實的 `~/.claude/`。部署一律加 `--target` 指向暫存目錄；驗收 skill 時，把 `home/skills/<skill>/` 複製到暫存測試專案的 `.claude/skills/`，並在該專案開新對話。
+- **最終驗收**（T039、T040）：在維護者同意後才對真實的 `~/.claude/` 部署。CLAUDE.md 的實際行為與跨專案可用性只能在這一步確認。
 
 ## 前置條件
 
@@ -16,6 +21,8 @@ uv run -m unittest discover -s tests
 預期：全部通過，且真實的 `~/.claude/` 沒有變動。
 
 ## 2. 部署與還原（US1）
+
+開發中的步驟都加上 `--target <暫存目錄>`，並略過第 3 步的跨專案確認。
 
 1. 記下 `~/.claude/CLAUDE.md` 目前的內容。
 2. 執行 `uv run tools/dotfiles.py deploy`，再執行一次。
@@ -68,4 +75,4 @@ uv run tools/run_trigger_evals.py
 
 ## 7. 新增 skill（US5）
 
-依 `docs/adding-a-skill.md` 加入範例 skill，只做一次修改與一次部署就能使用；刪除 `triggers.json` 時 `test_content.py` 應失敗。
+依 `docs/adding-a-skill.md` 加入範例 skill，用 `--target` 做一次修改與一次部署後，確認 skill 出現在目標目錄；刪除 `triggers.json` 時 `test_content.py` 應失敗。
