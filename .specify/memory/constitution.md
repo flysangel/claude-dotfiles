@@ -35,7 +35,7 @@
 - 只在部分情況需要的內容 MUST 移到 skill 或限定路徑的 rules。
 - CLAUDE.md MUST NOT 放能從程式碼得知的內容（目錄結構、相依清單、架構總覽），只保留陷阱、理由與不同於工具預設的慣例。
 - 常駐內容（CLAUDE.md、skill 描述）的每一行 MUST 能說明存在理由；說不出理由的內容 MUST 移除。
-- 新增內容 MUST 來自實際重複遇到的需求，plan MUST 指出該需求；MUST NOT 為假設的未來需求預先設計。
+- 新增內容 MUST 來自實際遇到的需求或維護者的明確要求，plan MUST 指出來源；MUST NOT 為假設的未來需求預先設計。
 
 理由：常駐內容在每次對話都佔用 context，也會稀釋其他規則的效果。200 行與上述規則依據
 [官方 CLAUDE.md 建議](https://code.claude.com/docs/en/memory)。
@@ -81,7 +81,7 @@
 |---|---|
 | I | 新增的入庫檔案都在白名單內，且不含機密與個資嗎？ |
 | II | 每項客製化都說明了為何選擇該機制嗎？ |
-| III | 指出實際需求了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ |
+| III | 指出需求來源了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ |
 | IV | 安裝可重複執行、可還原，且能在 Windows 與 Linux 上運作嗎？ |
 | V | 每項產出都有驗證方式嗎？CLAUDE.md 規則具體可驗證且沒有矛盾嗎？ |
 
@@ -98,4 +98,4 @@ commit 前 MUST 檢查待提交內容符合原則 I。
   - PATCH：釐清說明、修正文字，不改變規範含義。
 - 違反原則 II 至 V 時 MUST 在 plan 的 Complexity Tracking 記錄理由；原則 I 不得豁免。
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-05 | **Last Amended**: 2026-11-05
+**Version**: 1.3.0 | **Ratified**: 2026-11-05 | **Last Amended**: 2026-11-06
