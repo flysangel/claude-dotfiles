@@ -60,14 +60,14 @@ description: "Task list for the personal SDD toolkit"
 
 ### Tests for User Story 1
 
-- [ ] T009 [US1] 建立 `tests/test_dotfiles.py`，全部使用暫存目錄與 `--target`，涵蓋：首次部署、已有 CLAUDE.md 時先備份、重複部署不產生新備份、解除部署後逐位元組相同（SC-002）、未受管的 skill 與 `rules/` 不受影響、同名未受管 skill 回傳結束碼 2、`--force` 備份後取代、本機修改後覆蓋前另存備份、中斷後（紀錄為 `in_progress`）可重新部署或解除部署、repo 已刪除的受管檔案會被移除，以及 `status` 的 `not-deployed`、`clean`、`local-modified`、`repo-ahead`、`incomplete` 與判斷優先順序，以及沒有部署紀錄時 `undeploy` 不改動
+- [X] T009 [US1] 建立 `tests/test_dotfiles.py`，全部使用暫存目錄與 `--target`，涵蓋：首次部署、已有 CLAUDE.md 時先備份、重複部署不產生新備份、解除部署後逐位元組相同（SC-002）、未受管的 skill 與 `rules/` 不受影響、同名未受管 skill 回傳結束碼 2、`--force` 備份後取代、本機修改後覆蓋前另存備份、中斷後（紀錄為 `in_progress`）可重新部署或解除部署、repo 已刪除的受管檔案會被移除，以及 `status` 的 `not-deployed`、`clean`、`local-modified`、`repo-ahead`、`incomplete` 與判斷優先順序，以及沒有部署紀錄時 `undeploy` 不改動
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] 在 `tools/dotfiles.py` 實作部署紀錄的讀寫：位置 `<target>/.dotfiles/manifest.json`，欄位 `status`（`in_progress` 或 `complete`）、`repo_commit`、`entries[]`（`path` 使用 `/` 分隔、`sha256`、`original` 為 `absent` 或備份相對路徑與雜湊值）；寫入須為原子操作；PEP 723 宣告 `requires-python >= 3.11`，只用標準庫
-- [ ] T011 [US1] 在 `tools/dotfiles.py` 實作 `deploy`：複製 `home/` 到目標，開始前先寫入 `in_progress`；再次部署時 `original` 維持第一次的值；依 `contracts/dotfiles-cli.md` 處理衝突、結束碼與完成提示；備份放在 `<target>/.dotfiles/backups/`；不使用 symlink
-- [ ] T012 [US1] 在 `tools/dotfiles.py` 實作 `undeploy`：依 `original` 還原或刪除、移除空目錄與部署紀錄；本機已修改的檔案先另存備份；只處理紀錄中的檔案；沒有部署紀錄時不改動並回報
-- [ ] T013 [US1] 在 `tools/dotfiles.py` 實作 `status`，只讀取，依 contract 的順序判斷五種狀態並列出差異檔案；輸出不得包含被備份檔案的內容
+- [X] T010 [US1] 在 `tools/dotfiles.py` 實作部署紀錄的讀寫：位置 `<target>/.dotfiles/manifest.json`，欄位 `status`（`in_progress` 或 `complete`）、`repo_commit`、`entries[]`（`path` 使用 `/` 分隔、`sha256`、`original` 為 `absent` 或備份相對路徑與雜湊值）；寫入須為原子操作；PEP 723 宣告 `requires-python >= 3.11`，只用標準庫
+- [X] T011 [US1] 在 `tools/dotfiles.py` 實作 `deploy`：複製 `home/` 到目標，開始前先寫入 `in_progress`；再次部署時 `original` 維持第一次的值；依 `contracts/dotfiles-cli.md` 處理衝突、結束碼與完成提示；備份放在 `<target>/.dotfiles/backups/`；不使用 symlink
+- [X] T012 [US1] 在 `tools/dotfiles.py` 實作 `undeploy`：依 `original` 還原或刪除、移除空目錄與部署紀錄；本機已修改的檔案先另存備份；只處理紀錄中的檔案；沒有部署紀錄時不改動並回報
+- [X] T013 [US1] 在 `tools/dotfiles.py` 實作 `status`，只讀取，依 contract 的順序判斷五種狀態並列出差異檔案；輸出不得包含被備份檔案的內容
 - [ ] T014 [US1] 建立 `home/CLAUDE.md`，少於 200 行，用標題與條列分組，每條規則具體且附可觀察的預期行為，內容為：以繁體中文回覆；提問使用互動式選項；每次異動後在分支上 commit，不提交到 `main`，不自動 push；以 SDD 與 Spec Kit 為主要工作方式，說明何時使用 `/sdd-init`、`sdd-derive`、`sdd-grill`。不得放機密、個資或機器專屬內容，也不得放能從程式碼得知的內容
 - [ ] T015 [US1] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 2 段，先用 `--target` 對暫存目錄驗收，並執行 `/doctor prompt-audit` 檢查 `home/CLAUDE.md`
 
