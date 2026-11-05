@@ -93,6 +93,7 @@ tools/
 tests/
 ├── test_check_allowlist.py
 ├── test_dotfiles.py
+├── test_trigger_evals.py
 ├── test_sdd_init.py
 ├── test_content.py          # CLAUDE.md 行數、skill 格式、絕對路徑等靜態檢查
 ├── skills/<skill>/

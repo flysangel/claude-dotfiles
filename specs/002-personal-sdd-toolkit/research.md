@@ -61,7 +61,7 @@
 
 - **Decision**: 腳本用 `unittest` 與暫存目錄測試，不碰真實的 `~/.claude/`；觸發案例用 `claude -p` 手動執行；skill 行為以情境驗收。
 - **Rationale**: 觸發測試要呼叫模型，有費用且結果不完全固定，不適合每次執行。
-- **待實作時確認**: `claude -p` 的輸出能否可靠判斷 skill 是否被呼叫；不可靠時改為互動式手動驗收。
+- **已確認**: `claude -p --output-format stream-json --verbose` 的輸出含 `Skill` 工具呼叫，應觸發與不應觸發的樣本都判斷正確。用 haiku 的單次費用不到 $0.01；實際觸發行為可能隨模型不同，正式驗收可用 `--model` 指定。
 
 ## 11. 新專案的 git
 
