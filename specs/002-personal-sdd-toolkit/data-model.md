@@ -63,3 +63,9 @@
 | 已決定 | 確認後寫入 constitution 或 spec |
 | 已延後 | 記錄在 spec 的 Assumptions |
 | 留給 plan | 不寫入 constitution，可附在 spec 的備註供 plan 參考 |
+
+## 討論進度
+
+位置：目標專案的 `.specify/sdd-grill-progress.md`，只存在本機，不入庫。
+
+內容與決策摘要相同，另記錄目前討論到的功能。狀態：不存在 → 討論中 → 文件寫入成功後刪除。重新開始時也會刪除。

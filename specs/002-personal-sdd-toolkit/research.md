@@ -45,18 +45,25 @@
 - **Rationale**: 符合 FR-025，上游範本與編號規則改變時不必跟著改。實測 v1.3.0 的 `speckit-specify` 未禁止模型呼叫。
 - **風險**: 「一律最新版」下上游可能改名或禁止模型呼叫。因此 skill 開始前會檢查，不符合就回報並停止。官方文件未明確說明 skill 呼叫 skill 的行為，第一次情境驗收要確認。
 
-## 8. Skill 觸發方式
+## 8. 多份 spec 的接續
+
+- **Decision**: 依相依順序產生 spec，全部完成後把 `.specify/feature.json` 指向第一份。
+- **Rationale**: 讀 `.specify/scripts/bash/common.sh` 確認 Spec Kit 依序看 `SPECIFY_FEATURE_DIRECTORY` 與 `feature.json`，不看 git 分支；`feature.json` 也被 gitignore。不處理的話指標會停在最後一份，接著跑 plan 會處理錯功能。
+- **Alternatives**: 另做切換工具要多維護一項，維護者未選擇；不處理指標如上。
+- **風險**: `feature.json` 的格式屬於上游，改版時可能變動，寫入前要確認檔案存在且有 `feature_directory` 欄位，否則只回報、不寫入。
+
+## 9. Skill 觸發方式
 
 - **Decision**: `sdd-derive`、`sdd-grill` 允許自動觸發；`sdd-init` 設定 `disable-model-invocation: true`，只能手動以 `/sdd-init` 執行。
 - **Rationale**: 官方文件建議有副作用、需要自行掌握時機的流程使用此設定。
 
-## 9. 驗證方式
+## 10. 驗證方式
 
 - **Decision**: 腳本用 `unittest` 與暫存目錄測試，不碰真實的 `~/.claude/`；觸發案例用 `claude -p` 手動執行；skill 行為以情境驗收。
 - **Rationale**: 觸發測試要呼叫模型，有費用且結果不完全固定，不適合每次執行。
 - **待實作時確認**: `claude -p` 的輸出能否可靠判斷 skill 是否被呼叫；不可靠時改為互動式手動驗收。
 
-## 10. 官方文件依據
+## 11. 官方文件依據
 
 - CLAUDE.md 與 rules：<https://code.claude.com/docs/en/memory>（200 行建議、CLAUDE.md 不具強制力、使用者層級規則、symlink 限制）
 - Skills：<https://code.claude.com/docs/en/skills>（個人 skill 路徑、同名時個人優先於專案、1,536 字元上限、`${CLAUDE_SKILL_DIR}`）

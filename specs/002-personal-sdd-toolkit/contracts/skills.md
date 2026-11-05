@@ -16,8 +16,8 @@
 | 1. 讀取 | 文件、設定、測試與程式結構；排除相依套件與建置產物；不把機密值帶入對話 |
 | 2. 提案 | 提出 constitution 草稿與候選功能清單，每項附依據；大型專案先請維護者縮小範圍 |
 | 3. 確認 | 維護者確認原則並選擇功能；文件與程式碼矛盾時列出兩邊，由維護者決定 |
-| 4. 產生 | 呼叫 `speckit-constitution`，再為每個選定功能呼叫一次 `speckit-specify` |
-| 5. 結束 | 回報產出後停止，不進入 plan |
+| 4. 產生 | 呼叫 `speckit-constitution`，再依相依順序為每個選定功能呼叫一次 `speckit-specify` |
+| 5. 結束 | 依「多份 spec 的接續」收尾後停止，不進入 plan |
 
 例外：
 - 專案內容不足以推論時，說明原因並建議改用 `sdd-grill`。
@@ -35,14 +35,22 @@
 | 查證 | 能從專案查到的答案自行查閱 |
 | 追問 | 回答含糊時繼續問；與先前決策矛盾時要求取捨 |
 | 範圍 | 只討論 constitution 與 spec，涵蓋每個功能；技術選型記為留給 plan |
-| 結束 | 全部決策有結論或已延後後呈現決策摘要，確認才呼叫 `speckit-constitution`，再為每個功能呼叫一次 `speckit-specify` |
-| 中途停止 | 提供已決定與未決定事項的摘要，不寫入文件 |
+| 結束 | 全部決策有結論或已延後後呈現決策摘要，確認才呼叫 `speckit-constitution`，再依相依順序為每個功能呼叫一次 `speckit-specify`，依「多份 spec 的接續」收尾並刪除進度檔 |
+| 進度 | 每個決定後更新 `.specify/sdd-grill-progress.md`；建立時將其加入 `.specify/.gitignore`；不記錄機密值 |
+| 中途停止 | 提供已決定與未決定事項的摘要，不寫入 constitution 或 spec |
+| 接續 | 進度檔存在時列出已決定事項，由維護者選擇接續或重新開始；專案已有變更時先提示 |
 
 **不觸發**：只想要一次性意見、已經有明確規格要實作、要討論技術實作細節。
 
 ## `sdd-init`
 
 設定 `disable-model-invocation: true`，只能手動執行。行為見 [sdd-init.md](sdd-init.md)。
+
+## 多份 spec 的接續（`sdd-derive`、`sdd-grill`）
+
+1. 依功能相依順序呼叫 `speckit-specify`，讓編號等於建議的施工順序。
+2. 全部完成後，把 `.specify/feature.json` 的 `feature_directory` 改為這批的第一份。
+3. 列出每份 spec、相依關係，並說明下一步是 `/speckit-plan`，以及如何改 `feature.json` 切換功能。
 
 ## 文件語言（`sdd-derive`、`sdd-grill`）
 
