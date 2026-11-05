@@ -167,9 +167,9 @@ description: "Task list for the personal SDD toolkit"
 
 - [X] T037 [P] 更新 `specs/001-repo-commit-guard/spec.md` 的 FR-010，改為沿用 `.repo-allowlist` 作為初始白名單，並以 001 的防護取代 `tools/check_allowlist.py` 與其 hook；註明 `tests/fixtures/sample-project/` 的假憑證需要誤判例外
 - [X] T038 在暫存測試專案複製 skill 後執行 `tools/run_trigger_evals.py`，修正描述直到 SC-007 達成；會產生費用，先告知維護者
-- [ ] T039 在 Linux 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間；對真實 `~/.claude/` 部署前先取得維護者同意
+- [ ] T039 在 Linux 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間；對真實 `~/.claude/` 部署前先取得維護者同意。部署、還原與 skill 載入已完成，部署 0.04 秒、導入 3.65 秒；剩維護者互動確認與 `/doctor prompt-audit`
 - [ ] T040 在 Windows 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間，修正發現的差異（FR-028）；新 clone 先依前置條件設定 `user.email` 並安裝 hook；此步驟需要維護者在 Windows 機器上進行
-- [ ] T041 取得維護者同意後，依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 8 段在每台機器正式部署
+- [X] T041 取得維護者同意後，依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 8 段在每台機器正式部署（Linux 已完成；Windows 隨 T040 進行）
 - [ ] T042 `sdd-derive` 第一次實際使用後，在 `specs/002-personal-sdd-toolkit/plan.md` 記錄結果，未被使用則討論移除；同時記錄 SC-005 的實際比例
 
 ---

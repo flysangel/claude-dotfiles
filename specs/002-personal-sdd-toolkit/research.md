@@ -63,6 +63,8 @@
 - **Rationale**: 觸發測試要呼叫模型，有費用且結果不完全固定，不適合每次執行。
 - **已確認**: `claude -p --output-format stream-json --verbose` 的輸出含 `Skill` 工具呼叫，應觸發與不應觸發的樣本都判斷正確。用 haiku 的單次費用不到 $0.01；實際觸發行為可能隨模型不同，正式驗收可用 `--model` 指定。
 
+- **實測模型差異**: 真實部署後，CLAUDE.md 與 skill 都有載入。英文提問時 Sonnet 用繁中回覆，Haiku 卻用英文回覆，所以 CLAUDE.md 的語言規則在 Haiku 上不可靠。
+
 ## 11. 新專案的 git
 
 - **Decision**: 目標不在 git repo 內時，導入成功後才執行 `git init`，不自動 commit；移除時不刪除 `.git`。
