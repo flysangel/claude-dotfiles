@@ -35,7 +35,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T003 依 `contracts/allowlist.md` 建立 `tools/check_allowlist.py`，用 PEP 723 宣告版本需求，只用標準庫；完成後執行 `--all` 確認目前所有已追蹤檔案都通過，再用 `--install-hook` 安裝到此 repo，確認此 repo 的 `user.email` 是 noreply 地址
 - [X] T004 [P] 建立 `.gitattributes`，內容為 `* text=auto eol=lf`，讓 Windows 與 Linux 上的檔案雜湊值一致
 - [X] T005 [P] 建立 `.gitignore`，排除 `__pycache__/`、`*.pyc`；不得排除白名單列出的路徑
-- [ ] T006 確認 `specs/002-personal-sdd-toolkit/quickstart.md` 第 1 段的測試指令可在此 repo 執行，不可行就改成可用的 `uv run` 指令並同步修正該檔
+- [X] T006 確認 `specs/002-personal-sdd-toolkit/quickstart.md` 第 1 段的測試指令可在此 repo 執行，不可行就改成可用的 `uv run` 指令並同步修正該檔
 
 ---
 
@@ -45,7 +45,7 @@ description: "Task list for the personal SDD toolkit"
 
 **⚠️ CRITICAL**: 完成前不要開始任何 user story
 
-- [ ] T007 建立 `tests/test_content.py`，檢查 `home/CLAUDE.md`（存在時）少於 200 行、含 markdown 標題與條列；每個 `home/skills/*/SKILL.md` 都有 `name` 與 `description`，且 `description` 加 `when_to_use` 不超過 1,536 字元；每個 skill 都有 `tests/skills/<skill>/triggers.json` 與 `scenarios.md`；`home/` 內不得出現個人家目錄絕對路徑或非保留網域的 email，這項規則重用 `tools/check_allowlist.py`
+- [X] T007 建立 `tests/test_content.py`，檢查 `home/CLAUDE.md`（存在時）少於 200 行、含 markdown 標題與條列；每個 `home/skills/*/SKILL.md` 都有 `name` 與 `description`，且 `description` 加 `when_to_use` 不超過 1,536 字元；每個 skill 都有 `tests/skills/<skill>/triggers.json` 與 `scenarios.md`；`home/` 內不得出現個人家目錄絕對路徑或非保留網域的 email，這項規則重用 `tools/check_allowlist.py`
 - [ ] T008 建立 `tools/run_trigger_evals.py`，讀取 `tests/skills/*/triggers.json` 的 `should_trigger`、`should_not_trigger`，以 `claude -p` 執行並判斷 skill 是否被呼叫；支援指定單一 skill，執行前先提示會產生費用。先確認 `claude -p` 的輸出能可靠判斷；不可靠時改為輸出手動驗收清單，並更新 `specs/002-personal-sdd-toolkit/research.md` 第 10 節
 
 **Checkpoint**: 靜態檢查可執行，user story 可以開始
