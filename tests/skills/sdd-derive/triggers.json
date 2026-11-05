@@ -1,0 +1,12 @@
+{
+  "should_trigger": [
+    "幫我從這個既有專案導出 constitution 和 spec",
+    "這個專案已經寫好了，我想補上 Spec Kit 的 constitution 與各功能的 spec",
+    "Read this existing codebase and derive a constitution and specs for it"
+  ],
+  "should_not_trigger": [
+    "這個函式為什麼會丟出 ValueError？",
+    "Spec Kit 的 plan 指令會產生哪些檔案？",
+    "幫我寫一個新的 add_note 單元測試"
+  ]
+}

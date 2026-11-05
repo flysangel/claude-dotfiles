@@ -109,8 +109,8 @@ description: "Task list for the personal SDD toolkit"
 
 ### Tests for User Story 3
 
-- [ ] T024 [P] [US3] 建立 `tests/fixtures/sample-project/`，至少含兩個有相依關係的功能、一處文件與程式碼矛盾、一個相依套件目錄、一個明顯為假的憑證（只用假值與保留網域）
-- [ ] T025 [P] [US3] 建立 `tests/skills/sdd-derive/triggers.json`（應觸發與不應觸發，依 `contracts/skills.md`）與 `tests/skills/sdd-derive/scenarios.md`（對應 spec US3 的八個驗收情境與相關 edge cases）
+- [X] T024 [P] [US3] 建立 `tests/fixtures/sample-project/`，至少含兩個有相依關係的功能、一處文件與程式碼矛盾、一個相依套件目錄、一個明顯為假的憑證（只用假值與保留網域）
+- [X] T025 [P] [US3] 建立 `tests/skills/sdd-derive/triggers.json`（應觸發與不應觸發，依 `contracts/skills.md`）與 `tests/skills/sdd-derive/scenarios.md`（對應 spec US3 的八個驗收情境與相關 edge cases）
 
 ### Implementation for User Story 3
 
