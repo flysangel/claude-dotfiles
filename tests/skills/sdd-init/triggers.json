@@ -1,0 +1,8 @@
+{
+  "should_trigger": [],
+  "should_not_trigger": [
+    "幫我在這個專案導入 Spec Kit",
+    "Set up Spec Kit in this project",
+    "Spec Kit 是什麼？"
+  ]
+}

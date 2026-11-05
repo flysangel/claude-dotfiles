@@ -91,8 +91,8 @@ description: "Task list for the personal SDD toolkit"
 - [X] T018 [US2] 在 `home/skills/sdd-init/scripts/sdd_init.py` 實作 `init`，依 `contracts/sdd-init.md` 的七個步驟：用 `git ls-remote --tags` 取最高穩定版，以 `uv tool run --from git+https://github.com/github/spec-kit.git@<tag> specify init <temp> --integration claude --script <sh|ps> --ignore-agent-tools --non-interactive` 初始化到暫存目錄，再複製缺少的檔案；最後一步在目標不屬於任何 git repo 時執行 `git init`，不 commit（FR-033）；PEP 723 宣告版本需求，只用標準庫
 - [X] T019 [US2] 在同一腳本寫入 `.specify/sdd-init.json`，欄位 `speckit_version`、`script`（`sh` 或 `ps`）、`created[]`（相對路徑與雜湊值）、`skipped[]`；完成時回報版本、建立數、略過的檔案、下一步，並提示專案換到另一個作業系統需要對應的 shell（FR-008）
 - [X] T020 [US2] 在同一腳本實作 `remove`，依 `.specify/sdd-init.json` 刪除雜湊值相符的檔案，包含未修改的 `constitution.md` 範本，並移除紀錄檔與空目錄；已修改的檔案保留並回報，`--all` 才一併移除；一律不動 `specs/` 與 `.git`；沒有紀錄檔時不改動並回傳 1
-- [ ] T021 [US2] 建立 `home/skills/sdd-init/SKILL.md`，設定 `disable-model-invocation: true`，用 `${CLAUDE_SKILL_DIR}` 呼叫腳本並轉述結果
-- [ ] T022 [P] [US2] 建立 `tests/skills/sdd-init/triggers.json`（確認不會自動觸發）與 `tests/skills/sdd-init/scenarios.md`（對應 spec US2 的五個驗收情境）
+- [X] T021 [US2] 建立 `home/skills/sdd-init/SKILL.md`，設定 `disable-model-invocation: true`，用 `${CLAUDE_SKILL_DIR}` 呼叫腳本並轉述結果
+- [X] T022 [P] [US2] 建立 `tests/skills/sdd-init/triggers.json`（確認不會自動觸發）與 `tests/skills/sdd-init/scenarios.md`（對應 spec US2 的五個驗收情境）
 - [ ] T023 [US2] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 3 段驗收四個情境；依該檔「驗收環境」把 skill 複製到暫存測試專案
 
 **Checkpoint**: 導入可獨立運作
