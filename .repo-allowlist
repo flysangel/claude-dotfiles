@@ -10,3 +10,4 @@ docs/**
 .gitignore
 .repo-allowlist
 README.md
+.repo-guard-exceptions.json

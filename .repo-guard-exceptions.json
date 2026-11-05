@@ -1,0 +1,10 @@
+{
+  "exceptions": [
+    {
+      "path": "tests/fixtures/sample-project/config/settings.py",
+      "kind": "secret",
+      "line_sha256": "7ac2eca45dca02b50a5e655ba99578f591b3127f03eb72054bc1ad2de4c2ae67",
+      "reason": "明顯為假的憑證，用來驗收導出不會把機密帶進產出"
+    }
+  ]
+}

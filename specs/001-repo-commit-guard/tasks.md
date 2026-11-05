@@ -40,8 +40,8 @@ description: "Task list for the public repo commit guard"
 
 **⚠️ CRITICAL**: 完成前不要開始任何 user story
 
-- [ ] T002 在 `tests/test_repo_guard.py` 加入測試：每種違規都有 data-model 定義的類型代碼（`allowlist`、`binary`、`home-path`、`email`、`git-email`、`secret`、`identity`、`author`、`committer`）與修正方向；可豁免的違規顯示該行內容的 SHA-256 指紋；`allowlist` 與身分類沒有指紋；輸出不含被比對到的內容
-- [ ] T003 在 `tools/repo_guard.py` 改寫 `Violation` 與 `scan_text`，符合 T002 與 `specs/001-repo-commit-guard/contracts/repo-guard.md` 的輸出格式；`tests/test_content.py` 重用的規則保持可用
+- [X] T002 在 `tests/test_repo_guard.py` 加入測試：每種違規都有 data-model 定義的類型代碼（`allowlist`、`binary`、`home-path`、`email`、`git-email`、`secret`、`identity`、`author`、`committer`）與修正方向；可豁免的違規顯示該行內容的 SHA-256 指紋；`allowlist` 與身分類沒有指紋；輸出不含被比對到的內容
+- [X] T003 在 `tools/repo_guard.py` 改寫 `Violation` 與 `scan_text`，符合 T002 與 `specs/001-repo-commit-guard/contracts/repo-guard.md` 的輸出格式；`tests/test_content.py` 重用的規則保持可用
 
 **Checkpoint**: 違規格式統一，user story 可以開始
 
@@ -55,19 +55,19 @@ description: "Task list for the public repo commit guard"
 
 ### Tests for User Story 1
 
-- [ ] T004 [US1] 在 `tests/test_repo_guard.py` 加入誤判例外測試：符合 `path`、`kind`、`line_sha256` 時通過；該行改變後失效；不能用於其他檔案或其他類型；`path` 不接受 glob；`reason` 為空、`line_sha256` 不是 64 位十六進位、JSON 格式錯誤時回傳 3；`allowlist`、`git-email`、`identity`、`author`、`committer` 不可豁免；`binary` 用整個檔案的雜湊值
-- [ ] T005 [US1] 在 `tests/test_repo_guard.py` 加入本機識別清單測試：不分大小寫比對檔案內容、commit 訊息、作者與提交者名稱；輸出不含清單內容；`#` 註解與空行略過；`REPO_GUARD_IDENTITY_FILE` 可覆寫路徑；清單不存在或沒有內容時，`--staged`、`--commit-msg`、`--all` 只提醒且不影響結束碼
-- [ ] T006 [US1] 在 `tests/test_repo_guard.py` 加入 `--commit-msg <file>` 測試：訊息含個人路徑、非 noreply 的 email、假 token 時不通過；乾淨訊息與 `Co-Authored-By` 的 noreply 地址通過；檔案無法讀取時回傳 3
-- [ ] T007 [US1] 在 `tests/test_repo_guard.py` 加入 hook 與 `--status` 測試：`--install-hook` 安裝 `pre-commit`、`commit-msg`、`pre-push`，重複執行結果相同；任一 hook 已被其他工具佔用時不覆蓋且回傳 1，也不留下部分安裝；舊版 hook 會被更新；`--uninstall-hook` 只移除自己的；`--status` 回報 `not-installed`、`enabled`、`unverified`（設定 `core.hooksPath` 時）
+- [X] T004 [US1] 在 `tests/test_repo_guard.py` 加入誤判例外測試：符合 `path`、`kind`、`line_sha256` 時通過；該行改變後失效；不能用於其他檔案或其他類型；`path` 不接受 glob；`reason` 為空、`line_sha256` 不是 64 位十六進位、JSON 格式錯誤時回傳 3；`allowlist`、`git-email`、`identity`、`author`、`committer` 不可豁免；`binary` 用整個檔案的雜湊值
+- [X] T005 [US1] 在 `tests/test_repo_guard.py` 加入本機識別清單測試：不分大小寫比對檔案內容、commit 訊息、作者與提交者名稱；輸出不含清單內容；`#` 註解與空行略過；`REPO_GUARD_IDENTITY_FILE` 可覆寫路徑；清單不存在或沒有內容時，`--staged`、`--commit-msg`、`--all` 只提醒且不影響結束碼
+- [X] T006 [US1] 在 `tests/test_repo_guard.py` 加入 `--commit-msg <file>` 測試：訊息含個人路徑、非 noreply 的 email、假 token 時不通過；乾淨訊息與 `Co-Authored-By` 的 noreply 地址通過；檔案無法讀取時回傳 3
+- [X] T007 [US1] 在 `tests/test_repo_guard.py` 加入 hook 與 `--status` 測試：`--install-hook` 安裝 `pre-commit`、`commit-msg`、`pre-push`，重複執行結果相同；任一 hook 已被其他工具佔用時不覆蓋且回傳 1，也不留下部分安裝；舊版 hook 會被更新；`--uninstall-hook` 只移除自己的；`--status` 回報 `not-installed`、`enabled`、`unverified`（設定 `core.hooksPath` 時）
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] 在 `tools/repo_guard.py` 實作讀取與驗證 `.repo-guard-exceptions.json`，移除 `FAKE_SECRET_DIR` 特例，依 `specs/001-repo-commit-guard/data-model.md` 的欄位規則處理；違規訊息提示如何記錄例外
-- [ ] T009 [US1] 建立 `.repo-guard-exceptions.json`，為 `tests/fixtures/sample-project/config/settings.py` 的假憑證加入例外，並把此檔加進 `.repo-allowlist`；執行 `uv run tools/repo_guard.py --all` 確認通過
-- [ ] T010 [US1] 在 `tools/repo_guard.py` 實作本機識別清單：預設 `~/.config/claude-dotfiles/identity.txt`，可用 `REPO_GUARD_IDENTITY_FILE` 覆寫；比對範圍含檔案內容與作者、提交者名稱；不存在或沒有內容時提醒
-- [ ] T011 [US1] 在 `tools/repo_guard.py` 實作 `--commit-msg <file>`，內容規則與檔案相同，略過 `#` 開頭的註解行
-- [ ] T012 [US1] 在 `tools/repo_guard.py` 實作安裝與移除三個 hook，一律寫入 `git rev-parse --git-common-dir` 下的 `hooks/`；先檢查全部再寫入，避免部分安裝；內容不含絕對路徑，使用 LF
-- [ ] T013 [US1] 在 `tools/repo_guard.py` 實作 `--status`，第一行是狀態，之後列出 `core.hooksPath`、本機識別清單與作者 email 的情況
+- [X] T008 [US1] 在 `tools/repo_guard.py` 實作讀取與驗證 `.repo-guard-exceptions.json`，移除 `FAKE_SECRET_DIR` 特例，依 `specs/001-repo-commit-guard/data-model.md` 的欄位規則處理；違規訊息提示如何記錄例外
+- [X] T009 [US1] 建立 `.repo-guard-exceptions.json`，為 `tests/fixtures/sample-project/config/settings.py` 的假憑證加入例外，並把此檔加進 `.repo-allowlist`；執行 `uv run tools/repo_guard.py --all` 確認通過
+- [X] T010 [US1] 在 `tools/repo_guard.py` 實作本機識別清單：預設 `~/.config/claude-dotfiles/identity.txt`，可用 `REPO_GUARD_IDENTITY_FILE` 覆寫；比對範圍含檔案內容與作者、提交者名稱；不存在或沒有內容時提醒
+- [X] T011 [US1] 在 `tools/repo_guard.py` 實作 `--commit-msg <file>`，內容規則與檔案相同，略過 `#` 開頭的註解行
+- [X] T012 [US1] 在 `tools/repo_guard.py` 實作安裝與移除三個 hook，一律寫入 `git rev-parse --git-common-dir` 下的 `hooks/`；先檢查全部再寫入，避免部分安裝；內容不含絕對路徑，使用 LF
+- [X] T013 [US1] 在 `tools/repo_guard.py` 實作 `--status`，第一行是狀態，之後列出 `core.hooksPath`、本機識別清單與作者 email 的情況
 - [ ] T014 [US1] 依 `specs/001-repo-commit-guard/quickstart.md` 第 2 到 5 段在此 repo 驗收，確認帳號層 dispatch 會轉交 `commit-msg`（research 第 3 節待確認項目），並記錄 SC-003、SC-006 的實際時間；此階段不測 `pre-push`
 
 **Checkpoint**: Commit 防護可獨立運作
@@ -82,7 +82,7 @@ description: "Task list for the public repo commit guard"
 
 ### Tests for User Story 2
 
-- [ ] T015 [US2] 在 `tests/test_repo_guard.py` 補上尚未涵蓋的情況：被 `.gitignore` 排除但用 `git add -f` 加入的檔案不通過；把檔案改名到白名單外不通過；把白名單外的已追蹤檔案刪除可以通過；此 repo 的 `.repo-allowlist` 沒有比對到 `.credentials.json`、`history.jsonl`，也沒有 `**` 這種涵蓋全部路徑的規則
+- [X] T015 [US2] 在 `tests/test_repo_guard.py` 補上尚未涵蓋的情況：被 `.gitignore` 排除但用 `git add -f` 加入的檔案不通過；把檔案改名到白名單外不通過；把白名單外的已追蹤檔案刪除可以通過；此 repo 的 `.repo-allowlist` 沒有比對到 `.credentials.json`、`history.jsonl`，也沒有 `**` 這種涵蓋全部路徑的規則
 
 **Checkpoint**: 白名單可獨立運作
 
@@ -96,13 +96,13 @@ description: "Task list for the public repo commit guard"
 
 ### Tests for User Story 3
 
-- [ ] T016 [US3] 在 `tests/test_repo_guard.py` 加入 `--history` 測試：已刪除的假憑證回報 commit 前 12 碼與檔案；舊 commit 的作者或提交者 email 不是 noreply 時不通過；commit 訊息違規不通過；歷史中白名單外的檔案不通過；其他分支與 tag 上的 commit 也會掃到；例外靠內容雜湊對舊版本同樣有效；乾淨 repo 通過；最後一行明確寫出 `通過` 或 `不通過`；輸出不含機密完整值
-- [ ] T017 [US3] 在 `tests/test_repo_guard.py` 加入測試：`--history` 在本機識別清單不存在或沒有內容時回傳 3；含清單內容的舊 commit、作者名稱不通過；以及端對端測試：用 `--no-verify` 提交違規內容後，`git push` 到暫存 bare repo 被阻止，乾淨時可以 push
+- [X] T016 [US3] 在 `tests/test_repo_guard.py` 加入 `--history` 測試：已刪除的假憑證回報 commit 前 12 碼與檔案；舊 commit 的作者或提交者 email 不是 noreply 時不通過；commit 訊息違規不通過；歷史中白名單外的檔案不通過；其他分支與 tag 上的 commit 也會掃到；例外靠內容雜湊對舊版本同樣有效；乾淨 repo 通過；最後一行明確寫出 `通過` 或 `不通過`；輸出不含機密完整值
+- [X] T017 [US3] 在 `tests/test_repo_guard.py` 加入測試：`--history` 在本機識別清單不存在或沒有內容時回傳 3；含清單內容的舊 commit、作者名稱不通過；以及端對端測試：用 `--no-verify` 提交違規內容後，`git push` 到暫存 bare repo 被阻止，乾淨時可以 push
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] 在 `tools/repo_guard.py` 實作 `--history`：用 `git rev-list --all` 走訪 commit，檢查身分與訊息；用 `git diff-tree -r --root --no-renames` 取得每個 commit 引入的檔案版本，同一個 blob 只掃一次；同時檢查所有已追蹤檔案；白名單與例外都以目前版本為準；只回報，不修改歷史
-- [ ] T019 [US3] 在 `tools/repo_guard.py` 讓 `--history` 套用本機識別清單規則，並讓 `pre-push` hook 呼叫它；確認 hook 不會因為讀取 stdin 而卡住
+- [X] T018 [US3] 在 `tools/repo_guard.py` 實作 `--history`：用 `git rev-list --all` 走訪 commit，檢查身分與訊息；用 `git diff-tree -r --root --no-renames` 取得每個 commit 引入的檔案版本，同一個 blob 只掃一次；同時檢查所有已追蹤檔案；白名單與例外都以目前版本為準；只回報，不修改歷史
+- [X] T019 [US3] 在 `tools/repo_guard.py` 讓 `--history` 套用本機識別清單規則，並讓 `pre-push` hook 呼叫它；確認 hook 不會因為讀取 stdin 而卡住
 - [ ] T020 [US3] 在此 repo 執行 `uv run tools/repo_guard.py --history`，記錄耗時；依結果修正問題，發現真實機密時停止並回報維護者，不得自行改寫歷史；此階段可用暫存的 `REPO_GUARD_IDENTITY_FILE` 測試
 
 **Checkpoint**: 完整檢查可獨立運作
