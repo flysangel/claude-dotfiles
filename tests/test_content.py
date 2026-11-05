@@ -6,6 +6,7 @@ import importlib.util
 import json
 import re
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -94,6 +95,40 @@ class RepoContentTests(unittest.TestCase):
                 data = json.loads(path.read_text(encoding="utf-8"))
                 self.assertIn("should_not_trigger", data)
                 self.assertIn("should_trigger", data)
+
+
+class SkillProblemsTests(unittest.TestCase):
+    """The rules behind adding a skill, checked on a throwaway structure."""
+
+    def setUp(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        base = Path(temp.name)
+        self.skills = base / "skills"
+        self.skill_tests = base / "skill-tests"
+        (self.skills / "demo").mkdir(parents=True)
+        (self.skill_tests / "demo").mkdir(parents=True)
+        (self.skills / "demo" / "SKILL.md").write_text(
+            "---\nname: demo\ndescription: Demo skill.\n---\nBody\n", encoding="utf-8"
+        )
+        (self.skill_tests / "demo" / "triggers.json").write_text("{}", encoding="utf-8")
+        (self.skill_tests / "demo" / "scenarios.md").write_text("x", encoding="utf-8")
+
+    def problems(self) -> list[str]:
+        return skill_problems(self.skills, self.skill_tests)
+
+    def test_complete_skill_passes(self) -> None:
+        self.assertEqual(self.problems(), [])
+
+    def test_missing_triggers_fails(self) -> None:
+        (self.skill_tests / "demo" / "triggers.json").unlink()
+        self.assertTrue(any("triggers.json" in problem for problem in self.problems()))
+
+    def test_wrong_name_fails(self) -> None:
+        (self.skills / "demo" / "SKILL.md").write_text(
+            "---\nname: other\ndescription: Demo.\n---\n", encoding="utf-8"
+        )
+        self.assertTrue(any("name" in problem for problem in self.problems()))
 
 
 if __name__ == "__main__":
