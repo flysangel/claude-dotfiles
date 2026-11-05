@@ -34,8 +34,8 @@
 | 提問 | 一次一題，附建議答案與理由 |
 | 查證 | 能從專案查到的答案自行查閱 |
 | 追問 | 回答含糊時繼續問；與先前決策矛盾時要求取捨 |
-| 範圍 | 只討論 constitution 與 spec；技術選型記為留給 plan |
-| 結束 | 全部決策有結論或已延後後呈現決策摘要，確認才呼叫 `speckit-constitution` 與 `speckit-specify` |
+| 範圍 | 只討論 constitution 與 spec，涵蓋每個功能；技術選型記為留給 plan |
+| 結束 | 全部決策有結論或已延後後呈現決策摘要，確認才呼叫 `speckit-constitution`，再為每個功能呼叫一次 `speckit-specify` |
 | 中途停止 | 提供已決定與未決定事項的摘要，不寫入文件 |
 
 **不觸發**：只想要一次性意見、已經有明確規格要實作、要討論技術實作細節。
@@ -43,6 +43,10 @@
 ## `sdd-init`
 
 設定 `disable-model-invocation: true`，只能手動執行。行為見 [sdd-init.md](sdd-init.md)。
+
+## 文件語言（`sdd-derive`、`sdd-grill`）
+
+使用專案既有文件的語言；沒有或無法判斷時用繁體中文，規範詞保留英文。
 
 ## 驗收格式
 
