@@ -67,4 +67,6 @@ uv run tools/repo_guard.py --history
 gitleaks git --no-banner --redact
 ```
 
+這台機器有帳號層規則時，也要加 `--config ~/.config/git/gitleaks.toml` 再跑一次，預設規則抓不到它涵蓋的項目。
+
 預期：兩者都通過（SC-007）。本機識別清單不存在或沒有內容時，`--history` 不會通過，要先建立。發現真實機密時，依憲章原則 I 視為外洩並更換，不要只刪檔。

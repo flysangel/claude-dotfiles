@@ -14,6 +14,8 @@
 - **Rationale**: 內建規則不需額外安裝，Windows 與 Linux 行為一致，也能處理 email、個人路徑與本機識別清單，這些 gitleaks 預設不涵蓋。但內建的憑證規則較少，公開是不可逆的操作，值得多一道檢查。這台機器已有 gitleaks。
 - **Alternatives**: 把 gitleaks 列為必要工具，會多一個兩邊都要安裝的前置條件，也解決不了個資比對。
 
+- **實測**: 帳號層 gitleaks 規則曾把違規對照表的 `"secret": "..."` 判為機密，預設規則沒抓到。兩套規則涵蓋範圍不同，公開前都要跑。
+
 ## 3. 檢查 commit 訊息
 
 - **Decision**: 新增 `commit-msg` hook，呼叫 `repo_guard.py --commit-msg <檔案>`。內容規則與檔案相同。

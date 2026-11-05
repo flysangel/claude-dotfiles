@@ -135,8 +135,8 @@ description: "Task list for the public repo commit guard"
 - [X] T024 [P] 更新 `README.md`：安裝步驟改為 `repo_guard.py` 與本機識別清單；說明誤判例外、`--status`、`--history`、`review_settings.py`；修改已知限制中關於 commit 檢查的描述
 - [X] T025 [P] 把 `specs/002-personal-sdd-toolkit/quickstart.md` 的 `check_allowlist.py` 指令改為 `repo_guard.py`，並在 `specs/002-personal-sdd-toolkit/contracts/allowlist.md` 開頭註明已由 `specs/001-repo-commit-guard/contracts/repo-guard.md` 取代
 - [X] T026 建立本機識別清單 `~/.config/claude-dotfiles/identity.txt`；維護者要求代為建立，內容只有全域 git email 與主機名稱，真實姓名由維護者自行補上，內容不得輸出
-- [X] T027 執行 `uv run tools/repo_guard.py --history` 與 `gitleaks git --no-banner --redact`，確認此 repo 目前都通過；gitleaks 回報時，判斷為誤判或真實機密後回報維護者
-- [ ] T028 取得維護者同意後，建立 GitHub **私有** repo 並 push；設定 remote 與建立 repo 都是對外操作，事先確認名稱與可見性
+- [X] T027 執行 `uv run tools/repo_guard.py --history` 與 `gitleaks git --no-banner --redact`，確認此 repo 目前都通過；有帳號層規則時也要用它掃描（`--config ~/.config/git/gitleaks.toml`）；gitleaks 回報時，判斷為誤判或真實機密後回報維護者
+- [X] T028 取得維護者同意後，建立 GitHub **私有** repo 並 push；設定 remote 與建立 repo 都是對外操作，事先確認名稱與可見性。已建立 `flysangel/claude-dotfiles`（PRIVATE）並推送 `main`
 - [ ] T029 請維護者在 Windows 機器 clone 後，完成 `specs/001-repo-commit-guard/quickstart.md` 與 `specs/002-personal-sdd-toolkit/` 的 T040，修正發現的差異（FR-019）
 - [ ] T030 在包含 Windows 修正的最新歷史上再次執行 T027 的兩項檢查，結果與公開決定一起回報維護者（SC-007）；是否公開由維護者決定，不得自行改變 repo 可見性
 
