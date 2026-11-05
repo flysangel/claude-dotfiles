@@ -9,8 +9,16 @@ uv run tools/dotfiles.py <deploy|undeploy|status> [--target <path>] [--force]
 | 指令 | 行為 | 結束碼 |
 |---|---|---|
 | `deploy` | 將 `home/` 複製到目標；覆蓋前備份；移除 repo 已刪除的受管檔案；重複執行不產生新的備份；完成時提示機器專屬內容要放在 `~/.claude/rules/` | 0 成功；1 失敗；2 有衝突 |
-| `undeploy` | 還原部署前狀態並刪除部署紀錄；只處理部署紀錄中的檔案 | 0 成功；1 失敗 |
+| `undeploy` | 還原部署前狀態並刪除部署紀錄；只處理部署紀錄中的檔案；沒有部署紀錄時不改動並回報 | 0 成功；1 失敗 |
 | `status` | 只讀取，回報 `not-deployed`、`clean`、`local-modified`、`repo-ahead` 或 `incomplete` | 0 |
+
+`status` 依序判斷，回報第一個符合的狀態，並列出差異檔案：
+
+1. `not-deployed`：沒有部署紀錄。
+2. `incomplete`：紀錄為 `in_progress`。
+3. `local-modified`：目標檔案與紀錄的雜湊值不同。
+4. `repo-ahead`：`home/` 與紀錄不同。
+5. `clean`：都相同。
 
 衝突與保護規則：
 

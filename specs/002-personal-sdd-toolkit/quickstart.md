@@ -5,12 +5,13 @@
 ## 驗收環境
 
 - **開發中**：不碰真實的 `~/.claude/`。部署一律加 `--target` 指向暫存目錄；驗收 skill 時，把 `home/skills/<skill>/` 複製到暫存測試專案的 `.claude/skills/`，並在該專案開新對話。
-- **最終驗收**（T039、T040）：在維護者同意後才對真實的 `~/.claude/` 部署。CLAUDE.md 的實際行為與跨專案可用性只能在這一步確認。
+- **最終驗收與正式部署**（T039 到 T041）：在維護者同意後才對真實的 `~/.claude/` 部署。CLAUDE.md 的實際行為與跨專案可用性只能在這一步確認。
 
 ## 前置條件
 
 - 已安裝 `uv`、`git`、Claude Code
 - 已 clone 此 repo，並在 repo 根目錄執行
+- 已將此 repo 的 `user.email` 設為 noreply 地址，並執行 `uv run tools/check_allowlist.py --install-hook`
 
 ## 1. 自動化測試
 
@@ -22,9 +23,9 @@ uv run -m unittest discover -s tests
 
 ## 2. 部署與還原（US1）
 
-開發中的步驟都加上 `--target <暫存目錄>`，並略過第 3 步的跨專案確認。
+開發中的步驟都加上 `--target <暫存目錄>`，目標就是該暫存目錄，並略過第 3 步的跨專案確認，只執行 `/doctor prompt-audit`。
 
-1. 記下 `~/.claude/CLAUDE.md` 目前的內容。
+1. 記下目標內 `CLAUDE.md` 目前的內容。
 2. 執行 `uv run tools/dotfiles.py deploy`，再執行一次。
    預期：第二次沒有產生新備份，`status` 回報 `clean`。
 3. 執行 `/doctor prompt-audit`，確認沒有過時或衝突的內容。在另一個專案開新對話，確認 CLAUDE.md 寫明的預期行為成立，且 `/sdd-init`、`sdd-derive`、`sdd-grill` 可用。
@@ -35,7 +36,7 @@ uv run -m unittest discover -s tests
 
 | 情境 | 操作 | 預期 |
 |---|---|---|
-| 空資料夾 | `/sdd-init` | 回報最新版本，`speckit-*` skill 可用，建議 `sdd-grill` |
+| 空資料夾 | `/sdd-init` | 回報最新穩定版，`speckit-*` skill 可用，`.git` 已建立且沒有 commit，建議 `sdd-grill` |
 | 有內容的專案 | `/sdd-init` | 既有檔案不變，建議 `sdd-derive` |
 | 已導入的專案 | 修改 constitution 後再執行 `/sdd-init` | 沒有任何檔案改動 |
 | 無法連線 | 中斷網路後執行 `/sdd-init` | 清楚說明原因，專案沒有新檔案 |
@@ -61,7 +62,7 @@ uv run -m unittest discover -s tests
 重點確認：
 
 - 一次一題，每題都有建議。
-- 確認決策摘要前沒有寫入文件。
+- 確認決策摘要前沒有寫入 constitution 或 spec。
 - 中斷後再次執行可接續；完成後進度檔已刪除，且進度檔從未進入 git。
 - 產出沒有待釐清標記。
 
@@ -76,3 +77,7 @@ uv run tools/run_trigger_evals.py
 ## 7. 新增 skill（US5）
 
 依 `docs/adding-a-skill.md` 加入範例 skill，用 `--target` 做一次修改與一次部署後，確認 skill 出現在目標目錄；刪除 `triggers.json` 時 `test_content.py` 應失敗。
+
+## 8. 正式部署
+
+全部驗收通過後，在維護者同意下，於每台機器執行 `uv run tools/dotfiles.py deploy` 且不再解除部署，並確認 `status` 回報 `clean`。

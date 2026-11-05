@@ -52,7 +52,7 @@
 
 **Acceptance Scenarios**:
 
-1. **Given** 空的專案資料夾，**When** 導入，**Then** Spec Kit 可直接使用，並提示下一步使用追問討論 skill。
+1. **Given** 空的專案資料夾，**When** 導入，**Then** Spec Kit 可直接使用，資料夾已是沒有 commit 的 git repo，並提示下一步使用追問討論 skill。
 2. **Given** 已有程式碼但未導入 Spec Kit 的專案，**When** 導入，**Then** 既有檔案不被覆蓋，並提示下一步使用專案導出 skill。
 3. **Given** 專案已導入且已有 constitution 或 spec，**When** 再次導入，**Then** 不會覆蓋這些內容，也不會自動升級。
 4. **Given** 必要工具缺少或無法取得最新版，**When** 導入，**Then** 清楚說明原因與處理方式，專案不留下不完整的結果。
@@ -105,7 +105,7 @@
 
 ### User Story 5 - 逐項加入新的常用 skill (Priority: P3)
 
-維護者遇到實際重複的需求時，能把一個新 skill 加入此 repo，經過同樣的驗證後部署到所有機器。
+維護者遇到實際需求或提出明確要求時，能把一個新 skill 加入此 repo，經過同樣的驗證後部署到所有機器。
 
 **Why this priority**: 第一版只有少數 skill，但此 repo 的目的是持續累積個人常用 skill。
 
@@ -147,12 +147,13 @@
 **Spec Kit 導入**
 
 - **FR-006**: 維護者 MUST 能在任何專案以一個步驟導入 Spec Kit，不需要提供初始化選項。
-- **FR-007**: 導入 MUST 使用當下的最新版 Spec Kit，並回報實際安裝的版本。
+- **FR-007**: 導入 MUST 使用當下的最新穩定版 Spec Kit，排除預發布版，並回報實際安裝的版本。
 - **FR-008**: 導入 MUST 依導入當下的作業系統，設定可在該系統上運作的腳本類型，並在完成時提示專案換到另一個作業系統需要對應的 shell。
 - **FR-009**: 導入 MUST NOT 覆蓋專案既有內容；在已導入的專案上重複執行 MUST NOT 改動任何內容，也 MUST NOT 自動升級。
 - **FR-010**: 導入失敗時 MUST 說明原因與處理方式，MUST NOT 留下不完整的結果。
 - **FR-011**: 導入完成後 MUST 依專案是否已有內容，建議下一步使用專案導出或追問討論 skill。
 - **FR-012**: 維護者 MUST 能移除導入所建立且未修改的檔案，包含未修改的 constitution 範本，讓專案回到導入前的狀態；已修改的檔案 MUST 保留並回報，除非維護者明確要求一併移除；spec MUST NOT 被移除。
+- **FR-033**: 目標資料夾不在 git repo 內時，導入成功後 MUST 建立 git repo，且 MUST NOT 自動 commit；移除導入時 MUST NOT 刪除 `.git`。
 
 **專案導出 skill**
 
@@ -179,7 +180,7 @@
 - **FR-026**: 專案導出與追問討論 skill MUST 止於 spec，MUST NOT 進入 plan。
 - **FR-027**: 每個 skill MUST 有觸發案例，涵蓋應觸發與不應觸發的提示；只能手動執行的 skill 改為確認不會自動觸發。
 - **FR-028**: 所有功能 MUST 在 Windows 與 Linux 上行為一致。
-- **FR-029**: 此 repo MUST 提供加入新 skill 的流程，加入時 MUST 指出該 skill 解決的實際重複需求。
+- **FR-029**: 此 repo MUST 提供加入新 skill 的流程，加入時 MUST 指出該 skill 的需求來源：實際遇到的需求或維護者的明確要求。
 - **FR-030**: 專案導出與追問討論 skill 產生的文件 MUST 使用專案既有文件的語言；沒有既有文件或無法判斷時 MUST 使用繁體中文，MUST、SHOULD 等規範詞保留英文。
 - **FR-031**: 產生多份 spec 時，專案導出與追問討論 skill MUST 依功能相依順序產生，結束時 MUST 列出清單與建議順序，並將目前功能指向這批的第一份。
 
@@ -215,6 +216,6 @@
 - **CLAUDE.md 初始內容**：來自維護者已表達的偏好：以繁體中文回覆、提問使用互動式選項、每次異動後在分支上 commit（適用所有專案，不自動 push）、以 SDD 與 Spec Kit 為主要工作方式。維護者已確認這些內容。
 - **Spec Kit 來源**：維護者選擇一律使用最新版。不同時間的新專案可能拿到不同版本，這與憲章原則 IV 不符，例外記錄在 plan 的 Complexity Tracking；在同一專案上重複執行不改變結果。
 - **前置工具**：機器上需能取得 Spec Kit 的官方安裝工具，部署或導入時若缺少則提示處理方式。
-- **與 001 的關係**：完整入庫防護由 `001-repo-commit-guard` 處理，此 repo 公開前必須完成。在那之前，本功能先建立最小白名單與 commit 前手動檢查，以符合憲章原則 I。
+- **與 001 的關係**：完整入庫防護由 `001-repo-commit-guard` 處理，此 repo 公開前必須完成。在那之前，本功能先建立最小白名單與 git pre-commit 檢查，以符合憲章原則 I；這項檢查每個 clone 都要安裝一次，也能被 `--no-verify` 略過。
 - **Plan 不在範圍內**：維護者表示 plan 階段另外討論，本功能的 skill 不產生 plan。
 - **Settings 與 hook 不在範圍內**：個人 settings 與 hook 的納管留待後續功能。

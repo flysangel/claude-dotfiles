@@ -39,21 +39,21 @@
 
 | 原則 | 關卡問題 | 結果 | 說明 |
 |---|---|---|---|
-| I | 新增的入庫檔案都在白名單內，且不含機密與個資嗎？ | 通過 | 第一批任務就建立 `.repo-allowlist` 與 `tools/check_allowlist.py`，之後每次 commit 前都要執行，見 [contracts/allowlist.md](contracts/allowlist.md)。這項檢查是手動的，自動攔截由 001 負責，**001 完成前此 repo 不得公開** |
-| II | 每項客製化都說明了為何選擇該機制嗎？ | 通過 | 偏好放 CLAUDE.md；按需流程放 skill；導入與部署的確定性步驟放腳本；機器專屬內容放 `~/.claude/rules/`。維護者已確認「不提交到 `main`」是偏好，不是必須強制的規則，因此不新增 hook |
-| III | 指出實際需求了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ | 有例外 | 需求來源見下方表格。行數由測試檢查，內容由 `/doctor prompt-audit` 與審閱檢查。`sdd-derive` 尚無重複發生的紀錄，見 Complexity Tracking |
+| I | 新增的入庫檔案都在白名單內，且不含機密與個資嗎？ | 通過 | 第一個 commit 就建立 `.repo-allowlist`、`tools/check_allowlist.py` 與 pre-commit hook，檢查內容與作者 email，見 [contracts/allowlist.md](contracts/allowlist.md)。hook 能被略過，也不會隨 clone 帶走，完整防護由 001 負責，**001 完成前此 repo 不得公開** |
+| II | 每項客製化都說明了為何選擇該機制嗎？ | 通過 | 偏好放 CLAUDE.md；按需流程放 skill；導入與部署的確定性步驟放腳本；機器專屬內容放 `~/.claude/rules/`。原則 I 必須強制，因此用 git pre-commit hook；維護者已確認「不提交到 `main`」是偏好，因此不另加 hook |
+| III | 指出需求來源了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ | 通過 | 需求來源見下方表格。行數由測試檢查，內容由 `/doctor prompt-audit` 與審閱檢查 |
 | IV | 安裝可重複執行、可還原，且能在 Windows 與 Linux 上運作嗎？ | 有例外 | 部署與導入在同一環境重複執行結果相同，移除導入時，未修改的檔案會還原，已修改的檔案會保留並回報。「一律最新版」造成不同時間的結果不同，見 Complexity Tracking |
 | V | 每項產出都有驗證方式嗎？CLAUDE.md 規則具體可驗證且沒有矛盾嗎？ | 通過 | 腳本有單元測試，skill 有觸發案例與情境驗收，CLAUDE.md 規則附預期行為並由 `/doctor prompt-audit` 檢查矛盾，部署與導入流程見 [quickstart.md](quickstart.md) |
 
-**實際需求（原則 III）**
+**需求來源（原則 III）**
 
 | 產出 | 來源 |
 |---|---|
-| CLAUDE.md | 維護者在此 repo 多次要求相同行為：繁中、互動式提問、每次異動後在分支上 commit |
-| 部署 | 維護者同時使用 Windows 與 Linux，上述設定要在兩邊生效 |
-| `sdd-init` | 每個新專案都要導入 Spec Kit |
-| `sdd-grill` | 此 repo 的 constitution 與兩份 spec 都靠人工追問才定案 |
-| `sdd-derive` | 維護者明確提出，尚無重複紀錄，見 Complexity Tracking |
+| CLAUDE.md | 維護者明確要求：互動式提問、每次異動後在分支上 commit；繁中回覆與 SDD 工作方式由維護者確認 |
+| 部署 | 維護者明確要求：設定要用於多台機器，支援 Windows 與 Linux |
+| `sdd-init` | 維護者明確要求：以後新專案都能快速使用 Spec Kit |
+| `sdd-grill` | 維護者明確要求；實際遇到：此 repo 的 constitution 與 spec 都靠人工追問才定案 |
+| `sdd-derive` | 維護者明確要求：從既有專案導出 constitution 與 spec |
 
 ## Project Structure
 
@@ -112,5 +112,4 @@ docs/adding-a-skill.md       # FR-029
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | IV：不同時間導入可能得到不同版本的 Spec Kit | 維護者明確選擇新專案一律用最新版 | 固定版本可完全重現，但維護者已選擇不採用。以回報版本、同專案不自動升級、相依缺失時明確停止來降低風險 |
-| IV：移除導入時，已修改的檔案預設不還原 | 這些檔案含有維護者的內容，例如已填寫的 constitution | 直接還原會刪掉維護者的內容；改為保留並回報，要移除時再明確加 `--all` |
-| III：`sdd-derive` 尚無重複發生的紀錄 | 維護者明確提出要將既有專案轉為 SDD | 延後會少掉主要需求；第一次實際使用即作為驗證，若未被使用再移除 |
+| IV：移除導入時，已修改的檔案與 `.git` 預設不還原 | 這些內容屬於維護者，例如已填寫的 constitution 與 commit 歷史 | 直接還原會刪掉維護者的內容；已修改的檔案改為保留並回報，要移除時再明確加 `--all`；`.git` 一律保留 |

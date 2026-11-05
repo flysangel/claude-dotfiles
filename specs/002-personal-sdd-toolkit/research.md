@@ -63,7 +63,12 @@
 - **Rationale**: 觸發測試要呼叫模型，有費用且結果不完全固定，不適合每次執行。
 - **待實作時確認**: `claude -p` 的輸出能否可靠判斷 skill 是否被呼叫；不可靠時改為互動式手動驗收。
 
-## 11. 官方文件依據
+## 11. 新專案的 git
+
+- **Decision**: 目標不在 git repo 內時，導入成功後才執行 `git init`，不自動 commit；移除時不刪除 `.git`。
+- **Rationale**: 實測 v1.3.0 的 `specify init` 不會建立 `.git`，而個人 CLAUDE.md 要求每次異動都 commit。放在最後一步可避免失敗時還要復原 git 狀態；已在上層 git repo 內時不執行。
+
+## 12. 官方文件依據
 
 - CLAUDE.md 與 rules：<https://code.claude.com/docs/en/memory>（200 行建議、CLAUDE.md 不具強制力、使用者層級規則、symlink 限制）
 - Skills：<https://code.claude.com/docs/en/skills>（個人 skill 路徑、同名時個人優先於專案、1,536 字元上限、`${CLAUDE_SKILL_DIR}`）
