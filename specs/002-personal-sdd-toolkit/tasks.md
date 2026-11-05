@@ -139,7 +139,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T030 [US4] 建立 `home/skills/sdd-grill/SKILL.md`，依 `contracts/skills.md` 寫入前置檢查與規則：一次一題並附建議與理由、能查到的自行查閱、追問含糊回答、指出矛盾、涵蓋每個功能、技術選型記為留給 plan、文件語言依 FR-030
 - [X] T031 [US4] 在 `home/skills/sdd-grill/SKILL.md` 寫入進度規則：每個決定後更新 `.specify/sdd-grill-progress.md`，建立時加入 `.specify/.gitignore`，不記錄機密值；進度檔存在時列出已決定事項，由維護者選擇接續或重新開始，專案有變更時先提示；文件寫入成功後或重新開始時刪除
 - [X] T032 [US4] 在 `home/skills/sdd-grill/SKILL.md` 寫入收尾：維護者確認決策摘要後呼叫 `speckit-constitution`，再依相依順序為每個功能呼叫一次 `speckit-specify`；接續規則與 T027 相同；中途停止時提供摘要，不寫入 constitution 或 spec
-- [ ] T033 [US4] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 5 段驗收，依「驗收環境」把 skill 複製到暫存測試專案
+- [X] T033 [US4] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 5 段驗收，依「驗收環境」把 skill 複製到暫存測試專案
 
 **Checkpoint**: 追問討論可獨立運作
 

@@ -26,7 +26,7 @@ description: Question the user one decision at a time until a project's Spec Kit
 
 先讀專案現有內容，再開始問。
 
-- **一次只問一題。** 需要做決定時，使用互動式提問工具 AskUserQuestion；工具不能用時改用文字。
+- **一次只問一題**，同一則訊息不要附帶第二個問題。需要做決定時，使用互動式提問工具 AskUserQuestion；工具不能用時改用文字。
 - **每題都附建議答案與理由**，建議放在第一個。
 - **能從專案查到的就自己查**，不要問維護者。
 - **回答含糊就追問**，直到能判斷一個做法對不對，例如「要快」要問到具體的數字或情境。
