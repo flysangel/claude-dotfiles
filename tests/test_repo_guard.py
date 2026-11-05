@@ -1,4 +1,4 @@
-"""Tests for tools/check_allowlist.py. Violation samples are assembled at runtime."""
+"""Tests for tools/repo_guard.py. Violation samples are assembled at runtime."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "check_allowlist.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "repo_guard.py"
 AT = "@"
 NOREPLY = f"noreply{AT}example.com"
 FAKE_TOKEN = "gh" + "p_" + "a1" * 18
@@ -212,7 +212,7 @@ class HookTests(RepoTestCase):
     def test_hook_blocks_real_commit(self) -> None:
         tools = self.repo / "tools"
         tools.mkdir()
-        shutil.copy(SCRIPT, tools / "check_allowlist.py")
+        shutil.copy(SCRIPT, tools / "repo_guard.py")
         self.check("--install-hook")
         self.stage("outside/file.txt", "hello\n")
         result = subprocess.run(

@@ -14,10 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 MAX_CLAUDE_MD_LINES = 199
 MAX_LISTING_CHARS = 1536
 
-spec = importlib.util.spec_from_file_location("check_allowlist", ROOT / "tools" / "check_allowlist.py")
-check_allowlist = importlib.util.module_from_spec(spec)
-sys.modules["check_allowlist"] = check_allowlist
-spec.loader.exec_module(check_allowlist)
+spec = importlib.util.spec_from_file_location("repo_guard", ROOT / "tools" / "repo_guard.py")
+repo_guard = importlib.util.module_from_spec(spec)
+sys.modules["repo_guard"] = repo_guard
+spec.loader.exec_module(repo_guard)
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -75,7 +75,7 @@ def personal_data_problems(home_dir: Path) -> list[str]:
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
         relative = path.relative_to(home_dir).as_posix()
-        problems.extend(str(found) for found in check_allowlist.scan_text(relative, text, ""))
+        problems.extend(str(found) for found in repo_guard.scan_text(relative, text, ""))
     return problems
 
 

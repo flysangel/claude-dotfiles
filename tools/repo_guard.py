@@ -23,8 +23,9 @@ EXIT_INCOMPLETE = 3
 
 ALLOWLIST_NAME = ".repo-allowlist"
 FAKE_SECRET_DIR = "tests/fixtures/sample-project/"
-HOOK_MARKER = "# managed-by: tools/check_allowlist.py"
-HOOK_BODY = f"#!/bin/sh\n{HOOK_MARKER}\nexec uv run tools/check_allowlist.py --staged\n"
+HOOK_MARKER = "# managed-by: tools/repo_guard.py"
+LEGACY_HOOK_MARKER = "# managed-by: tools/check_allowlist.py"
+HOOK_BODY = f"#!/bin/sh\n{HOOK_MARKER}\nexec uv run tools/repo_guard.py --staged\n"
 
 HOME_PATH_RE = re.compile(
     r"(?<![\w.-])/(?:home|Users)/[A-Za-z0-9_][\w.-]*|\b[A-Za-z]:[\\/]+Users[\\/]+[^\s\\/\"'`<>]+"
@@ -202,9 +203,14 @@ def hooks_path_setting(root: Path) -> str:
         return ""
 
 
+def is_own_hook(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return HOOK_MARKER in text or LEGACY_HOOK_MARKER in text
+
+
 def install_hook(root: Path) -> int:
     path = hook_path(root)
-    if path.exists() and HOOK_MARKER not in path.read_text(encoding="utf-8", errors="replace"):
+    if path.exists() and not is_own_hook(path):
         print(f"{path.name} 已存在且不是由此工具安裝，未覆蓋。", file=sys.stderr)
         return EXIT_VIOLATION
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -221,7 +227,7 @@ def uninstall_hook(root: Path) -> int:
     if not path.exists():
         print("沒有已安裝的 pre-commit hook。")
         return EXIT_OK
-    if HOOK_MARKER not in path.read_text(encoding="utf-8", errors="replace"):
+    if not is_own_hook(path):
         print(f"{path.name} 不是由此工具安裝，未移除。", file=sys.stderr)
         return EXIT_VIOLATION
     path.unlink()

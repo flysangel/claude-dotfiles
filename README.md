@@ -19,7 +19,7 @@
 
 ```text
 git config user.email "<id>+<帳號>@users.noreply.github.com"
-uv run tools/check_allowlist.py --install-hook
+uv run tools/repo_guard.py --install-hook
 uv run tools/dotfiles.py deploy
 ```
 

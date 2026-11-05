@@ -30,7 +30,7 @@ description: "Task list for the public repo commit guard"
 
 **Purpose**: 把工具改成符合新範圍的名稱，且改名過程中防護不中斷
 
-- [ ] T001 用 `git mv` 把 `tools/check_allowlist.py` 改為 `tools/repo_guard.py`、`tests/test_check_allowlist.py` 改為 `tests/test_repo_guard.py`，更新 `HOOK_BODY`、`HOOK_MARKER` 與 `tests/test_content.py`、`README.md`、`docs/adding-a-skill.md` 的引用；`--install-hook` 與 `--uninstall-hook` 要認得舊版標記 `# managed-by: tools/check_allowlist.py`；commit 前先執行 `uv run tools/repo_guard.py --install-hook` 更新此 repo 的 hook，這些改動合成一個 commit
+- [X] T001 用 `git mv` 把 `tools/check_allowlist.py` 改為 `tools/repo_guard.py`、`tests/test_check_allowlist.py` 改為 `tests/test_repo_guard.py`，更新 `HOOK_BODY`、`HOOK_MARKER` 與 `tests/test_content.py`、`README.md`、`docs/adding-a-skill.md` 的引用；`--install-hook` 與 `--uninstall-hook` 要認得舊版標記 `# managed-by: tools/check_allowlist.py`；commit 前先執行 `uv run tools/repo_guard.py --install-hook` 更新此 repo 的 hook，這些改動合成一個 commit
 
 ---
 
