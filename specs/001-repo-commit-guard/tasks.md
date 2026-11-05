@@ -132,8 +132,8 @@ description: "Task list for the public repo commit guard"
 
 **Purpose**: 文件同步與公開前的最終確認
 
-- [ ] T024 [P] 更新 `README.md`：安裝步驟改為 `repo_guard.py` 與本機識別清單；說明誤判例外、`--status`、`--history`、`review_settings.py`；修改已知限制中關於 commit 檢查的描述
-- [ ] T025 [P] 把 `specs/002-personal-sdd-toolkit/quickstart.md` 的 `check_allowlist.py` 指令改為 `repo_guard.py`，並在 `specs/002-personal-sdd-toolkit/contracts/allowlist.md` 開頭註明已由 `specs/001-repo-commit-guard/contracts/repo-guard.md` 取代
+- [X] T024 [P] 更新 `README.md`：安裝步驟改為 `repo_guard.py` 與本機識別清單；說明誤判例外、`--status`、`--history`、`review_settings.py`；修改已知限制中關於 commit 檢查的描述
+- [X] T025 [P] 把 `specs/002-personal-sdd-toolkit/quickstart.md` 的 `check_allowlist.py` 指令改為 `repo_guard.py`，並在 `specs/002-personal-sdd-toolkit/contracts/allowlist.md` 開頭註明已由 `specs/001-repo-commit-guard/contracts/repo-guard.md` 取代
 - [ ] T026 請維護者建立本機識別清單 `~/.config/claude-dotfiles/identity.txt`，內容由維護者決定，你不得代填或讀取後輸出
 - [ ] T027 執行 `uv run tools/repo_guard.py --history` 與 `gitleaks git --no-banner --redact`，確認此 repo 目前都通過；gitleaks 回報時，判斷為誤判或真實機密後回報維護者
 - [ ] T028 取得維護者同意後，建立 GitHub **私有** repo 並 push；設定 remote 與建立 repo 都是對外操作，事先確認名稱與可見性

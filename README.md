@@ -23,7 +23,9 @@ uv run tools/repo_guard.py --install-hook
 uv run tools/dotfiles.py deploy
 ```
 
-前兩行每個 clone 都要做一次，它們會讓這個 repo 的 commit 不帶個人 email，並在 commit 前檢查內容。
+前兩行每個 clone 都要做一次，它們會讓這個 repo 的 commit 不帶個人 email，並在 commit 與 push 前自動檢查。
+
+每台機器也要建立一份本機識別清單 `~/.config/claude-dotfiles/identity.txt`，每行一筆你不想公開的內容，例如真實姓名、私人主機名稱。它不會入庫；沒有這份清單時，commit 只會提醒，但 push 與完整檢查不會通過。
 
 第三行會把 `home/` 複製到 `~/.claude/`：
 
@@ -88,12 +90,39 @@ uv run tools/dotfiles.py deploy
 
 機器專屬的內容放在 `~/.claude/rules/`，部署不會碰這個目錄，也不會入庫。
 
+## 入庫防護
+
+| 指令 | 用途 |
+|---|---|
+| `uv run tools/repo_guard.py --status` | 查看防護是否已啟用 |
+| `uv run tools/repo_guard.py --all` | 檢查所有已追蹤的檔案 |
+| `uv run tools/repo_guard.py --history` | 檢查完整歷史，公開前必跑；每次 push 也會自動執行 |
+| `uv run tools/review_settings.py` | 判斷 `~/.claude/settings.json` 每個項目能否共用，輸出不含設定值 |
+
+`--status` 回報 `unverified` 表示有設定 `core.hooksPath`，工具無法確認它會不會轉交；用一個會被擋下的 commit 實際試過就能確定。
+
+被誤判時，違規訊息會顯示指紋。把它記錄到 `.repo-guard-exceptions.json`，並寫明理由：
+
+```json
+{
+  "exceptions": [
+    { "path": "docs/example.md", "kind": "email", "line_sha256": "<指紋>", "reason": "說明為什麼是誤判" }
+  ]
+}
+```
+
+例外只對這個檔案的這一行有效，行內容一改就失效。白名單、作者與本機識別清單不能豁免。**真實機密不要記錄例外**，要視為已外洩並更換。
+
+## 新增內容
+
 要加入新的 skill，請見 [docs/adding-a-skill.md](docs/adding-a-skill.md)。新增其他路徑的檔案前，要先加進 `.repo-allowlist`，否則 commit 會被擋下。
 
 ## 已知限制
 
-- **尚未公開就緒**：commit 檢查不看 commit 訊息與歷史，也能被 `--no-verify` 略過。完整防護由 `specs/001-repo-commit-guard` 負責，完成前不要公開這個 repo。
-- **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則 commit 檢查不會執行。
+- **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上，但 `git push --no-verify` 就沒有防護了，要靠之後的 CI。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
+- **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
+- **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。`LICENSE` 與 Spec Kit 檔案的授權條件也要在公開前決定。
+- **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則檢查不會執行。
 - **模型差異**：Sonnet 的驗收全部通過。Haiku 曾用英文回覆英文提問，也較容易忽略 skill 的收尾步驟與「不加未確認規則」的指示。
 - **未驗證的規則**：「提問使用 AskUserQuestion」無法用 `claude -p` 測試，只靠實際對話確認。
 - **一個專案只有一種 Spec Kit 腳本**：Windows 導入的用 PowerShell，Linux 導入的用 bash。專案換到另一個作業系統時，需要對應的 shell。

@@ -1,5 +1,7 @@
 # Contract: 最小白名單檢查
 
+> 已由 [001 的 repo-guard contract](../../001-repo-commit-guard/contracts/repo-guard.md) 取代，工具也已改名為 `tools/repo_guard.py`。以下保留當時的設計。
+
 這是憲章原則 I 在 `001-repo-commit-guard` 完成前的最低防線，透過 git pre-commit hook 在每次 commit 前自動執行。每個 clone 都要安裝一次，也能被 `--no-verify` 略過。commit 訊息檢查、完整歷史掃描與誤判例外由 001 負責。
 
 ```text

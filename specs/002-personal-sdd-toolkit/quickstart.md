@@ -11,7 +11,7 @@
 
 - 已安裝 `uv`、`git`、Claude Code
 - 已 clone 此 repo，並在 repo 根目錄執行
-- 已將此 repo 的 `user.email` 設為 noreply 地址，並執行 `uv run tools/check_allowlist.py --install-hook`
+- 已將此 repo 的 `user.email` 設為 noreply 地址，並執行 `uv run tools/repo_guard.py --install-hook`
 
 ## 1. 自動化測試
 
