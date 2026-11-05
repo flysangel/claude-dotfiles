@@ -195,7 +195,7 @@
 ## Assumptions
 
 - **使用者**：只有一位維護者，使用自己的 Windows 與 Linux 機器；macOS 不在範圍內。
-- **第一版 skill 範圍**：只包含專案導出與追問討論；Orca 相關 skill 由 Orca 管理，不納管。
+- **第一版 skill 範圍**：常用 skill 只包含專案導出與追問討論，Spec Kit 導入的入口形式由 plan 決定；Orca 相關 skill 由 Orca 管理，不納管。
 - **CLAUDE.md 初始內容**：來自維護者已表達的偏好：以繁體中文回覆、提問使用互動式選項、每次異動後在分支上 commit、以 SDD 與 Spec Kit 為主要工作方式。維護者在 plan 前可以調整。
 - **Spec Kit 來源**：維護者選擇一律使用最新版。憲章原則 IV 要求重複安裝的結果相同，本規格將其解讀為「在同一專案上重複執行不改變結果」；不同時間的新專案可能拿到不同版本。此差異需在 plan 的 Constitution Check 記錄。
 - **前置工具**：機器上需能取得 Spec Kit 的官方安裝工具，部署或導入時若缺少則提示處理方式。
