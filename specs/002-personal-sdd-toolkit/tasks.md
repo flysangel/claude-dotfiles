@@ -69,7 +69,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T012 [US1] 在 `tools/dotfiles.py` 實作 `undeploy`：依 `original` 還原或刪除、移除空目錄與部署紀錄；本機已修改的檔案先另存備份；只處理紀錄中的檔案；沒有部署紀錄時不改動並回報
 - [X] T013 [US1] 在 `tools/dotfiles.py` 實作 `status`，只讀取，依 contract 的順序判斷五種狀態並列出差異檔案；輸出不得包含被備份檔案的內容
 - [X] T014 [US1] 建立 `home/CLAUDE.md`，少於 200 行，用標題與條列分組，每條規則具體且附可觀察的預期行為，內容為：以繁體中文回覆；提問使用互動式選項；每次異動後在分支上 commit，不提交到 `main`，不自動 push；以 SDD 與 Spec Kit 為主要工作方式，說明何時使用 `/sdd-init`、`sdd-derive`、`sdd-grill`。不得放機密、個資或機器專屬內容，也不得放能從程式碼得知的內容
-- [ ] T015 [US1] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 2 段，先用 `--target` 對暫存目錄驗收，並執行 `/doctor prompt-audit` 檢查 `home/CLAUDE.md`
+- [X] T015 [US1] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 2 段，先用 `--target` 對暫存目錄驗收，`/doctor prompt-audit` 在非互動模式超過 $0.50 預算而沒有結果，改在 T039 互動式執行
 
 **Checkpoint**: 部署與還原可獨立運作
 
@@ -83,14 +83,14 @@ description: "Task list for the personal SDD toolkit"
 
 ### Tests for User Story 2
 
-- [ ] T016 [P] [US2] 建立 `tests/test_sdd_init.py`，以假的初始化函式取代網路呼叫，涵蓋：只複製不存在的檔案、已導入時不改動、失敗時移除這次建立的檔案、缺少工具與無法取得版本時回傳 3、Windows 選 `ps` 與 Linux 選 `sh`、穩定版標籤選擇會排除預發布版、下一步建議（有內容為 `sdd-derive`，空專案為 `sdd-grill`）、`remove` 只刪除未修改的檔案（包含未修改的 `constitution.md` 範本）、已修改的檔案保留並回報、`--all` 才一併移除、不碰 `specs/` 與 `.git`、沒有紀錄檔時回傳 1 且不改動；不在 git repo 內時導入成功才執行 `git init` 且不 commit、失敗時不建立 `.git`、已在上層 repo 內時不執行
-- [ ] T017 [US2] 在 `tests/test_sdd_init.py` 加入需設定環境變數 `RUN_NETWORK_TESTS=1` 才執行的真實導入測試，確認最新版可安裝、`speckit-*` skill 存在，且產生的檔案不包含暫存目錄路徑（research 第 5 節待確認項目）
+- [X] T016 [P] [US2] 建立 `tests/test_sdd_init.py`，以假的初始化函式取代網路呼叫，涵蓋：只複製不存在的檔案、已導入時不改動、失敗時移除這次建立的檔案、缺少工具與無法取得版本時回傳 3、Windows 選 `ps` 與 Linux 選 `sh`、穩定版標籤選擇會排除預發布版、下一步建議（有內容為 `sdd-derive`，空專案為 `sdd-grill`）、`remove` 只刪除未修改的檔案（包含未修改的 `constitution.md` 範本）、已修改的檔案保留並回報、`--all` 才一併移除、不碰 `specs/` 與 `.git`、沒有紀錄檔時回傳 1 且不改動；不在 git repo 內時導入成功才執行 `git init` 且不 commit、失敗時不建立 `.git`、已在上層 repo 內時不執行
+- [X] T017 [US2] 在 `tests/test_sdd_init.py` 加入需設定環境變數 `RUN_NETWORK_TESTS=1` 才執行的真實導入測試，確認最新版可安裝、`speckit-*` skill 存在，且產生的檔案不包含暫存目錄路徑（research 第 5 節待確認項目）
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] 在 `home/skills/sdd-init/scripts/sdd_init.py` 實作 `init`，依 `contracts/sdd-init.md` 的七個步驟：用 `git ls-remote --tags` 取最高穩定版，以 `uv tool run --from git+https://github.com/github/spec-kit.git@<tag> specify init <temp> --integration claude --script <sh|ps> --ignore-agent-tools --non-interactive` 初始化到暫存目錄，再複製缺少的檔案；最後一步在目標不屬於任何 git repo 時執行 `git init`，不 commit（FR-033）；PEP 723 宣告版本需求，只用標準庫
-- [ ] T019 [US2] 在同一腳本寫入 `.specify/sdd-init.json`，欄位 `speckit_version`、`script`（`sh` 或 `ps`）、`created[]`（相對路徑與雜湊值）、`skipped[]`；完成時回報版本、建立數、略過的檔案、下一步，並提示專案換到另一個作業系統需要對應的 shell（FR-008）
-- [ ] T020 [US2] 在同一腳本實作 `remove`，依 `.specify/sdd-init.json` 刪除雜湊值相符的檔案，包含未修改的 `constitution.md` 範本，並移除紀錄檔與空目錄；已修改的檔案保留並回報，`--all` 才一併移除；一律不動 `specs/` 與 `.git`；沒有紀錄檔時不改動並回傳 1
+- [X] T018 [US2] 在 `home/skills/sdd-init/scripts/sdd_init.py` 實作 `init`，依 `contracts/sdd-init.md` 的七個步驟：用 `git ls-remote --tags` 取最高穩定版，以 `uv tool run --from git+https://github.com/github/spec-kit.git@<tag> specify init <temp> --integration claude --script <sh|ps> --ignore-agent-tools --non-interactive` 初始化到暫存目錄，再複製缺少的檔案；最後一步在目標不屬於任何 git repo 時執行 `git init`，不 commit（FR-033）；PEP 723 宣告版本需求，只用標準庫
+- [X] T019 [US2] 在同一腳本寫入 `.specify/sdd-init.json`，欄位 `speckit_version`、`script`（`sh` 或 `ps`）、`created[]`（相對路徑與雜湊值）、`skipped[]`；完成時回報版本、建立數、略過的檔案、下一步，並提示專案換到另一個作業系統需要對應的 shell（FR-008）
+- [X] T020 [US2] 在同一腳本實作 `remove`，依 `.specify/sdd-init.json` 刪除雜湊值相符的檔案，包含未修改的 `constitution.md` 範本，並移除紀錄檔與空目錄；已修改的檔案保留並回報，`--all` 才一併移除；一律不動 `specs/` 與 `.git`；沒有紀錄檔時不改動並回傳 1
 - [ ] T021 [US2] 建立 `home/skills/sdd-init/SKILL.md`，設定 `disable-model-invocation: true`，用 `${CLAUDE_SKILL_DIR}` 呼叫腳本並轉述結果
 - [ ] T022 [P] [US2] 建立 `tests/skills/sdd-init/triggers.json`（確認不會自動觸發）與 `tests/skills/sdd-init/scenarios.md`（對應 spec US2 的五個驗收情境）
 - [ ] T023 [US2] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 3 段驗收四個情境；依該檔「驗收環境」把 skill 複製到暫存測試專案
