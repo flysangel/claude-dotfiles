@@ -104,6 +104,7 @@ tests/
 docs/adding-a-skill.md       # FR-029
 .gitattributes               # 入庫文字檔一律使用 LF
 .repo-allowlist              # 可入庫路徑的白名單
+README.md                    # 使用手冊
 ```
 
 **Structure Decision**: `sdd-init` 做成只能手動執行的 skill，因為導入要能在任何專案用一個步驟完成；全域命令需要各系統設定 PATH，放在 repo 內則每次都要指定路徑。部署內容放在 `home/`，不放在此 repo 的 `.claude/`。這樣開發中的版本不會在此 repo 內被載入，也不會和 Spec Kit 的 skill 混在一起。

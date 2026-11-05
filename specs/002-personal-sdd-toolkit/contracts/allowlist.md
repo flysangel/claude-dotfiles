@@ -26,6 +26,7 @@ docs/**
 .gitattributes
 .gitignore
 .repo-allowlist
+README.md
 ```
 
 ## 作者檢查

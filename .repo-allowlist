@@ -9,3 +9,4 @@ docs/**
 .gitattributes
 .gitignore
 .repo-allowlist
+README.md
