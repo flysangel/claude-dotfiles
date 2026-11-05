@@ -1,50 +1,96 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# claude-dotfiles Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. 機密與個資不入庫（NON-NEGOTIABLE）
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+本 repo 公開，任何進入 git 歷史的內容都視為已公開。
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- 憑證、token、對話紀錄與 session 資料 MUST NOT 進入 git。
+- email、內部路徑等個人資訊 MUST NOT 進入 git，包含範例與測試資料。
+- 納管範圍 MUST 使用白名單：只有明確列入的檔案才能進入 repo，MUST NOT 納管整個 `~/.claude/`。
+- 機密一旦進入 git 歷史，MUST 視為已外洩並立即更換，只刪除檔案不算修復。
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+理由：`~/.claude/` 同時存在 `.credentials.json`、`history.jsonl` 這類檔案，黑名單一漏就會公開。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### II. 機制分層
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+每項客製化 MUST 放在符合其性質的機制，plan MUST 說明選擇理由：
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+| 性質 | 機制 |
+|---|---|
+| 必須強制執行 | hook 或 settings |
+| 每次都適用的偏好 | CLAUDE.md |
+| 按需使用的流程 | skill |
+| 需要隔離 context 的工作 | subagent |
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+必須強制執行的規則 MUST NOT 只寫在 CLAUDE.md。
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+理由：CLAUDE.md 依賴 Claude 自行遵守，只有 hook 與 settings 由工具強制執行。
+
+### III. Context 精簡
+
+- 全域 CLAUDE.md MUST NOT 超過 200 行，超過時 MUST 先移除或搬到其他機制才能新增內容。
+- 常駐內容（CLAUDE.md、skill 描述）的每一行 MUST 能說明存在理由；說不出理由的內容 MUST 移除。
+- 新增內容 MUST 來自實際重複遇到的需求，plan MUST 指出該需求；MUST NOT 為假設的未來需求預先設計。
+
+理由：常駐內容在每次對話都佔用 context，也會稀釋其他規則的效果。
+
+### IV. 安裝可重現、可還原、跨平台
+
+- 安裝 MUST 只需一個指令，且重複執行的結果 MUST 相同。
+- 覆蓋既有檔案前 MUST 備份。
+- MUST 提供解除安裝方式，並還原安裝前的狀態。
+- 機器專屬的設定與路徑 MUST 與共用設定分離，且機器專屬部分 MUST NOT 入庫。
+- 入庫內容 MUST NOT 寫死絕對路徑。
+- 安裝與 hook 腳本 MUST 能在每個支援的作業系統上運作。
+
+支援的作業系統：TODO(SUPPORTED_OS)：已確定跨作業系統，實際清單待定。
+
+理由：同一份設定要在多台不同系統的機器上運作，且不能破壞機器上原有的設定。
+
+### V. 可驗證
+
+每項產出 MUST 附上驗證方式，未附驗證方式的項目不算完成：
+
+- hook MUST 有自動化測試，涵蓋觸發與不觸發的情況。
+- skill MUST 有觸發案例，涵蓋應觸發與不應觸發的提示。
+- CLAUDE.md 規則 MUST 寫明可觀察的預期行為。
+- 安裝與解除安裝 MUST 有驗證步驟。
+
+理由：設定類改動常在沒有錯誤訊息的情況下失效，必須有可檢查的依據。
+
+## 範圍與邊界
+
+本文件只規範如何開發此 repo，MUST NOT 描述 Claude 的行為偏好：
+
+- 跨功能且長期不變的開發規則：放在本文件。
+- 個別功能的需求：放在 feature spec。
+- Claude 的行為偏好：放在 CLAUDE.md，它是此 repo 的產出物。
+
+## 開發流程與品質關卡
+
+功能開發 MUST 依序經過 spec、plan、tasks、implement。plan 的 Constitution Check MUST 逐條確認：
+
+| 原則 | 關卡問題 |
+|---|---|
+| I | 新增的入庫檔案都在白名單內，且不含機密與個資嗎？ |
+| II | 每項客製化都說明了為何選擇該機制嗎？ |
+| III | 指出實際需求了嗎？常駐內容仍在上限內嗎？ |
+| IV | 安裝可重複執行、可還原，且涵蓋所有支援的作業系統嗎？ |
+| V | 每項產出都有驗證方式嗎？ |
+
+commit 前 MUST 檢查待提交內容符合原則 I。
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+本文件優先於此 repo 的其他開發慣例。此為個人專案，修改不需審核流程，但 MUST 遵守以下規定：
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- 修改時 MUST 更新版本與 Last Amended 日期，並在 commit message 寫明原因。
+- 版本採語意化規則：
+  - MAJOR：移除原則，或重新定義原則使其與舊版不相容。
+  - MINOR：新增原則或章節，或實質擴充規範。
+  - PATCH：釐清說明、修正文字，不改變規範含義。
+- 違反原則 II 至 V 時 MUST 在 plan 的 Complexity Tracking 記錄理由；原則 I 不得豁免。
+
+**Version**: 1.0.0 | **Ratified**: 2026-11-05 | **Last Amended**: 2026-11-05
