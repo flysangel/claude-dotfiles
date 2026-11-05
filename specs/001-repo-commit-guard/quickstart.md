@@ -58,6 +58,8 @@ uv run tools/review_settings.py
 
 ## 7. 公開前的最終確認（US3）
 
+先推到私有 repo，在 Windows 完成 002 的 T040，再於包含 Windows 修正的最新歷史上執行：
+
 ```text
 uv run tools/repo_guard.py --history
 gitleaks git --no-banner --redact
