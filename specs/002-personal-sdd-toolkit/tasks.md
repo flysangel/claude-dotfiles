@@ -153,7 +153,7 @@ description: "Task list for the personal SDD toolkit"
 
 ### Implementation for User Story 5
 
-- [ ] T034 [US5] 建立 `docs/adding-a-skill.md`，說明加入 skill 的步驟：指出需求來源（實際遇到的需求或維護者的明確要求）、放到 `home/skills/<name>/`、新增 `tests/skills/<name>/` 的兩個檔案、執行測試與觸發案例、重新部署
+- [X] T034 [US5] 建立 `docs/adding-a-skill.md`，說明加入 skill 的步驟：指出需求來源（實際遇到的需求或維護者的明確要求）、放到 `home/skills/<name>/`、新增 `tests/skills/<name>/` 的兩個檔案、執行測試與觸發案例、重新部署
 - [ ] T035 [US5] 在 `tests/test_content.py` 加入以暫存結構驗證的測試：缺少 `triggers.json` 時檢查不通過
 - [ ] T036 [US5] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 7 段驗收，全程使用 `--target`，完成後移除範例 skill
 
