@@ -30,9 +30,9 @@ description: "Task list for the personal SDD toolkit"
 
 **Purpose**: 先建立憲章原則 I 要求的白名單與檢查，再建立 repo 基本設定
 
-- [ ] T001 建立 `.repo-allowlist`，內容依 `specs/002-personal-sdd-toolkit/contracts/allowlist.md`
-- [ ] T002 建立 `tests/test_check_allowlist.py`，涵蓋：白名單外的檔案不通過、白名單內的檔案通過、刪除的檔案不檢查、個人家目錄路徑與全域 git email 不通過、noreply 與保留網域的 email 通過、假憑證樣本不通過、`tests/fixtures/sample-project/` 的假憑證通過、白名單遺失回傳 3、輸出不含機密完整值、作者或提交者不是 noreply 時不通過、`--install-hook` 重複執行結果相同且不覆蓋其他 hook、`--uninstall-hook` 只移除自己安裝的 hook；全部在暫存 git repo 內進行，違規樣本在執行時組合
-- [ ] T003 依 `contracts/allowlist.md` 建立 `tools/check_allowlist.py`，用 PEP 723 宣告版本需求，只用標準庫；完成後執行 `--all` 確認目前所有已追蹤檔案都通過，再用 `--install-hook` 安裝到此 repo，確認此 repo 的 `user.email` 是 noreply 地址
+- [X] T001 建立 `.repo-allowlist`，內容依 `specs/002-personal-sdd-toolkit/contracts/allowlist.md`
+- [X] T002 建立 `tests/test_check_allowlist.py`，涵蓋：白名單外的檔案不通過、白名單內的檔案通過、刪除的檔案不檢查、個人家目錄路徑與全域 git email 不通過、noreply 與保留網域的 email 通過、假憑證樣本不通過、`tests/fixtures/sample-project/` 的假憑證通過、白名單遺失回傳 3、輸出不含機密完整值、作者或提交者不是 noreply 時不通過、`--install-hook` 重複執行結果相同且不覆蓋其他 hook、`--uninstall-hook` 只移除自己安裝的 hook；全部在暫存 git repo 內進行，違規樣本在執行時組合
+- [X] T003 依 `contracts/allowlist.md` 建立 `tools/check_allowlist.py`，用 PEP 723 宣告版本需求，只用標準庫；完成後執行 `--all` 確認目前所有已追蹤檔案都通過，再用 `--install-hook` 安裝到此 repo，確認此 repo 的 `user.email` 是 noreply 地址
 - [ ] T004 [P] 建立 `.gitattributes`，內容為 `* text=auto eol=lf`，讓 Windows 與 Linux 上的檔案雜湊值一致
 - [ ] T005 [P] 建立 `.gitignore`，排除 `__pycache__/`、`*.pyc`；不得排除白名單列出的路徑
 - [ ] T006 確認 `specs/002-personal-sdd-toolkit/quickstart.md` 第 1 段的測試指令可在此 repo 執行，不可行就改成可用的 `uv run` 指令並同步修正該檔

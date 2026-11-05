@@ -8,7 +8,7 @@ uv run tools/check_allowlist.py [--staged | --all | --install-hook | --uninstall
 
 - `--staged`（預設）：檢查暫存區，刪除的檔案不檢查。
 - `--all`：檢查所有已追蹤的檔案。
-- `--install-hook`：在 `.git/hooks/pre-commit` 寫入執行 `--staged` 的 hook，內容不含絕對路徑，重複執行結果相同；已有其他 hook 時不覆蓋，回傳 1。
+- `--install-hook`：在 `.git/hooks/pre-commit` 寫入執行 `--staged` 的 hook，內容不含絕對路徑，重複執行結果相同；已有其他 hook 時不覆蓋，回傳 1。一律寫入 repo 自己的 hooks 目錄，不寫入 `core.hooksPath` 指向的共用目錄；有設定該值時提示確認它會轉交。
 - `--uninstall-hook`：只移除由此指令安裝的 hook。
 
 ## 白名單

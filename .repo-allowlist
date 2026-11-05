@@ -1,0 +1,11 @@
+# 可入庫路徑的白名單，規則見 specs/002-personal-sdd-toolkit/contracts/allowlist.md
+.claude/skills/speckit-*/**
+.specify/**
+specs/**
+home/**
+tools/**
+tests/**
+docs/**
+.gitattributes
+.gitignore
+.repo-allowlist
