@@ -166,7 +166,7 @@ description: "Task list for the personal SDD toolkit"
 **Purpose**: 跨 story 的收尾與完整驗收
 
 - [X] T037 [P] 更新 `specs/001-repo-commit-guard/spec.md` 的 FR-010，改為沿用 `.repo-allowlist` 作為初始白名單，並以 001 的防護取代 `tools/check_allowlist.py` 與其 hook；註明 `tests/fixtures/sample-project/` 的假憑證需要誤判例外
-- [ ] T038 在暫存測試專案複製 skill 後執行 `tools/run_trigger_evals.py`，修正描述直到 SC-007 達成；會產生費用，先告知維護者
+- [X] T038 在暫存測試專案複製 skill 後執行 `tools/run_trigger_evals.py`，修正描述直到 SC-007 達成；會產生費用，先告知維護者
 - [ ] T039 在 Linux 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間；對真實 `~/.claude/` 部署前先取得維護者同意
 - [ ] T040 在 Windows 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間，修正發現的差異（FR-028）；新 clone 先依前置條件設定 `user.email` 並安裝 hook；此步驟需要維護者在 Windows 機器上進行
 - [ ] T041 取得維護者同意後，依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 8 段在每台機器正式部署
