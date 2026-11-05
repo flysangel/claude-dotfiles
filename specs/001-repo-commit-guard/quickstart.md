@@ -21,7 +21,7 @@ uv run -m unittest discover -s tests
 1. 記下開始時間，執行 `uv run tools/repo_guard.py --install-hook`，再執行一次。
 2. 執行 `uv run tools/repo_guard.py --status`。
 
-預期：1 分鐘內完成（SC-006）；重複安裝沒有變化；未設定 `core.hooksPath` 時回報 `enabled`，有設定時回報 `unverified`。
+預期：三個 hook 都已安裝，1 分鐘內完成（SC-006）；重複安裝沒有變化；未設定 `core.hooksPath` 時回報 `enabled`，有設定時回報 `unverified`。
 
 ## 3. Commit 防護（US1、US2）
 
@@ -35,6 +35,8 @@ uv run -m unittest discover -s tests
 | commit 訊息含非 noreply 的 email | 阻止 |
 | 暫時改用非 noreply 的 `user.email` | 阻止，並提示如何修正 |
 | 乾淨的內容 | 正常完成，等待增加不超過 2 秒（SC-003） |
+
+另外用一個已用 `--no-verify` 提交違規內容的暫存分支，確認 `git push` 到本機測試 remote 時被阻止，再刪除該分支。
 
 ## 4. 誤判例外
 

@@ -6,7 +6,7 @@
 
 ## Summary
 
-把 002 的 `tools/check_allowlist.py` 擴充並改名為 `tools/repo_guard.py`，補上 commit 訊息檢查、誤判例外、本機識別清單、完整歷史檢查與啟用狀態查詢；另外新增 `tools/review_settings.py` 檢視 `~/.claude/settings.json`。完成後對此 repo 跑完整檢查，作為公開前的最終確認。決策依據見 [research.md](research.md)。
+把 002 的 `tools/check_allowlist.py` 擴充並改名為 `tools/repo_guard.py`，補上 commit 訊息檢查、誤判例外、本機識別清單、完整歷史檢查、push 前檢查與啟用狀態查詢；另外新增 `tools/review_settings.py` 檢視 `~/.claude/settings.json`。完成後對此 repo 跑完整檢查，作為公開前的最終確認。決策依據見 [research.md](research.md)。
 
 ## Technical Context
 

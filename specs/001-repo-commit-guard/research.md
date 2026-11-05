@@ -38,6 +38,7 @@
 
 - **Decision**: `--history` 掃描 `git rev-list --all` 的每個 commit：作者、提交者、訊息，以及該 commit 引入的每個檔案版本。同一份內容只掃一次。
 - **Rationale**: 刪除過的機密仍在歷史裡，這正是 FR-014 要抓的。白名單與例外都以目前版本為準，例外靠內容雜湊比對，所以對舊版本同樣有效。
+- **效能**: 每次 push 都會跑，實作時要量測；同一份內容只掃一次，repo 規模也小，預期不是問題。
 - **限制**: 歷史檢查只回報，不修改歷史。只涵蓋 refs 可達的 commit，不含 reflog，後者也不會被 push。
 
 ## 7. 啟用狀態
@@ -52,5 +53,5 @@
 
 ## 9. 不在範圍內的防護
 
-- **`--no-verify`**：hook 可被略過，靠公開前的 `--history` 補上，公開後則要靠紀律。
+- **`--no-verify`**：commit hook 可被略過，由 `pre-push` hook 的 `--history` 補上。push 也能加 `--no-verify` 略過，這個缺口要靠 CI。
 - **遠端防護**：CI 與伺服器端檢查留待設定 remote 後另外處理，如 spec 的 Assumptions 所述。設定 remote 後建議優先補上，因為公開後才發現的外洩無法收回。

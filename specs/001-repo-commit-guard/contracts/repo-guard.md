@@ -11,9 +11,9 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 | `--staged`（預設） | 暫存區的檔案、作者與提交者 email | `pre-commit` hook |
 | `--commit-msg <file>` | commit 訊息內容 | `commit-msg` hook |
 | `--all` | 所有已追蹤檔案 | 手動 |
-| `--history` | 所有已追蹤檔案，加上 `git rev-list --all` 每個 commit 的身分、訊息與引入的檔案版本 | 公開前 |
+| `--history` | 所有已追蹤檔案，加上 `git rev-list --all` 每個 commit 的身分、訊息與引入的檔案版本 | `pre-push` hook，以及公開前 |
 | `--status` | 不檢查，回報啟用狀態 | 手動 |
-| `--install-hook` | 安裝兩個 hook，重複執行結果相同；已有其他 hook 時不覆蓋 | 新 clone |
+| `--install-hook` | 安裝 `pre-commit`、`commit-msg`、`pre-push` 三個 hook，重複執行結果相同；已有其他 hook 時不覆蓋 | 新 clone |
 | `--uninstall-hook` | 只移除由此工具安裝的 hook，含 002 版本 | 手動 |
 
 ## 檢查規則
@@ -49,4 +49,4 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 
 ## Hook
 
-寫入 repo 自己的 hooks 目錄（`git rev-parse --git-common-dir` 之下），不寫入 `core.hooksPath` 指向的目錄。內容不含絕對路徑，使用 LF。hook 找不到 `uv` 或工具時，commit 會被阻止。
+寫入 repo 自己的 hooks 目錄（`git rev-parse --git-common-dir` 之下），不寫入 `core.hooksPath` 指向的目錄。內容不含絕對路徑，使用 LF。hook 找不到 `uv` 或工具時，commit 或 push 會被阻止。`pre-push` 同樣受本機識別清單的規則限制，所以新 clone 要先建立清單才能 push。
