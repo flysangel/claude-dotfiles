@@ -68,7 +68,7 @@ description: "Task list for the public repo commit guard"
 - [X] T011 [US1] 在 `tools/repo_guard.py` 實作 `--commit-msg <file>`，內容規則與檔案相同，略過 `#` 開頭的註解行
 - [X] T012 [US1] 在 `tools/repo_guard.py` 實作安裝與移除三個 hook，一律寫入 `git rev-parse --git-common-dir` 下的 `hooks/`；先檢查全部再寫入，避免部分安裝；內容不含絕對路徑，使用 LF
 - [X] T013 [US1] 在 `tools/repo_guard.py` 實作 `--status`，第一行是狀態，之後列出 `core.hooksPath`、本機識別清單與作者 email 的情況
-- [ ] T014 [US1] 依 `specs/001-repo-commit-guard/quickstart.md` 第 2 到 5 段在此 repo 驗收，確認帳號層 dispatch 會轉交 `commit-msg`（research 第 3 節待確認項目），並記錄 SC-003、SC-006 的實際時間；此階段不測 `pre-push`
+- [X] T014 [US1] 依 `specs/001-repo-commit-guard/quickstart.md` 第 2 到 5 段在此 repo 驗收，確認帳號層 dispatch 會轉交 `commit-msg`（research 第 3 節待確認項目），並記錄 SC-003、SC-006 的實際時間；此階段不測 `pre-push`
 
 **Checkpoint**: Commit 防護可獨立運作
 
@@ -103,7 +103,7 @@ description: "Task list for the public repo commit guard"
 
 - [X] T018 [US3] 在 `tools/repo_guard.py` 實作 `--history`：用 `git rev-list --all` 走訪 commit，檢查身分與訊息；用 `git diff-tree -r --root --no-renames` 取得每個 commit 引入的檔案版本，同一個 blob 只掃一次；同時檢查所有已追蹤檔案；白名單與例外都以目前版本為準；只回報，不修改歷史
 - [X] T019 [US3] 在 `tools/repo_guard.py` 讓 `--history` 套用本機識別清單規則，並讓 `pre-push` hook 呼叫它；確認 hook 不會因為讀取 stdin 而卡住
-- [ ] T020 [US3] 在此 repo 執行 `uv run tools/repo_guard.py --history`，記錄耗時；依結果修正問題，發現真實機密時停止並回報維護者，不得自行改寫歷史；此階段可用暫存的 `REPO_GUARD_IDENTITY_FILE` 測試
+- [X] T020 [US3] 在此 repo 執行 `uv run tools/repo_guard.py --history`，記錄耗時；依結果修正問題，發現真實機密時停止並回報維護者，不得自行改寫歷史；此階段可用暫存的 `REPO_GUARD_IDENTITY_FILE` 測試
 
 **Checkpoint**: 完整檢查可獨立運作
 
