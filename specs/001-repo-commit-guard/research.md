@@ -30,7 +30,7 @@
 
 ## 5. 本機識別清單
 
-- **Decision**: 存在 `~/.config/claude-dotfiles/identity.txt`，每行一筆，不分大小寫比對；可用環境變數 `REPO_GUARD_IDENTITY_FILE` 覆寫。檔案不存在時略過，但 `--status` 會提示。
+- **Decision**: 存在 `~/.config/claude-dotfiles/identity.txt`，每行一筆，不分大小寫比對；可用環境變數 `REPO_GUARD_IDENTITY_FILE` 覆寫。不存在或沒有內容時，commit 檢查只提醒，`--history` 不通過，避免公開前誤以為比對過。作者與提交者名稱也會比對。
 - **Rationale**: 真實姓名、私人主機名稱無法靠格式辨識。放在 home 下，repo 內就不會有副本。Windows 與 Linux 都適用。
 - **輸出**: 只報「個人識別資訊」，不顯示比對到的內容。
 

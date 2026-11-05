@@ -26,7 +26,7 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 | `git-email` | 全域 git `user.email` 的值 |
 | `email` | noreply 與保留網域以外的 email |
 | `secret` | 常見憑證與 token 格式 |
-| `identity` | 本機識別清單的內容 |
+| `identity` | 本機識別清單的內容，比對檔案內容、commit 訊息，以及作者與提交者名稱 |
 | `author`、`committer` | 不是 noreply 地址 |
 
 ## 輸出
@@ -43,7 +43,9 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 |---|---|
 | 0 | 通過，或 `--status` 正常回報 |
 | 1 | 有違規，或 hook 安裝被既有 hook 擋下 |
-| 3 | 無法完成檢查，例如白名單遺失、例外檔格式錯誤；視為未通過 |
+| 3 | 無法完成檢查，例如白名單遺失、例外檔格式錯誤，或 `--history` 時本機識別清單不存在或沒有內容；視為未通過 |
+
+本機識別清單不存在或沒有內容時，`--staged`、`--commit-msg` 與 `--all` 只提醒，不影響結束碼。
 
 ## Hook
 

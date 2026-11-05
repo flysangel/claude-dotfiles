@@ -45,7 +45,7 @@ MUST NOT 包含被比對到的內容。
 
 ## 本機識別清單
 
-位置：預設 `~/.config/claude-dotfiles/identity.txt`，不入庫。每行一筆，不分大小寫；空行與 `#` 開頭略過。
+位置：預設 `~/.config/claude-dotfiles/identity.txt`，不入庫。每行一筆，不分大小寫；空行與 `#` 開頭略過。不存在或沒有內容時，`--history` 不通過。
 
 ## 設定項目分類
 
