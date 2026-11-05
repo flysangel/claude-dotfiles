@@ -117,12 +117,12 @@ description: "Task list for the public repo commit guard"
 
 ### Tests for User Story 4
 
-- [ ] T021 [P] [US4] 建立 `tests/test_review_settings.py`，涵蓋：值符合憑證規則或鍵名像憑證時標為 `含機密`；值含個人路徑時標為 `機器專屬`；已知安全鍵標為 `可共用`；未知鍵標為 `待判斷`；已知安全鍵的值觸發規則時不得標為可共用；巢狀值取最嚴重的分類並列出鍵路徑；輸出不含任何設定值；可疑鍵名會被遮蔽；原始檔不變；檔案不存在或 JSON 無效時回傳 3 且訊息不含檔案內容；每個頂層項目都有一筆分類
+- [X] T021 [P] [US4] 建立 `tests/test_review_settings.py`，涵蓋：值符合憑證規則或鍵名像憑證時標為 `含機密`；值含個人路徑時標為 `機器專屬`；已知安全鍵標為 `可共用`；未知鍵標為 `待判斷`；已知安全鍵的值觸發規則時不得標為可共用；巢狀值取最嚴重的分類並列出鍵路徑；輸出不含任何設定值；可疑鍵名會被遮蔽；原始檔不變；檔案不存在或 JSON 無效時回傳 3 且訊息不含檔案內容；每個頂層項目都有一筆分類
 
 ### Implementation for User Story 4
 
-- [ ] T022 [US4] 依 `specs/001-repo-commit-guard/contracts/review-settings.md` 建立 `tools/review_settings.py`，重用 `tools/repo_guard.py` 的規則與本機識別清單，PEP 723 宣告版本需求，只用標準庫
-- [ ] T023 [US4] 依 `specs/001-repo-commit-guard/quickstart.md` 第 6 段對真實的 `~/.claude/settings.json` 執行，比對執行前後的雜湊值，並把分類結果回報維護者；報告不得寫入 repo
+- [X] T022 [US4] 依 `specs/001-repo-commit-guard/contracts/review-settings.md` 建立 `tools/review_settings.py`，重用 `tools/repo_guard.py` 的規則與本機識別清單，PEP 723 宣告版本需求，只用標準庫
+- [X] T023 [US4] 依 `specs/001-repo-commit-guard/quickstart.md` 第 6 段對真實的 `~/.claude/settings.json` 執行，比對執行前後的雜湊值，並把分類結果回報維護者；報告不得寫入 repo
 
 **Checkpoint**: 所有 user story 都可獨立運作
 
