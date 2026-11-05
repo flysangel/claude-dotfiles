@@ -111,7 +111,7 @@
 - **FR-007**: 系統 MUST 用 repo 內的一份白名單定義可納管路徑，未列入者一律不可提交。
 - **FR-008**: 白名單檢查 MUST 不受一般忽略規則影響，被強制加入暫存區的檔案同樣受檢。
 - **FR-009**: 從 repo 移除檔案的提交 MUST NOT 被白名單阻止。
-- **FR-010**: 初始白名單 MUST 涵蓋 repo 現有的 Spec Kit 檔案與功能規格，並 MUST NOT 涵蓋整個 `~/.claude/`。
+- **FR-010**: 初始白名單 MUST 沿用 002 建立的 `.repo-allowlist`，並 MUST NOT 涵蓋整個 `~/.claude/`。本功能的防護 MUST 取代 `tools/check_allowlist.py` 與其 pre-commit hook。`tests/fixtures/sample-project/` 的假憑證 MUST 記錄為誤判例外。
 
 **誤判與本機清單**
 

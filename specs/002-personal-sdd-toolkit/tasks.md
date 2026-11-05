@@ -155,7 +155,7 @@ description: "Task list for the personal SDD toolkit"
 
 - [X] T034 [US5] 建立 `docs/adding-a-skill.md`，說明加入 skill 的步驟：指出需求來源（實際遇到的需求或維護者的明確要求）、放到 `home/skills/<name>/`、新增 `tests/skills/<name>/` 的兩個檔案、執行測試與觸發案例、重新部署
 - [X] T035 [US5] 在 `tests/test_content.py` 加入以暫存結構驗證的測試：缺少 `triggers.json` 時檢查不通過
-- [ ] T036 [US5] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 7 段驗收，全程使用 `--target`，完成後移除範例 skill
+- [X] T036 [US5] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 7 段驗收，全程使用 `--target`，完成後移除範例 skill
 
 **Checkpoint**: 所有 user story 都可獨立運作
 
@@ -165,7 +165,7 @@ description: "Task list for the personal SDD toolkit"
 
 **Purpose**: 跨 story 的收尾與完整驗收
 
-- [ ] T037 [P] 更新 `specs/001-repo-commit-guard/spec.md` 的 FR-010，改為沿用 `.repo-allowlist` 作為初始白名單，並以 001 的防護取代 `tools/check_allowlist.py` 與其 hook；註明 `tests/fixtures/sample-project/` 的假憑證需要誤判例外
+- [X] T037 [P] 更新 `specs/001-repo-commit-guard/spec.md` 的 FR-010，改為沿用 `.repo-allowlist` 作為初始白名單，並以 001 的防護取代 `tools/check_allowlist.py` 與其 hook；註明 `tests/fixtures/sample-project/` 的假憑證需要誤判例外
 - [ ] T038 在暫存測試專案複製 skill 後執行 `tools/run_trigger_evals.py`，修正描述直到 SC-007 達成；會產生費用，先告知維護者
 - [ ] T039 在 Linux 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間；對真實 `~/.claude/` 部署前先取得維護者同意
 - [ ] T040 在 Windows 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間，修正發現的差異（FR-028）；新 clone 先依前置條件設定 `user.email` 並安裝 hook；此步驟需要維護者在 Windows 機器上進行
