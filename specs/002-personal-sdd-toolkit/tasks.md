@@ -115,8 +115,8 @@ description: "Task list for the personal SDD toolkit"
 ### Implementation for User Story 3
 
 - [X] T026 [US3] 建立 `home/skills/sdd-derive/SKILL.md`，依 `contracts/skills.md` 寫入前置檢查與五個步驟；每條原則標明類型（`已經這樣做`、`應該這樣做`）、依據與狀態（`有依據`、`待確認`）；`應該這樣做` 須維護者確認；不把機密值帶入對話或產出；處理內容不足、文件矛盾、大型專案、已有 constitution 的情況；文件語言依 FR-030
-- [X] T027 [US3] 在 `home/skills/sdd-derive/SKILL.md` 寫入「多份 spec 的接續」：依相依順序呼叫 `speckit-specify`，完成後將 `.specify/feature.json` 的 `feature_directory` 指向第一份；檔案不存在或沒有該欄位時只回報、不寫入；列出清單、相依關係與切換方式後停止，不進入 plan
-- [ ] T028 [US3] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 4 段驗收，依「驗收環境」把 skill 複製到範例專案副本，並確認 skill 能實際呼叫 `speckit-constitution` 與 `speckit-specify`（research 第 7 節待確認項目）；不可行時回報維護者，並更新 `research.md` 與 `contracts/skills.md`
+- [X] T027 [US3] 在 `home/skills/sdd-derive/SKILL.md` 寫入「多份 spec 的接續」：依相依順序呼叫 `speckit-specify`，完成後將 `.specify/feature.json` 的 `feature_directory` 設為第一份，檔案不存在就建立；專案的 `speckit-specify` 沒有提到 `feature_directory` 時只回報、不寫入；列出清單、相依關係與切換方式後停止，不進入 plan
+- [X] T028 [US3] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 4 段驗收，依「驗收環境」把 skill 複製到範例專案副本，並確認 skill 能實際呼叫 `speckit-constitution` 與 `speckit-specify`（research 第 7 節待確認項目）；不可行時回報維護者，並更新 `research.md` 與 `contracts/skills.md`
 
 **Checkpoint**: 導出可獨立運作
 

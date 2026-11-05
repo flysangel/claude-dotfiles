@@ -43,14 +43,14 @@
 
 - **Decision**: `sdd-derive` 與 `sdd-grill` 只負責蒐集與確認，再呼叫專案內的 `speckit-constitution` 與 `speckit-specify`，每個功能呼叫一次 `speckit-specify`。
 - **Rationale**: 符合 FR-025，上游範本與編號規則改變時不必跟著改。實測 v1.3.0 的 `speckit-specify` 未禁止模型呼叫。
-- **風險**: 「一律最新版」下上游可能改名或禁止模型呼叫。因此 skill 開始前會檢查，不符合就回報並停止。官方文件未明確說明 skill 呼叫 skill 的行為，第一次情境驗收要確認。
+- **風險**: 「一律最新版」下上游可能改名或禁止模型呼叫。因此 skill 開始前會檢查，不符合就回報並停止。官方文件未明確說明 skill 呼叫 skill 的行為，但 T028 實測 `sdd-derive` 能呼叫這兩個 skill。haiku 較容易忽略收尾與「不加未確認規則」的指示，sonnet 則全部符合，所以驗收以 sonnet 為準。
 
 ## 8. 多份 spec 的接續
 
 - **Decision**: 依相依順序產生 spec，全部完成後把 `.specify/feature.json` 指向第一份。
 - **Rationale**: 讀 `.specify/scripts/bash/common.sh` 確認 Spec Kit 依序看 `SPECIFY_FEATURE_DIRECTORY` 與 `feature.json`，不看 git 分支；`feature.json` 也被 gitignore。不處理的話指標會停在最後一份，接著跑 plan 會處理錯功能。
 - **Alternatives**: 另做切換工具要多維護一項，維護者未選擇；不處理指標如上。
-- **風險**: `feature.json` 的格式屬於上游，改版時可能變動，寫入前要確認檔案存在且有 `feature_directory` 欄位，否則只回報、不寫入。
+- **風險**: `feature.json` 的格式屬於上游，改版時可能變動。實測 `speckit-specify` 不一定會留下這個檔案，所以不能以檔案存在為條件；改為確認專案的 `speckit-specify` 仍提到 `feature_directory`，否則只回報、不寫入。
 
 ## 9. Skill 觸發方式
 

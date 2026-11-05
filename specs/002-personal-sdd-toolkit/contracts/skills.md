@@ -49,7 +49,7 @@
 ## 多份 spec 的接續（`sdd-derive`、`sdd-grill`）
 
 1. 依功能相依順序呼叫 `speckit-specify`，讓編號等於建議的施工順序。
-2. 全部完成後，把 `.specify/feature.json` 的 `feature_directory` 改為這批的第一份。
+2. 全部完成後，把 `.specify/feature.json` 的 `feature_directory` 設為這批的第一份，檔案不存在就建立；專案的 `speckit-specify` 沒有提到 `feature_directory` 時不寫入，改為回報。
 3. 列出每份 spec、相依關係，並說明下一步是 `/speckit-plan`，以及如何改 `feature.json` 切換功能。
 
 ## 文件語言（`sdd-derive`、`sdd-grill`）

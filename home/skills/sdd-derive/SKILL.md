@@ -18,7 +18,7 @@ description: Derive a Spec Kit constitution and per-feature specs from an existi
 
 ## 2. 讀取專案
 
-- 讀文件、設定、測試與程式結構。
+- 讀文件、設定、測試與程式結構。只讀取，不要執行測試、建置或其他可能在專案內產生檔案的指令。
 - 排除相依套件與建置產物，例如 `vendor/`、`node_modules/`、`dist/`。它們不是這個專案的功能。
 - 不開啟 `.env`、金鑰與憑證檔；其他檔案裡出現機密時，只記錄位置。**機密值不得出現在對話、草稿或產出中。**
 - 專案很大或是 monorepo 時，先列出主要區塊，請維護者縮小範圍，不要一次讀完。
@@ -46,16 +46,18 @@ description: Derive a Spec Kit constitution and per-feature specs from an existi
 
 文件使用專案既有文件的語言；沒有或無法判斷時用繁體中文，MUST、SHOULD 等規範詞保留英文。把語言要求寫進傳給 Spec Kit 的內容。
 
-1. 用 Skill 工具呼叫 `speckit-constitution`，傳入確認後的原則。
+1. 用 Skill 工具呼叫 `speckit-constitution`，傳入確認後的原則，並要求它只使用這些內容，不要加入未確認的規則。
 2. 依功能相依順序，為每個選定的功能各呼叫一次 `speckit-specify`，傳入功能描述與確認過的決定。被依賴的功能排在前面，讓編號等於建議的施工順序。
 
 無法呼叫這些 skill 時，回報並停止，不要自行寫出文件。
 
+產生後比對 constitution 與確認的內容，移除多出來的規則；要保留的先問維護者。
+
 ## 6. 收尾
 
-第 1 步只在產生多份 spec 時才做：
+Spec Kit 用 `.specify/feature.json` 決定目前處理哪個功能，所以最後一定要處理：
 
-1. 確認 `.specify/feature.json` 存在且有 `feature_directory` 欄位，把它改成這批的第一份。檔案或欄位不存在時不要寫入，只回報。
+1. 產生多份 spec 時，把 `.specify/feature.json` 的 `feature_directory` 設為這批的第一份，例如 `{"feature_directory": "specs/001-example"}`；檔案不存在就建立。不要問維護者，這一步是固定流程。只有 `.claude/skills/speckit-specify/SKILL.md` 沒有提到 `feature_directory`，表示 Spec Kit 已改變做法時，才不要寫入，改為回報。
 2. 列出每份 spec 的路徑、相依關係與建議順序。
 3. 說明下一步是 `/speckit-plan`，以及切換功能要改 `.specify/feature.json` 的 `feature_directory`，切換 git 分支不會跟著切換。
 
