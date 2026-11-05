@@ -68,7 +68,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T011 [US1] 在 `tools/dotfiles.py` 實作 `deploy`：複製 `home/` 到目標，開始前先寫入 `in_progress`；再次部署時 `original` 維持第一次的值；依 `contracts/dotfiles-cli.md` 處理衝突、結束碼與完成提示；備份放在 `<target>/.dotfiles/backups/`；不使用 symlink
 - [X] T012 [US1] 在 `tools/dotfiles.py` 實作 `undeploy`：依 `original` 還原或刪除、移除空目錄與部署紀錄；本機已修改的檔案先另存備份；只處理紀錄中的檔案；沒有部署紀錄時不改動並回報
 - [X] T013 [US1] 在 `tools/dotfiles.py` 實作 `status`，只讀取，依 contract 的順序判斷五種狀態並列出差異檔案；輸出不得包含被備份檔案的內容
-- [ ] T014 [US1] 建立 `home/CLAUDE.md`，少於 200 行，用標題與條列分組，每條規則具體且附可觀察的預期行為，內容為：以繁體中文回覆；提問使用互動式選項；每次異動後在分支上 commit，不提交到 `main`，不自動 push；以 SDD 與 Spec Kit 為主要工作方式，說明何時使用 `/sdd-init`、`sdd-derive`、`sdd-grill`。不得放機密、個資或機器專屬內容，也不得放能從程式碼得知的內容
+- [X] T014 [US1] 建立 `home/CLAUDE.md`，少於 200 行，用標題與條列分組，每條規則具體且附可觀察的預期行為，內容為：以繁體中文回覆；提問使用互動式選項；每次異動後在分支上 commit，不提交到 `main`，不自動 push；以 SDD 與 Spec Kit 為主要工作方式，說明何時使用 `/sdd-init`、`sdd-derive`、`sdd-grill`。不得放機密、個資或機器專屬內容，也不得放能從程式碼得知的內容
 - [ ] T015 [US1] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 2 段，先用 `--target` 對暫存目錄驗收，並執行 `/doctor prompt-audit` 檢查 `home/CLAUDE.md`
 
 **Checkpoint**: 部署與還原可獨立運作
