@@ -17,7 +17,7 @@
 ## 3. 檢查 commit 訊息
 
 - **Decision**: 新增 `commit-msg` hook，呼叫 `repo_guard.py --commit-msg <檔案>`。內容規則與檔案相同。
-- **Rationale**: `pre-commit` 執行時訊息還不存在。Git 會把訊息檔路徑傳給 `commit-msg`。實測帳號層 dispatch 也會轉交這個 hook。
+- **Rationale**: `pre-commit` 執行時訊息還不存在。Git 會把訊息檔路徑傳給 `commit-msg`。依程式碼，帳號層 dispatch 會依 hook 名稱轉交，但 `commit-msg` 還沒實測，實作時要確認。
 
 ## 4. 誤判例外
 
@@ -43,7 +43,7 @@
 ## 7. 啟用狀態
 
 - **Decision**: `--status` 回報 `enabled`、`not-installed` 或 `unverified`。設定了 `core.hooksPath` 且 hook 已裝時回報 `unverified`，因為工具無法確定共用目錄會不會轉交。
-- **Rationale**: 這台機器就是這種情況。實測帳號層 dispatch 會轉交，但不能假設其他機器也會。回報 `enabled` 會給出錯誤的安全感。
+- **Rationale**: 這台機器就是這種情況。實測帳號層 dispatch 會轉交 `pre-commit`，但不能假設其他機器也會。回報 `enabled` 會給出錯誤的安全感。
 
 ## 8. 設定檢視
 

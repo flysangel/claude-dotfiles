@@ -2,7 +2,7 @@
 
 ## 白名單
 
-位置：`.repo-allowlist`，入庫。每行一個 glob，相對於 repo 根目錄，使用 `/`；`*` 不跨目錄，`**` 可跨；`#` 開頭為註解。必須列入 `.repo-guard-exceptions.json`。
+位置：`.repo-allowlist`，入庫。每行一個 glob，相對於 repo 根目錄，使用 `/`；`*` 不跨目錄，`**` 可跨；`#` 開頭為註解。`.repo-guard-exceptions.json` 也要列在其中。
 
 ## 違規
 
