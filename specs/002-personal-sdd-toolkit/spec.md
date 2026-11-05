@@ -17,6 +17,7 @@
 - Q: 新專案使用哪個版本的 Spec Kit？ → A: 一律使用最新版。
 - Q: 同一個專案會在兩個作業系統上開發嗎？ → A: 通常只在一個系統，依導入當下的作業系統選擇腳本。
 - Q: 「每次異動後在分支上 commit」要套用到所有專案嗎？ → A: 所有專案都套用，但不自動 push。
+- Q: skill 產生的文件用什麼語言？ → A: 跟隨專案既有文件的語言；沒有或無法判斷時用繁體中文，規範詞保留英文。
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -166,6 +167,7 @@
 **共通要求**
 
 - **FR-025**: 兩個 skill MUST 透過 Spec Kit 既有的 constitution 與 specify 流程產生文件，讓產出符合 Spec Kit 的格式與規則。
+- **FR-030**: 兩個 skill 產生的文件 MUST 使用專案既有文件的語言；沒有既有文件或無法判斷時 MUST 使用繁體中文，MUST、SHOULD 等規範詞保留英文。
 - **FR-026**: 兩個 skill MUST 止於 spec，MUST NOT 進入 plan。
 - **FR-027**: 每個 skill MUST 有觸發案例，涵蓋應觸發與不應觸發的提示。
 - **FR-028**: 所有功能 MUST 在 Windows 與 Linux 上行為一致。
