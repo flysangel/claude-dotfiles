@@ -93,7 +93,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T020 [US2] 在同一腳本實作 `remove`，依 `.specify/sdd-init.json` 刪除雜湊值相符的檔案，包含未修改的 `constitution.md` 範本，並移除紀錄檔與空目錄；已修改的檔案保留並回報，`--all` 才一併移除；一律不動 `specs/` 與 `.git`；沒有紀錄檔時不改動並回傳 1
 - [X] T021 [US2] 建立 `home/skills/sdd-init/SKILL.md`，設定 `disable-model-invocation: true`，用 `${CLAUDE_SKILL_DIR}` 呼叫腳本並轉述結果
 - [X] T022 [P] [US2] 建立 `tests/skills/sdd-init/triggers.json`（確認不會自動觸發）與 `tests/skills/sdd-init/scenarios.md`（對應 spec US2 的五個驗收情境）
-- [ ] T023 [US2] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 3 段驗收四個情境；依該檔「驗收環境」把 skill 複製到暫存測試專案
+- [X] T023 [US2] 依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 3 段驗收四個情境；依該檔「驗收環境」把 skill 複製到暫存測試專案
 
 **Checkpoint**: 導入可獨立運作
 
