@@ -1,0 +1,12 @@
+{
+  "should_trigger": [
+    "我想做一個新專案，但不知道 constitution 跟 spec 該怎麼定，幫我釐清",
+    "追問我，討論出這個專案該用什麼 constitution 和 spec",
+    "Grill me until we figure out the constitution and specs for this project"
+  ],
+  "should_not_trigger": [
+    "你覺得這個變數名稱好嗎？",
+    "幫我實作 specs/001-demo/tasks.md 的任務",
+    "這個專案該用 PostgreSQL 還是 SQLite？"
+  ]
+}

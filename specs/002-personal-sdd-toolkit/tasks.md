@@ -132,7 +132,7 @@ description: "Task list for the personal SDD toolkit"
 
 ### Tests for User Story 4
 
-- [ ] T029 [P] [US4] 建立 `tests/skills/sdd-grill/triggers.json`（依 `contracts/skills.md`）與 `tests/skills/sdd-grill/scenarios.md`（對應 spec US4 的九個驗收情境與相關 edge cases）
+- [X] T029 [P] [US4] 建立 `tests/skills/sdd-grill/triggers.json`（依 `contracts/skills.md`）與 `tests/skills/sdd-grill/scenarios.md`（對應 spec US4 的九個驗收情境與相關 edge cases）
 
 ### Implementation for User Story 4
 
