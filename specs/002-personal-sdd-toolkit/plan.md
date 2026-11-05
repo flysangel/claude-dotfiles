@@ -27,7 +27,7 @@
 
 **Performance Goals**: 部署 5 分鐘內完成並確認（SC-001）；導入 2 分鐘內完成（SC-003）
 
-**Constraints**: CLAUDE.md ≤ 200 行；skill 描述 ≤ 1,536 字元（Claude Code 的截斷上限）；不用 symlink；入庫內容不寫死絕對路徑
+**Constraints**: CLAUDE.md < 200 行；skill 描述 ≤ 1,536 字元（Claude Code 的截斷上限）；不用 symlink；入庫內容不寫死絕對路徑
 
 **Scale/Scope**: 1 位維護者、2 種作業系統、第一版 3 個 skill
 

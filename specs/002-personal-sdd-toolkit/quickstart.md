@@ -20,7 +20,7 @@ uv run -m unittest discover -s tests
 1. 記下 `~/.claude/CLAUDE.md` 目前的內容。
 2. 執行 `uv run tools/dotfiles.py deploy`，再執行一次。
    預期：第二次沒有產生新備份，`status` 回報 `clean`。
-3. 在另一個專案開新對話，確認 CLAUDE.md 寫明的預期行為成立，且 `/sdd-init`、`sdd-derive`、`sdd-grill` 可用。
+3. 執行 `/doctor prompt-audit`，確認沒有過時或衝突的內容。在另一個專案開新對話，確認 CLAUDE.md 寫明的預期行為成立，且 `/sdd-init`、`sdd-derive`、`sdd-grill` 可用。
 4. 執行 `uv run tools/dotfiles.py undeploy`。
    預期：`CLAUDE.md` 與部署前完全相同，Orca 等未受管的 skill 不受影響。
 
