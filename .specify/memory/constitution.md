@@ -30,11 +30,15 @@
 
 ### III. Context 精簡
 
-- 全域 CLAUDE.md MUST NOT 超過 200 行，超過時 MUST 先移除或搬到其他機制才能新增內容。
+- 此 repo 產出的每個 CLAUDE.md MUST 少於 200 行；達到上限時 MUST 先移除或搬到其他機制，才能新增內容。
+- 用 `@path` 拆分檔案 MUST NOT 視為精簡，因為匯入的檔案會一起載入 context。
+- 只在部分情況需要的內容 MUST 移到 skill 或限定路徑的 rules。
+- CLAUDE.md MUST NOT 放能從程式碼得知的內容（目錄結構、相依清單、架構總覽），只保留陷阱、理由與不同於工具預設的慣例。
 - 常駐內容（CLAUDE.md、skill 描述）的每一行 MUST 能說明存在理由；說不出理由的內容 MUST 移除。
 - 新增內容 MUST 來自實際重複遇到的需求，plan MUST 指出該需求；MUST NOT 為假設的未來需求預先設計。
 
-理由：常駐內容在每次對話都佔用 context，也會稀釋其他規則的效果。
+理由：常駐內容在每次對話都佔用 context，也會稀釋其他規則的效果。200 行與上述規則依據
+[官方 CLAUDE.md 建議](https://code.claude.com/docs/en/memory)。
 
 ### IV. 安裝可重現、可還原、跨平台
 
@@ -54,7 +58,9 @@
 
 - hook MUST 有自動化測試，涵蓋觸發與不觸發的情況。
 - skill MUST 有觸發案例，涵蓋應觸發與不應觸發的提示。
-- CLAUDE.md 規則 MUST 寫明可觀察的預期行為。
+- CLAUDE.md 規則 MUST 具體到可以驗證，並寫明可觀察的預期行為，例如「commit 前執行 `npm test`」，而不是「測試你的變更」。
+- CLAUDE.md MUST 用標題與條列分組，規則之間 MUST NOT 互相矛盾。
+- 修改 CLAUDE.md、rules 或 skill 後 SHOULD 執行 `/doctor prompt-audit`，檢查過時或衝突的內容。
 - 安裝與解除安裝 MUST 有驗證步驟。
 
 理由：設定類改動常在沒有錯誤訊息的情況下失效，必須有可檢查的依據。
@@ -75,9 +81,9 @@
 |---|---|
 | I | 新增的入庫檔案都在白名單內，且不含機密與個資嗎？ |
 | II | 每項客製化都說明了為何選擇該機制嗎？ |
-| III | 指出實際需求了嗎？常駐內容仍在上限內嗎？ |
+| III | 指出實際需求了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ |
 | IV | 安裝可重複執行、可還原，且能在 Windows 與 Linux 上運作嗎？ |
-| V | 每項產出都有驗證方式嗎？ |
+| V | 每項產出都有驗證方式嗎？CLAUDE.md 規則具體可驗證且沒有矛盾嗎？ |
 
 commit 前 MUST 檢查待提交內容符合原則 I。
 
@@ -92,4 +98,4 @@ commit 前 MUST 檢查待提交內容符合原則 I。
   - PATCH：釐清說明、修正文字，不改變規範含義。
 - 違反原則 II 至 V 時 MUST 在 plan 的 Complexity Tracking 記錄理由；原則 I 不得豁免。
 
-**Version**: 1.1.0 | **Ratified**: 2026-11-05 | **Last Amended**: 2026-11-05
+**Version**: 1.2.0 | **Ratified**: 2026-11-05 | **Last Amended**: 2026-11-05
