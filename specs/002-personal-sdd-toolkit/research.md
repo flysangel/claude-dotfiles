@@ -65,6 +65,8 @@
 
 - **實測模型差異**: 真實部署後，CLAUDE.md 與 skill 都有載入。英文提問時 Sonnet 用繁中回覆，Haiku 卻用英文回覆，所以 CLAUDE.md 的語言規則在 Haiku 上不可靠。
 
+- **Prompt audit**: 只發現一項與此 repo 產出有關的問題：Spec Kit skill 規定文字提問，與 CLAUDE.md 衝突。決定在 CLAUDE.md 加優先規則，不修改上游 skill，因為這些檔案由 Spec Kit 管理，修改也不會帶到其他專案。
+
 ## 11. 新專案的 git
 
 - **Decision**: 目標不在 git repo 內時，導入成功後才執行 `git init`，不自動 commit；移除時不刪除 `.git`。

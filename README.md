@@ -95,6 +95,7 @@ uv run tools/dotfiles.py deploy
 - **尚未公開就緒**：commit 檢查不看 commit 訊息與歷史，也能被 `--no-verify` 略過。完整防護由 `specs/001-repo-commit-guard` 負責，完成前不要公開這個 repo。
 - **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則 commit 檢查不會執行。
 - **模型差異**：Sonnet 的驗收全部通過。Haiku 曾用英文回覆英文提問，也較容易忽略 skill 的收尾步驟與「不加未確認規則」的指示。
+- **未驗證的規則**：「提問使用 AskUserQuestion」無法用 `claude -p` 測試，只靠實際對話確認。
 - **一個專案只有一種 Spec Kit 腳本**：Windows 導入的用 PowerShell，Linux 導入的用 bash。專案換到另一個作業系統時，需要對應的 shell。
 - **最新版可能不相容**：`/sdd-init` 一律安裝最新穩定版，不同時間的新專案可能拿到不同版本。Spec Kit 改版造成不相容時，skill 會回報並停止。
 
