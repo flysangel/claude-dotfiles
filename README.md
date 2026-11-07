@@ -9,7 +9,7 @@
 | `sdd-derive` | 從既有專案導出 constitution 與 spec |
 | `sdd-grill` | 逐題追問，討論出 constitution 與 spec |
 
-> **目前狀態**：只在 Linux 驗收過，Windows 尚未驗證。macOS 不在支援範圍。
+> **目前狀態**：Windows 與 Linux 都已驗收。macOS 不在支援範圍。
 
 ## 安裝
 
