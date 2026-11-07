@@ -103,4 +103,6 @@ Ubuntu 容器內確認的項目：
 
 **在這台機器略過的測試**：`tests/test_setup_scripts_windows.py` 的 25 項都需要 PowerShell，其中多數在非 Windows 上還要設定 `SETUP_PS1_TESTS=1`。上述容器有跑過，但 winget、PowerShell 5.1 與真實 Windows 環境要到 T033 才驗證。
 
+**Windows 實測發現**：在已手動部署過的機器上執行一行指令，紀錄會被建立，之後的 `remove` 卻會把設定前就存在的部署一起移除，與 FR-019「回到設定前的狀態」不符。紀錄因此加上 `deployed_before`；沒有這個欄位的舊紀錄一律保留部署，因為留下部署可以手動處理，誤刪別人的部署則難以挽回。
+
 **尚未驗證**：Windows 上的真實安裝、公開後的真實網址（T033、T034）。

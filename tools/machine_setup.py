@@ -56,6 +56,8 @@ def validate_record(data: object) -> bool:
         return False
     if any(tool not in KNOWN_TOOLS for tool in tools):
         return False
+    if not isinstance(data.get("deployed_before", True), bool):
+        return False
     dev = data.get("dev", "missing")
     if dev is None:
         return True
@@ -249,7 +251,15 @@ def install(args: argparse.Namespace) -> int:
     if unknown:
         raise SetupError(f"參數檢查：不認識的工具 {', '.join(unknown)}。")
 
-    record = record or {"version": RECORD_VERSION, "clone": str(ROOT), "installed_tools": [], "dev": None}
+    if record is None:
+        record = {
+            "version": RECORD_VERSION,
+            "clone": str(ROOT),
+            "installed_tools": [],
+            # A deployment made before the first setup is not ours to undo.
+            "deployed_before": (args.target / ".dotfiles" / "manifest.json").exists(),
+            "dev": None,
+        }
     record["clone"] = str(ROOT)
     record["installed_tools"] = [
         tool for tool in KNOWN_TOOLS if tool in record["installed_tools"] or tool in tools_now
@@ -315,11 +325,16 @@ def remove(args: argparse.Namespace) -> int:
     if record is None:
         print("沒有設定紀錄，未做任何變更。")
         return EXIT_OK
-    undeployed = run_tool("dotfiles.py", "undeploy", "--target", str(args.target))
-    print(undeployed.stdout, end="")
-    if undeployed.returncode != 0:
-        print(undeployed.stderr, end="", file=sys.stderr)
-        raise SetupError("還原 ~/.claude/：未完成。修正上面的問題後重新執行 remove。")
+    # Records written before this field existed cannot tell, so they keep the deployment: leaving it is
+    # easy to undo by hand, removing someone else's deployment is not.
+    if record.get("deployed_before", True):
+        print("部署在第一次設定前就已存在，保留不動；確定要移除時執行 uv run tools/dotfiles.py undeploy。")
+    else:
+        undeployed = run_tool("dotfiles.py", "undeploy", "--target", str(args.target))
+        print(undeployed.stdout, end="")
+        if undeployed.returncode != 0:
+            print(undeployed.stderr, end="", file=sys.stderr)
+            raise SetupError("還原 ~/.claude/：未完成。修正上面的問題後重新執行 remove。")
     clone = Path(record["clone"])
     notes = restore_dev(record, clone)
 

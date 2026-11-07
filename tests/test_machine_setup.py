@@ -148,7 +148,7 @@ class RecordTests(SetupTestCase):
         self.assertEqual(self.install("--installed", "uv").returncode, 0)
         self.assertEqual(
             self.record(),
-            {"version": 1, "clone": str(self.clone), "installed_tools": ["uv"], "dev": None},
+            {"version": 1, "clone": str(self.clone), "installed_tools": ["uv"], "deployed_before": False, "dev": None},
         )
 
     def test_installed_tools_accumulate(self) -> None:
@@ -533,6 +533,39 @@ class RemoveTests(SetupTestCase):
         manifest.write_bytes(good)
         self.assertEqual(self.remove().returncode, 0)
         self.assertEqual(tree_hashes(self.target), before)
+
+    def test_deployment_made_before_setup_is_kept(self) -> None:
+        subprocess.run(
+            [sys.executable, str(self.clone / "tools" / "dotfiles.py"), "deploy", "--target", str(self.target)],
+            env=self.env,
+            check=True,
+            capture_output=True,
+        )
+        deployed = tree_hashes(self.target)
+        self.install()
+        self.assertTrue(self.record()["deployed_before"])
+        result = self.remove()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("dotfiles.py undeploy", result.stdout)
+        self.assertEqual(tree_hashes(self.target), deployed)
+        self.assertFalse(self.record_file().exists())
+
+    def test_record_without_the_field_keeps_the_deployment(self) -> None:
+        self.install()
+        record = self.record()
+        del record["deployed_before"]
+        self.write(self.record_file(), json.dumps(record))
+        deployed = tree_hashes(self.target)
+        result = self.remove()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(tree_hashes(self.target), deployed)
+
+    def test_invalid_field_is_a_malformed_record(self) -> None:
+        self.install()
+        record = self.record()
+        record["deployed_before"] = "yes"
+        self.write(self.record_file(), json.dumps(record))
+        self.assertEqual(self.remove().returncode, 1)
 
     def test_record_never_lands_in_the_target(self) -> None:
         self.install()

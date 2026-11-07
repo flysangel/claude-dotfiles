@@ -9,6 +9,7 @@
 | `version` | 整數 | 紀錄格式版本，目前為 `1` |
 | `clone` | 字串 | clone 的絕對路徑 |
 | `installed_tools` | 字串陣列 | 由一行指令安裝的工具，值為 `uv`、`git`、`claude`；多次執行取聯集 |
+| `deployed_before` | 布林 | 第一次設定前 `~/.claude/` 是否已有部署紀錄；之後的執行不改變。沒有這個欄位的舊紀錄視為 `true` |
 | `dev` | 物件或 `null` | 沒做過開發設定時為 `null` |
 | `dev.hook_installed` | 布林 | commit 防護是否由一行指令安裝：安裝前 `--status` 第一行為 `not-installed` 且安裝成功才為真；原本就已啟用時為假；已為真時重複執行不改變 |
 | `dev.email_set` | 字串或 `null` | 一行指令寫入的 email；沿用既有 noreply 地址時為 `null` |
@@ -25,7 +26,7 @@
 
 | 項目 | 條件 | 動作 |
 |---|---|---|
-| `~/.claude/` | 一律 | 執行 `dotfiles.py undeploy` |
+| `~/.claude/` | `deployed_before` 為 `false` | 執行 `dotfiles.py undeploy`；為 `true` 時保留，並提示如何手動移除 |
 | commit 防護 | `dev.hook_installed` | 執行 `repo_guard.py --uninstall-hook`；別的工具的 hook 不動 |
 | 提交身分 | `dev.email_set` 不是 `null` | 目前值等於 `email_set` 才還原為 `previous_email` 或移除；已被使用者改動就保留並回報 |
 | 工具與 clone | 一律 | 保留，在摘要列出 |
