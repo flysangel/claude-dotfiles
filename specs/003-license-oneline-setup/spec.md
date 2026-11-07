@@ -160,15 +160,16 @@
 ## Assumptions
 
 - 著作權人使用 git 名稱 `flysangel`，年份 2026，不放 email。
-- Spec Kit 的 MIT 條款以上游 `github/spec-kit` 的 `LICENSE` 為準；plan 階段要對照 `.specify/init-options.json` 記錄的 1.2.6 版確認。
+- Spec Kit 的 MIT 條款以上游 `github/spec-kit` 的 `LICENSE` 為準（v1.2.6 已確認為 MIT）。
 - 預設 clone 位置為家目錄下的 `claude-dotfiles`。
-- repo 目前沒有 remote，正式網址在建立 GitHub repo 時確定，再寫入指令與 README。
+- 正式網址是 `github.com/flysangel/claude-dotfiles`，目前為私有；一行指令從預設分支 `main` 取得腳本。
+- Linux 機器已有 `curl` 或 `wget` 其中之一，否則一行指令本身無法執行；README 提供兩種寫法。
 - 自動安裝 git 只支援主流 Linux 發行版的套件管理工具與 Windows 內建的套件管理工具。
 - 登入 Claude Code 屬於使用者自己的操作，不在自動化範圍內；這個功能也不處理 `~/.claude/settings.json`。
 - 只提供遠端一行指令，不另設 clone 後的入口；已有 clone 的機器重新貼同一行即可。
 
 ## Dependencies
 
-- **`specs/001-repo-commit-guard` 必須先完成才能公開**：一行指令要能匿名取得 repo，必須等 repo 公開。001 的程式已完成，還剩 T026 到 T030（識別清單、完整檢查、私有 repo、Windows 驗收）。公開前只能用 FR-021 的本機來源驗收；真實遠端指令要在公開後各作業系統再驗一次，才算完成。
+- **`specs/001-repo-commit-guard` 必須先完成才能公開**：一行指令要能匿名取得 repo，必須等 repo 公開。001 的程式已完成，私有 repo 也已建立，還剩 T029、T030（Windows 驗收與最終檢查）。公開前只能用 FR-021 的本機來源驗收；真實遠端指令要在公開後各作業系統再驗一次，才算完成。
 - 開發設定對接 001 的 `tools/repo_guard.py --install-hook`。
 - Windows 上的部署尚未驗收（見 README），這個功能的 Windows 驗收也會同時涵蓋它。
