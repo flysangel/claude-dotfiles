@@ -10,4 +10,6 @@ docs/**
 .gitignore
 .repo-allowlist
 README.md
+LICENSE
+THIRD_PARTY_NOTICES.md
 .repo-guard-exceptions.json

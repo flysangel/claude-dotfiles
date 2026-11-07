@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import re
@@ -13,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MAX_CLAUDE_MD_LINES = 199
 MAX_LISTING_CHARS = 1536
+APACHE_2_SHA256 = "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
 spec = importlib.util.spec_from_file_location("repo_guard", ROOT / "tools" / "repo_guard.py")
 repo_guard = importlib.util.module_from_spec(spec)
@@ -95,6 +97,30 @@ class RepoContentTests(unittest.TestCase):
                 data = json.loads(path.read_text(encoding="utf-8"))
                 self.assertIn("should_not_trigger", data)
                 self.assertIn("should_trigger", data)
+
+
+class LicenseTests(unittest.TestCase):
+    def test_license_is_the_unmodified_apache_text(self) -> None:
+        digest = hashlib.sha256((ROOT / "LICENSE").read_bytes()).hexdigest()
+        self.assertEqual(digest, APACHE_2_SHA256)
+
+    def test_third_party_notices_cover_spec_kit(self) -> None:
+        text = (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
+        for expected in (
+            "MIT License",
+            "Copyright GitHub, Inc.",
+            "github/spec-kit",
+            "`.specify/`, except `.specify/memory/constitution.md`",
+            "`.claude/skills/speckit-*/`",
+        ):
+            self.assertIn(expected, text)
+
+    def test_readme_links_both_files_and_license_is_decided(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("(LICENSE)", text)
+        self.assertIn("(THIRD_PARTY_NOTICES.md)", text)
+        self.assertIn("Copyright 2026 flysangel", text)
+        self.assertNotIn("授權條件也要在公開前決定", text)
 
 
 class SkillProblemsTests(unittest.TestCase):

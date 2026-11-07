@@ -87,13 +87,13 @@ description: "Task list for the license and one-line setup"
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] 在 `tests/test_content.py` 加入授權測試：`LICENSE` 的 SHA-256 等於 T019 記錄的值；`THIRD_PARTY_NOTICES.md` 含 `Copyright GitHub, Inc.`、`MIT License` 與 `github/spec-kit`，並涵蓋 `.specify/` 與 `.claude/skills/speckit-*/`，也明確排除 `.specify/memory/constitution.md`；`README.md` 連到這兩個檔案，且不再有授權尚未決定的說明
+- [X] T018 [P] [US2] 在 `tests/test_content.py` 加入授權測試：`LICENSE` 的 SHA-256 等於 T019 記錄的值；`THIRD_PARTY_NOTICES.md` 含 `Copyright GitHub, Inc.`、`MIT License` 與 `github/spec-kit`，並涵蓋 `.specify/` 與 `.claude/skills/speckit-*/`，也明確排除 `.specify/memory/constitution.md`；`README.md` 連到這兩個檔案，且不再有授權尚未決定的說明
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] 下載 `https://www.apache.org/licenses/LICENSE-2.0.txt` 存成 `LICENSE`，內容不做任何改動；把算出的 SHA-256 寫進 T018 的測試，並把 `LICENSE` 加入 `.repo-allowlist`
-- [ ] T020 [US2] 建立 `THIRD_PARTY_NOTICES.md`，列出來自 Spec Kit 1.2.6 的路徑（`.specify/`，不含 `.specify/memory/constitution.md`；`.claude/skills/speckit-*/`）、上游 `https://github.com/github/spec-kit` 與 v1.2.6 `LICENSE` 的完整 MIT 條款，並把它加入 `.repo-allowlist`
-- [ ] T021 [US2] 在 `README.md` 新增授權段落：`Copyright 2026 flysangel`、以 Apache-2.0 授權、連到 `LICENSE` 與 `THIRD_PARTY_NOTICES.md`；從「已知限制」的公開順序移除授權尚未決定的句子；執行 `uv run tools/repo_guard.py --all` 確認通過
+- [X] T019 [US2] 下載 `https://www.apache.org/licenses/LICENSE-2.0.txt` 存成 `LICENSE`，內容不做任何改動；把算出的 SHA-256 寫進 T018 的測試，並把 `LICENSE` 加入 `.repo-allowlist`
+- [X] T020 [US2] 建立 `THIRD_PARTY_NOTICES.md`，列出來自 Spec Kit 1.2.6 的路徑（`.specify/`，不含 `.specify/memory/constitution.md`；`.claude/skills/speckit-*/`）、上游 `https://github.com/github/spec-kit` 與 v1.2.6 `LICENSE` 的完整 MIT 條款，並把它加入 `.repo-allowlist`
+- [X] T021 [US2] 在 `README.md` 新增授權段落：`Copyright 2026 flysangel`、以 Apache-2.0 授權、連到 `LICENSE` 與 `THIRD_PARTY_NOTICES.md`；從「已知限制」的公開順序移除授權尚未決定的句子；執行 `uv run tools/repo_guard.py --all` 確認通過
 
 **Checkpoint**: 授權完成，不依賴其他 story
 

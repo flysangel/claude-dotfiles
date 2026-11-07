@@ -121,7 +121,7 @@ uv run tools/dotfiles.py deploy
 
 - **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上，但 `git push --no-verify` 就沒有防護了，要靠之後的 CI。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
 - **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
-- **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。`LICENSE` 與 Spec Kit 檔案的授權條件也要在公開前決定。
+- **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。
 - **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則檢查不會執行。
 - **模型差異**：Sonnet 的驗收全部通過。Haiku 曾用英文回覆英文提問，也較容易忽略 skill 的收尾步驟與「不加未確認規則」的指示。
 - **未驗證的規則**：「提問使用 AskUserQuestion」無法用 `claude -p` 測試，只靠實際對話確認。
@@ -131,3 +131,7 @@ uv run tools/dotfiles.py deploy
 ## 開發規則
 
 這個 repo 本身也用 SDD 開發。開發規則見 [constitution](.specify/memory/constitution.md)，功能規格見 [specs/](specs/)。
+
+## 授權
+
+Copyright 2026 flysangel。以 [Apache-2.0](LICENSE) 授權。Spec Kit 的檔案仍適用其 MIT 條款，範圍見 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
