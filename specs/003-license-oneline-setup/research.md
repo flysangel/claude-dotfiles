@@ -100,6 +100,6 @@ Ubuntu 容器內確認的項目：
 
 實測發現：全新機器沒有 `user.name`，開發設定成功後第一次 commit 仍會失敗，所以摘要加上設定提交者名稱的提示。
 
-**在這台機器略過的測試**：`tests/test_setup_scripts_windows.py` 的 25 項（`SETUP_PS1_TESTS=1` 才在非 Windows 執行）與 `NonWindowsTests` 1 項都需要 PowerShell。上述容器有跑過，但 winget、PowerShell 5.1 與真實 Windows 環境要到 T033 才驗證。
+**在這台機器略過的測試**：`tests/test_setup_scripts_windows.py` 的 25 項都需要 PowerShell，其中多數在非 Windows 上還要設定 `SETUP_PS1_TESTS=1`。上述容器有跑過，但 winget、PowerShell 5.1 與真實 Windows 環境要到 T033 才驗證。
 
 **尚未驗證**：Windows 上的真實安裝、公開後的真實網址（T033、T034）。
