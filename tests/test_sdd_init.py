@@ -34,7 +34,7 @@ def fake_initializer(tag: str, script: str, destination: Path) -> None:
     for name, content in files.items():
         path = destination / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+        path.write_text(content, encoding="utf-8", newline="\n")
 
 
 def failing_initializer(tag: str, script: str, destination: Path) -> None:
@@ -74,7 +74,7 @@ class SddInitTestCase(unittest.TestCase):
     def write(self, name: str, content: str) -> None:
         path = self.project / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+        path.write_text(content, encoding="utf-8", newline="\n")
 
     def tree(self) -> dict[str, bytes]:
         return {
