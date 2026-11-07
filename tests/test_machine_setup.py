@@ -420,6 +420,16 @@ class DevHookTests(SetupTestCase):
         self.assertFalse(self.identity.exists())
         self.assertFalse((self.home / ".config" / "claude-dotfiles" / "identity.txt").exists())
 
+    def test_missing_committer_name_is_a_reminder(self) -> None:
+        del self.env["GIT_AUTHOR_NAME"]
+        result = self.install("--dev", "--email", EMAIL)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("commit 防護：enabled", result.stdout)
+        self.assertIn("git config user.name", result.stdout)
+
+    def test_known_committer_name_gets_no_reminder(self) -> None:
+        self.assertNotIn("git config user.name", self.install("--dev", "--email", EMAIL).stdout)
+
     def test_no_identity_reminder_without_dev(self) -> None:
         self.identity.unlink()
         self.assertNotIn("identity.txt", self.install().stdout)

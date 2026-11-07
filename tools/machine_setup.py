@@ -202,6 +202,8 @@ def dev_setup(record: dict, email: str | None) -> tuple[str, list[str], str | No
     todo = []
     if IDENTITY_MISSING in output:
         todo.append("建立 ~/.config/claude-dotfiles/identity.txt，每行一筆不想公開的內容；沒有它時 push 不會通過")
+    if not (os.environ.get("GIT_AUTHOR_NAME") or git("config", "user.name").stdout.strip()):
+        todo.append("設定提交者名稱：git config user.name <名稱>；沒有它時無法 commit")
     return status, todo, failure
 
 
