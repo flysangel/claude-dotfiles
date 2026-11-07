@@ -44,11 +44,18 @@ param(
         }
     }
 
-    function Update-ToolPath {
-        # Installers only change the path for shells opened later. Keep what this process already has.
-        $machine = [Environment]::GetEnvironmentVariable('Path', 'Machine')
-        $user = [Environment]::GetEnvironmentVariable('Path', 'User')
-        $env:PATH = (@($env:PATH, $machine, $user, $localBin) | Where-Object { $_ }) -join $separator
+    function Add-ToPath($directories) {
+        $env:PATH = (@($env:PATH) + $directories | Where-Object { $_ }) -join $separator
+    }
+
+    function Find-InstalledTool($tool) {
+        # Installers only change the path for shells opened later. Try the folders they install to first,
+        # so a copy elsewhere on the machine does not count as this install; read the saved path only
+        # when that fails.
+        Add-ToPath @($localBin, (Join-Path $env:ProgramFiles 'Git\cmd'), (Join-Path $env:LOCALAPPDATA 'Programs\Git\cmd'))
+        if (Test-Tool $tool) { return $true }
+        Add-ToPath @([Environment]::GetEnvironmentVariable('Path', 'Machine'), [Environment]::GetEnvironmentVariable('Path', 'User'))
+        return (Test-Tool $tool)
     }
 
     function Install-Git {
@@ -61,8 +68,7 @@ param(
         if ($LASTEXITCODE -ne 0) {
             Fail "installing git: winget failed, $manual."
         }
-        Update-ToolPath
-        if (-not (Test-Tool 'git')) {
+        if (-not (Find-InstalledTool 'git')) {
             Fail 'installing git: installed, but git is not on PATH. Open a new terminal and run this again.'
         }
         [void]$installed.Add('git')
@@ -75,8 +81,7 @@ param(
         if ($LASTEXITCODE -ne 0) {
             Fail "installing ${label}: the official installer failed or could not be downloaded. Check the network and run this again, or see $docs"
         }
-        Update-ToolPath
-        if (-not (Test-Tool $tool)) {
+        if (-not (Find-InstalledTool $tool)) {
             Fail "installing ${label}: installed, but $tool is not on PATH. Open a new terminal and run this again."
         }
         [void]$installed.Add($tool)
