@@ -6,7 +6,7 @@
 
 - 開發機已安裝 `uv`、`git`，在 repo 根目錄執行第 1、2 段
 - 乾淨環境：Linux 用容器或虛擬機，Windows 用虛擬機或新機器。Windows Sandbox 可能沒有 winget，只適合驗證無法自動安裝 git 的情境
-- repo 公開前，用 `CLAUDE_DOTFILES_REPO` 指向本機 clone 或掛載的目錄，並直接執行 `tools/setup.sh` 或 `tools/setup.ps1`
+- repo 公開前，用 `CLAUDE_DOTFILES_REPO` 指向本機 clone 或掛載的目錄，並直接執行 `tools/setup.sh` 或 `tools/setup.ps1`；clone 不在預設位置時要加 `--dir` 或 `-Dir`
 
 ## 1. 自動化測試
 
@@ -14,7 +14,7 @@
 uv run -m unittest discover -s tests
 ```
 
-預期：全部通過；這台機器沒有 PowerShell 時，`setup.ps1` 的行為測試顯示為略過，不算通過 Windows 驗收。
+預期：全部通過。Linux 上 `tests/test_setup_scripts_windows.py` 顯示為略過，不算通過；Windows 上這組測試不得略過，否則不算驗收。
 
 ## 2. 授權（US2）
 
@@ -49,6 +49,7 @@ uv run -m unittest discover -s tests
 | 開發選項加一般 email | 停止，沒有部署也沒有設定變更 |
 | 開發選項但沒有 email，且 clone 未設定 noreply | 停止，訊息說明如何提供 |
 | 暫時放一個其他工具的 `pre-commit` | 不被覆蓋，摘要回報，結束碼 1 |
+| clone 原本就已啟用防護 | 成功；之後解除時，原有的 hook 仍保留 |
 | 沒有本機識別清單 | 其餘完成，摘要提示如何建立 |
 
 ## 6. 解除（US4）
@@ -61,7 +62,7 @@ uv run -m unittest discover -s tests
 
 ## 7. 失敗情境
 
-自動化測試涵蓋：不支援的作業系統、版本過舊、無法安裝 git、目標目錄不是這個 repo、clone 分岔、下載失敗。各選一項在 Windows 手動確認：訊息指出失敗步驟，互動視窗沒有被關閉。
+兩個系統的自動化測試都涵蓋：不支援的作業系統、版本過舊、無法安裝 git、目標目錄不是這個 repo、clone 分岔、下載失敗。另外在 Windows 互動視窗手動選一項確認：訊息指出失敗步驟，視窗沒有被關閉。
 
 ## 8. 公開後的最終驗收
 

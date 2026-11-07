@@ -54,22 +54,23 @@
 
 - **Decision**: 入口負責建立 clone，也在執行其中任何程式前確認既有目錄的 `origin` 符合預期；不符合就停止。更新由 `machine_setup.py` 處理：`git status --porcelain` 有內容或分支分岔就停止；可快轉就 `git merge --ff-only`，更新後重新執行自己一次，確保跑的是新版邏輯；本機領先或沒有 upstream 時不更新，繼續部署並提示。
 - **Rationale**: 執行未確認目錄裡的程式等於執行任意程式碼，這項檢查不能放在被檢查的目錄內。其餘更新邏輯只需要一份。
+- **`origin` 比對**: 兩邊都正規化後，不分大小寫比對：`git@host:owner/repo`、`ssh://git@host/owner/repo` 與 `https://host/owner/repo` 都轉成 `host/owner/repo`，並去掉結尾的 `/` 與 `.git`。其他形式（例如 `CLAUDE_DOTFILES_REPO` 的本機路徑）只去掉結尾後直接比對。否則用 SSH clone 的維護者會被判定成別的 repo。
 - **預設位置**: `~/claude-dotfiles`，可用 `--dir` 或 `-Dir` 指定。
 
 ## 9. 設定紀錄的位置
 
 - **Decision**: `~/.config/claude-dotfiles/setup.json`，與 001 的本機識別清單同一目錄。Linux 上權限設為 `600`。
-- **Rationale**: 不能放在 `~/.claude/`，否則解除後無法與設定前逐檔相同（SC-004）；放在 clone 內則容易被清掉，也可能誤入庫。它可能含有設定前的 email，不能入庫。
+- **Rationale**: 不能放在 `~/.claude/`，否則解除後無法與設定前逐檔相同（SC-004）；放在 clone 內則容易被清掉，也可能誤入庫。它可能含有設定前的 email，不能入庫。紀錄只追蹤一個 clone，因為開發設定屬於單一 clone；已指向另一個仍存在的 clone 時停止，目錄已不存在才改寫。
 - **取捨**: 入口在執行 Python 前失敗時，這次裝好的工具尚未寫入紀錄。失敗訊息會列出它們；重新執行時這些工具已存在，不會被列為自動安裝，解除摘要也就不會提到。影響只有少一行提示，不值得在兩支 shell 內各寫一份 JSON。
 
 ## 10. 開發設定的 email 檢查
 
 - **Decision**: 只接受 `@users.noreply.github.com` 結尾的地址，比 `repo_guard.is_noreply` 嚴格；在任何部署或設定變更前檢查。
-- **Rationale**: `is_noreply` 也接受 `noreply@` 開頭，那是為了 `Co-Authored-By` 這類情況，不適合當維護者的提交身分。FR-015 明確要求 GitHub noreply 格式。
+- **Rationale**: `is_noreply` 也接受 `noreply@` 開頭，那是為了 `Co-Authored-By` 這類情況，不適合當維護者的提交身分。FR-015 明確要求 GitHub noreply 格式。沿用 clone 既有的地址時採用同一標準。
 
 ## 11. 測試策略
 
-- **Decision**: `machine_setup.py` 用暫存 git repo 與隔離的 `HOME` 測試。`setup.sh` 用 `PATH` 內的假工具與本機 bare repo 測試各情境，透過 `CLAUDE_DOTFILES_REPO` 改用本機來源。`setup.ps1` 只做靜態檢查（ASCII、無 `exit`），行為測試在有 `pwsh` 時才跑。
+- **Decision**: `machine_setup.py` 用暫存 git repo 與隔離的 `HOME` 測試。`setup.sh` 用 `PATH` 內的假工具與本機 bare repo 測試各情境，透過 `CLAUDE_DOTFILES_REPO` 改用本機來源。`setup.ps1` 除了靜態檢查（ASCII、無 `exit`），還有獨立的 `tests/test_setup_scripts_windows.py`，用 `.cmd` 假工具涵蓋與 `setup.sh` 相同的失敗情境，條件是 Windows 上有 `powershell` 或 `pwsh`。它在 Linux 上略過，所以寫好時尚未執行過，第一次實際執行是 Windows 驗收，可能需要修正。
 - **Rationale**: 測試不能碰使用者的 `~/.claude/`，也不能依賴 repo 已公開（FR-021）。真正裝工具的流程只能在乾淨環境驗收，見 [quickstart.md](quickstart.md)。
 
 ## 12. 信任模型

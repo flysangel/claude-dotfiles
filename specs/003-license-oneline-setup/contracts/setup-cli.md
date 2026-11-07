@@ -1,4 +1,4 @@
-# Contract: 設定指令
+# Contract: 一行指令
 
 ## 一行指令
 
@@ -33,6 +33,8 @@ irm https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup
 |---|---|
 | `CLAUDE_DOTFILES_REPO` | 改用其他 clone 來源，例如本機路徑；`origin` 比對也改用它 |
 
+公開前驗收時直接執行 clone 內的 `tools/setup.sh` 或 `tools/setup.ps1`；clone 不在預設位置時要加 `--dir` 或 `-Dir`。
+
 ## Python 層
 
 ```text
@@ -49,7 +51,8 @@ uv run <clone>/tools/machine_setup.py remove [--target <目錄>]
 | 不是 Linux 或 Windows，或用錯入口 | 任何變更前停止，結束碼 1 |
 | 既有工具版本過舊 | 安裝任何東西前停止，列出所需版本，結束碼 1 |
 | git 無法自動安裝 | 停止，列出手動安裝方式，結束碼 1 |
-| 目標目錄已存在且不是這個 repo | 不動它，不執行其中的程式，結束碼 1 |
+| 目標目錄已存在且不是這個 repo（比對規則見 research 第 8 節） | 不動它，不執行其中的程式，結束碼 1 |
+| 設定紀錄指向另一個仍存在的 clone | 不動它們，提示改用原位置或先解除，結束碼 1 |
 | clone 有未提交改動或已分岔 | 不更新也不部署，結束碼 1 |
 | `--dev` 但 email 無效或缺少 | 不做開發設定也不部署，結束碼 1 |
 | `--dev` 但 hook 被其他工具佔用 | 不覆蓋；仍完成部署，摘要回報，結束碼 1 |

@@ -16,7 +16,7 @@
 
 **Storage**: 檔案。設定紀錄存在 repo 外的 `~/.config/claude-dotfiles/setup.json`，見 [data-model.md](data-model.md)
 
-**Testing**: `unittest`（標準庫），在暫存目錄、隔離的 `HOME` 與假工具下執行。`setup.ps1` 的行為測試只在有 PowerShell 時執行
+**Testing**: `unittest`（標準庫），在暫存目錄、隔離的 `HOME` 與假工具下執行。`setup.ps1` 的行為測試用獨立的測試檔，要在 Windows 上實際執行
 
 **Target Platform**: Linux（apt、dnf、pacman）與 Windows 10、11（winget）
 
@@ -24,7 +24,7 @@
 
 **Performance Goals**: 網路正常時 10 分鐘內完成（SC-002）；重複執行不重新下載工具
 
-**Constraints**: 不要求以系統管理員身分執行；入口腳本只用 ASCII；被 `iex` 執行時不得關閉使用者的視窗；輸出與入庫內容不得包含個人 email 與絕對路徑
+**Constraints**: 不要求以系統管理員身分執行；入口腳本只用 ASCII；被 `iex` 執行時不得關閉使用者的視窗；輸出與入庫內容不得包含 email 的值，入庫內容不得包含絕對路徑
 
 **Scale/Scope**: 1 位維護者、數台機器；新增 3 支工具、2 份授權文件
 
@@ -40,7 +40,7 @@
 | II | 每項客製化都說明了為何選擇該機制嗎？ | 通過 | 安裝是使用者主動執行的一次性操作，不需要常駐 context，因此用一般腳本，不用 hook、CLAUDE.md 或 skill |
 | III | 指出需求來源了嗎？每個 CLAUDE.md 少於 200 行，且不含能從程式碼得知的內容嗎？ | 通過 | 來源：維護者明確要求補 LICENSE 與 Linux、Windows 一鍵設定。本功能不改動 CLAUDE.md |
 | IV | 安裝可重複執行、可還原，且能在 Windows 與 Linux 上運作嗎？ | 有條件通過 | 重複執行與 `~/.claude/` 的還原都有測試。兩項差異記錄在 Complexity Tracking：解除時保留工具與 clone，入口腳本各依賴一種 shell |
-| V | 每項產出都有驗證方式嗎？CLAUDE.md 規則具體可驗證且沒有矛盾嗎？ | 通過 | 單元測試加上 [quickstart.md](quickstart.md) 的乾淨環境驗收；`setup.ps1` 在這台 Linux 無法執行，要在 Windows 上驗收才算完成 |
+| V | 每項產出都有驗證方式嗎？CLAUDE.md 規則具體可驗證且沒有矛盾嗎？ | 通過 | 單元測試加上 [quickstart.md](quickstart.md) 的乾淨環境驗收；`setup.ps1` 的行為測試在這台 Linux 無法執行，要在 Windows 上跑過才算完成 |
 
 ## Project Structure
 
@@ -72,8 +72,9 @@ tools/
 
 tests/
 ├── test_machine_setup.py    # 新增
-├── test_setup_scripts.py    # 新增：以假工具驗證入口腳本
-└── test_content.py          # 擴充：授權檔案與入口腳本的靜態檢查
+├── test_setup_scripts.py    # 新增：以假工具驗證 setup.sh，並靜態檢查兩支入口
+├── test_setup_scripts_windows.py  # 新增：以假工具驗證 setup.ps1，在 Windows 上執行
+└── test_content.py          # 擴充：授權檔案的靜態檢查
 ```
 
 **Structure Decision**: 入口腳本放在已列入白名單的 `tools/`，與其他工具放在一起。根目錄只放授權慣例要求的檔案，因為授權偵測工具與讀者都會在那裡尋找。
@@ -82,5 +83,5 @@ tests/
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| 原則 IV「還原安裝前的狀態」：解除時保留自動安裝的工具與 clone | 安裝後 git、uv、Claude Code 可能已被其他專案依賴，clone 內也可能有未推送的工作；維護者已確認這個範圍（FR-020） | 自動移除可能破壞與這個 repo 無關的工作，也無法判斷使用者之後是否開始依賴；改為在摘要列出保留項目與移除方式 |
+| 原則 IV「還原安裝前的狀態」：解除時保留自動安裝的工具與 clone | 安裝後 git、uv、Claude Code 可能已被其他專案依賴，clone 內也可能有未推送的工作；維護者已於 2026-11-07 確認這個範圍（FR-020） | 自動移除可能破壞與這個 repo 無關的工作，也無法判斷使用者之後是否開始依賴；改為在摘要列出保留項目與移除方式 |
 | 原則 IV「不得只依賴單一作業系統的 shell」：`setup.sh` 只能在 Linux 執行，`setup.ps1` 只能在 Windows 執行 | 全新機器上沒有跨平台的執行環境可以當入口，Python 也要等 uv 裝好才有 | 單一入口在全新機器上無法執行。改為把入口壓到最薄，其餘邏輯集中在跨平台的 Python，並讓兩個入口各對應一個系統 |
