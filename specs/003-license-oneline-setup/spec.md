@@ -176,6 +176,6 @@
 
 ## Dependencies
 
-- **`specs/001-repo-commit-guard` 必須先完成才能公開**：一行指令要能匿名取得 repo，必須等 repo 公開。001 的程式已完成，私有 repo 也已建立，還剩 T029、T030（Windows 驗收與最終檢查）。公開前只能用 FR-021 的本機來源驗收；真實遠端指令要在公開後各作業系統再驗一次，才算完成。
+- **`specs/001-repo-commit-guard` 必須先完成才能公開**：一行指令要能匿名取得 repo，必須等 repo 公開。001 的程式已完成，私有 repo 與 Windows 驗收也已完成，還剩 T030（最終檢查與公開決定）。公開前只能用 FR-021 的本機來源驗收；真實遠端指令要在公開後各作業系統再驗一次，才算完成。
 - 開發設定對接 001 的 `tools/repo_guard.py --install-hook`。
-- Windows 上的部署尚未驗收（見 README），這個功能的 Windows 驗收也會同時涵蓋它。
+- 部署與 commit 防護已在 Windows 驗收，但這個功能新增的入口腳本還沒有。

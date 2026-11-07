@@ -1,6 +1,6 @@
 # Research: 授權聲明與一行指令設定
 
-驗證環境：Linux（2026-11-07）。官方安裝腳本與 Spec Kit 授權已實際下載確認。**這台機器沒有 PowerShell，Windows 相關內容來自官方文件與既有知識，尚未實測。**
+驗證環境：Linux（2026-11-07）。官方安裝腳本與 Spec Kit 授權已實際下載確認。**這台機器沒有 PowerShell，也沒有 Windows；`setup.ps1` 只在 Linux 容器內以 PowerShell 7 實測過，見第 13 節。**
 
 ## 1. 授權文件
 
@@ -48,7 +48,7 @@
 ## 7. 既有工具的版本下限
 
 - **Decision**: git 2.20、uv 0.4.0；Claude Code 不設下限。在安裝任何東西之前先全部檢查，版本過舊就停止，不自動升級。
-- **Rationale**: 工具腳本依賴 uv 的 inline script metadata，以及一般的 git 指令。git 2.20 是足夠舊且仍容易取得的基準，實作時要跑測試確認。Claude Code 不參與設定流程，登入與更新由它自己處理。
+- **Rationale**: 工具腳本依賴 uv 的 inline script metadata，以及一般的 git 指令。git 2.20 是足夠舊且仍容易取得的基準，實測結果見第 13 節。Claude Code 不參與設定流程，登入與更新由它自己處理。
 
 ## 8. Clone 的取得與更新
 
@@ -76,3 +76,30 @@
 ## 12. 信任模型
 
 一行指令從 `main` 下載並立即執行，這是工具本身無法消除的風險：能修改 `main` 的人就能在使用者機器上執行程式。緩解方式是全程 HTTPS、入口腳本保持短小可讀、README 同時說明如何先下載再檢視，並且不要求以系統管理員身分執行。
+
+## 13. 實測結果
+
+全部在 podman 容器內進行（2026-11-07），`CLAUDE_DOTFILES_REPO` 指向本機 bare repo，工具都是真實下載與安裝。
+
+| 環境 | 情境 | 結果 |
+|---|---|---|
+| Ubuntu 24.04，一般使用者加 sudo，用 `curl` | 從只有 `curl` 與 `sudo` 開始，以管線執行 | 成功，25 秒。git 2.43.0、uv 0.13.7、Claude Code 2.1.319 |
+| 同上 | quickstart 第 3 到第 6 段與第 7 段的部分情境 | 符合預期，見下方 |
+| Fedora latest，root | `dnf` 安裝 git，加上兩個官方腳本 | 成功，31 秒 |
+| Arch latest，root | `pacman` 安裝 git，加上兩個官方腳本 | 成功，15 秒 |
+| Debian 10，root，用 `wget` | 版本下限：git 2.20.1、uv 0.4.0（Claude Code 為假工具）；開發設定、實際 commit 與解除 | 成功，版本下限成立 |
+| PowerShell 7.4 容器（Ubuntu 22.04） | `tests/test_setup_scripts_windows.py` 25 項，以 `SETUP_PS1_TESTS=1` 執行 | 全部通過，但只驗證邏輯，沒有涵蓋 winget 與 PowerShell 5.1 |
+
+Ubuntu 容器內確認的項目：
+
+- 第 3 段：部署狀態為 `clean`；摘要列出工具與登入提示。
+- 第 4 段：再執行兩次，受管檔案與 clone 都沒有變化；來源有新 commit 時更新並重新部署；有未提交的改動時停止，結束碼 1。
+- 第 5 段：一般 email 與缺少 email 都停止；noreply 地址只寫入 clone，全域設定沒有變化，防護為 `enabled`，提示建立本機識別清單。其他工具佔用 hook 與原本已啟用防護的情境由單元測試涵蓋。
+- 第 6 段：`CLAUDE.md` 與 `rules/` 回到設定前的內容；hook 已移除，email 已還原，紀錄目錄已移除；工具與 clone 保留並列出。Claude Code 自己留下的 `backups/` 檔案不屬於這個功能，不列入比對。
+- 第 7 段：目標不是 git repo 與 `origin` 不符都停止，結束碼 1。其餘失敗情境由單元測試涵蓋。
+
+實測發現：全新機器沒有 `user.name`，開發設定成功後第一次 commit 仍會失敗，所以摘要加上設定提交者名稱的提示。
+
+**在這台機器略過的測試**：`tests/test_setup_scripts_windows.py` 的 25 項（`SETUP_PS1_TESTS=1` 才在非 Windows 執行）與 `NonWindowsTests` 1 項都需要 PowerShell。上述容器有跑過，但 winget、PowerShell 5.1 與真實 Windows 環境要到 T033 才驗證。
+
+**尚未驗證**：Windows 上的真實安裝、公開後的真實網址（T033、T034）。

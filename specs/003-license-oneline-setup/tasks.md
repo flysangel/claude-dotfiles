@@ -73,7 +73,7 @@ description: "Task list for the license and one-line setup"
 - [X] T014 [US1] 建立 `tools/setup.ps1`，流程與 T013 相同：開頭為 `param` 區塊（`-Dir`、`-Dev`、`-Email`、`-Force`）；用 `throw` 回報失敗，不用 `exit`；git 用 `winget install --id Git.Git`，uv 與 Claude Code 在子程序內執行官方腳本並以結束碼判斷；安裝後重新讀取系統與使用者的 `Path`，並加入 `%USERPROFILE%\.local\bin`；非 Windows 時任何變更前停止；只含 ASCII，讓 T009、T010 通過
 - [X] T015 [US1] 在 `tools/machine_setup.py` 實作 clone 更新：依 research 第 8 節處理未提交改動、分岔、可快轉、本機領先與沒有 upstream；快轉後以環境變數防止重複，重新執行自己一次，讓 T011 通過
 - [X] T016 [US1] 在 `tools/machine_setup.py` 實作 `install` 的部署與摘要：檢查紀錄的 `clone` 是否指向另一個仍存在的目錄，再寫入 `clone` 與 `installed_tools`，再以 `sys.executable` 執行 `tools/dotfiles.py deploy`；傳遞 `--force` 與 `--target`；用 `claude auth status` 判斷登入狀態，無法判斷時仍提示登入；依 contract 顯示摘要，讓 T012 通過
-- [ ] T017 [US1] 在 Linux 容器或虛擬機（`CLAUDE_DOTFILES_REPO` 指向本機 clone）完成 `specs/003-license-oneline-setup/quickstart.md` 第 3、4 段，把實測的 git 與 uv 版本、耗時與結果記錄到 `specs/003-license-oneline-setup/research.md`；若 git 2.20 或 uv 0.4.0 的下限不正確，同步修正 research、`tools/setup.sh` 與 `tools/setup.ps1`
+- [X] T017 [US1] 在 Linux 容器或虛擬機（`CLAUDE_DOTFILES_REPO` 指向本機 clone）完成 `specs/003-license-oneline-setup/quickstart.md` 第 3、4 段，把實測的 git 與 uv 版本、耗時與結果記錄到 `specs/003-license-oneline-setup/research.md`；若 git 2.20 或 uv 0.4.0 的下限不正確，同步修正 research、`tools/setup.sh` 與 `tools/setup.ps1`
 
 **Checkpoint**: Linux 上可從乾淨環境完成設定；Windows 的測試已寫好但尚未執行，要到 T033 才算驗收
 
@@ -145,11 +145,11 @@ description: "Task list for the license and one-line setup"
 
 **Purpose**: 文件、整體驗證與跨平台驗收
 
-- [ ] T028 改寫 `README.md` 的「安裝」段落：把 contract 的一行指令放在最前面，含 `wget` 寫法、開發選項與解除指令；說明如何先下載再檢視腳本；手動步驟移到維護章節；保留本機識別清單與 `--force` 的說明；註明 repo 公開前無法匿名使用，要先 clone 並直接執行入口腳本，clone 不在預設位置時要加 `--dir` 或 `-Dir`
-- [ ] T029 更新 `README.md` 的「已知限制」：列出解除時保留工具與 clone、git 自動安裝只支援 apt、dnf、pacman 與 winget、一行指令的信任模型
-- [ ] T030 執行 `uv run -m unittest discover -s tests`、`uv run tools/repo_guard.py --all` 與 `uv run tools/repo_guard.py --history`，全部通過；把在這台機器略過的測試（`tests/test_setup_scripts_windows.py`）明確記在 `specs/003-license-oneline-setup/research.md`
-- [ ] T031 確認這個功能沒有改動 `home/`（`git diff --stat main...HEAD -- home/` 沒有輸出），因此不需要執行 `/doctor prompt-audit`；有改動時就要執行
-- [ ] T032 在 Linux 容器或虛擬機完成 `specs/003-license-oneline-setup/quickstart.md` 第 5、6 段與第 7 段的自動化部分，結果記錄到 `specs/003-license-oneline-setup/research.md`
+- [X] T028 改寫 `README.md` 的「安裝」段落：把 contract 的一行指令放在最前面，含 `wget` 寫法、開發選項與解除指令；說明如何先下載再檢視腳本；手動步驟移到維護章節；保留本機識別清單與 `--force` 的說明；註明 repo 公開前無法匿名使用，要先 clone 並直接執行入口腳本，clone 不在預設位置時要加 `--dir` 或 `-Dir`
+- [X] T029 更新 `README.md` 的「已知限制」：列出解除時保留工具與 clone、git 自動安裝只支援 apt、dnf、pacman 與 winget、一行指令的信任模型
+- [X] T030 執行 `uv run -m unittest discover -s tests`、`uv run tools/repo_guard.py --all` 與 `uv run tools/repo_guard.py --history`，全部通過；把在這台機器略過的測試（`tests/test_setup_scripts_windows.py`）明確記在 `specs/003-license-oneline-setup/research.md`
+- [X] T031 確認這個功能沒有改動 `home/`（`git diff --stat main...HEAD -- home/` 沒有輸出），因此不需要執行 `/doctor prompt-audit`；有改動時就要執行
+- [X] T032 在 Linux 容器或虛擬機完成 `specs/003-license-oneline-setup/quickstart.md` 第 5、6 段與第 7 段的自動化部分，結果記錄到 `specs/003-license-oneline-setup/research.md`
 - [ ] T033 請維護者在 Windows 機器先執行 `uv run -m unittest discover -s tests`，確認全部通過且 `tests/test_setup_scripts_windows.py` 沒有被略過，再完成 `specs/003-license-oneline-setup/quickstart.md` 第 3 到第 7 段（`CLAUDE_DOTFILES_REPO` 指向本機 clone），可與 001 的 T029 一起進行；依結果修正 `tools/setup.ps1`，把結果記錄到 `specs/003-license-oneline-setup/research.md`，並更新 `README.md` 的「目前狀態」
 - [ ] T034 公開後（維護者另外決定，先完成 001 的 T030），請維護者在 Linux 與 Windows 乾淨環境完成 `specs/003-license-oneline-setup/quickstart.md` 第 8 段，確認 GitHub 把授權顯示為 Apache-2.0，並把結果記錄到 `specs/003-license-oneline-setup/research.md`
 

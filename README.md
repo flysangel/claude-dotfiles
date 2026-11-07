@@ -9,29 +9,80 @@
 | `sdd-derive` | 從既有專案導出 constitution 與 spec |
 | `sdd-grill` | 逐題追問，討論出 constitution 與 spec |
 
-> **目前狀態**：Windows 與 Linux 都已驗收。macOS 不在支援範圍。
+> **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令只在 Linux 實測過，Windows 尚未驗收。macOS 不在支援範圍。
 
 ## 安裝
 
-需要 [uv](https://docs.astral.sh/uv/)、git 與 Claude Code。
+> repo 公開前無法匿名下載，請改用下方「公開前的安裝」。
 
-在 repo 根目錄執行：
+Linux：
 
 ```text
-git config user.email "<id>+<帳號>@users.noreply.github.com"
-uv run tools/repo_guard.py --install-hook
-uv run tools/dotfiles.py deploy
+curl -fsSL https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.sh | bash
 ```
 
-前兩行每個 clone 都要做一次，它們會讓這個 repo 的 commit 不帶個人 email，並在 commit 與 push 前自動檢查。
+沒有 `curl` 時，把 `curl -fsSL` 換成 `wget -qO-`。
+
+Windows PowerShell：
+
+```text
+irm https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.ps1 | iex
+```
+
+指令會做這些事，重複執行不會有多餘的變更，有新版時會更新：
+
+- 安裝缺少的 uv、git 與 Claude Code。既有的工具不會被更動；版本太舊時會停止並提示。
+- 把 repo clone 到家目錄下的 `claude-dotfiles`。
+- 把 `home/` 複製到 `~/.claude/`：已有的 `CLAUDE.md` 會先備份，其他內容不受影響。
+
+Linux 的選項接在 `bash -s --` 後面，Windows 要改用另一種寫法才能傳選項：
+
+```text
+curl -fsSL https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.sh | bash -s -- --dir <路徑>
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.ps1))) -Dir <路徑>
+```
+
+| Linux | Windows | 用途 |
+|---|---|---|
+| `--dir <路徑>` | `-Dir <路徑>` | 指定 clone 的位置 |
+| `--force` | `-Force` | 同名且不受管的 skill 預設會讓部署停止；確定要取代時使用，原內容會先備份 |
+| `--dev` | `-Dev` | 同時做開發設定，見下方 |
+| `--email <地址>` | `-Email <地址>` | 開發設定使用的 noreply 地址 |
+
+想先看過腳本再執行：
+
+```text
+curl -fsSL https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.sh -o setup.sh && less setup.sh && bash setup.sh
+irm https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.ps1 -OutFile setup.ps1; notepad setup.ps1; powershell -ExecutionPolicy Bypass -File .\setup.ps1
+```
+
+### 開發設定
+
+要從這個 clone 提交時才需要。加上 `--dev` 與你的 GitHub noreply 地址，會把地址寫入這個 clone 的設定，並安裝 commit 與 push 前的檢查：
+
+```text
+curl -fsSL https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.sh | bash -s -- --dev --email "<id>+<帳號>@users.noreply.github.com"
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.ps1))) -Dev -Email "<id>+<帳號>@users.noreply.github.com"
+```
 
 每台機器也要建立一份本機識別清單 `~/.config/claude-dotfiles/identity.txt`，每行一筆你不想公開的內容，例如真實姓名、私人主機名稱。它不會入庫；沒有這份清單時，commit 只會提醒，但 push 與完整檢查不會通過。
 
-第三行會把 `home/` 複製到 `~/.claude/`：
+### 解除
 
-- 已有的 `CLAUDE.md` 會先備份，再被取代。
-- 同名且不受管的 skill 會讓部署停止；確定要取代時加 `--force`，原內容同樣會先備份。
-- 其他內容不受影響。
+```text
+uv run ~/claude-dotfiles/tools/machine_setup.py remove
+```
+
+Windows 把路徑換成 `$HOME\claude-dotfiles\tools\machine_setup.py`；clone 在其他位置時也要換。它會還原 `~/.claude/`，曾做開發設定時也會移除 hook 並還原 email。工具與 clone 會保留，並列出移除方式。
+
+### 公開前的安裝
+
+先自行 clone，在 repo 根目錄執行入口腳本；`--dir .` 代表使用目前這個 clone：
+
+```text
+bash tools/setup.sh --dir .
+powershell -ExecutionPolicy Bypass -File tools\setup.ps1 -Dir .
+```
 
 ## 日常使用
 
@@ -113,12 +164,23 @@ uv run tools/dotfiles.py deploy
 
 例外只對這個檔案的這一行有效，行內容一改就失效。白名單、作者與本機識別清單不能豁免。**真實機密不要記錄例外**，要視為已外洩並更換。
 
+手動完成安裝時，在 repo 根目錄依序執行；前兩行每個 clone 都要做一次：
+
+```text
+git config user.email "<id>+<帳號>@users.noreply.github.com"
+uv run tools/repo_guard.py --install-hook
+uv run tools/dotfiles.py deploy
+```
+
 ## 新增內容
 
 要加入新的 skill，請見 [docs/adding-a-skill.md](docs/adding-a-skill.md)。新增其他路徑的檔案前，要先加進 `.repo-allowlist`，否則 commit 會被擋下。
 
 ## 已知限制
 
+- **解除不移除工具與 clone**：uv、git、Claude Code 可能已被其他專案使用，clone 內也可能有未推送的工作，所以只列出移除方式。
+- **自動安裝 git 有範圍**：只支援 apt、dnf、pacman 與 winget，其他環境要先自行安裝 git。在進入設定階段前就失敗時，這次裝好的工具只列在當次訊息，解除時不會列出。
+- **一行指令要信任來源**：它會直接執行從 `main` 下載的腳本，以及 uv 與 Claude Code 的官方安裝腳本。不放心時請先下載檢視。
 - **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上，但 `git push --no-verify` 就沒有防護了，要靠之後的 CI。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
 - **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
 - **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。
