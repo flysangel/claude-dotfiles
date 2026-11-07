@@ -33,8 +33,8 @@ description: "Task list for the license and one-line setup"
 **Purpose**: 建立隔離的測試環境，後續測試才不會碰到真實設定
 
 - [X] T001 [P] 建立 `tests/test_machine_setup.py` 的共用測試基底：暫存 `HOME`、一個本機 bare repo 當來源、一個由它 clone 出來的 repo（內含 `tools/` 與 `home/` 的複製），並用 `sys.executable` 執行其中的 `tools/machine_setup.py`；基底要斷言 `Path.home()` 與 `--target` 都在暫存目錄內
-- [ ] T002 [P] 建立 `tests/test_setup_scripts.py` 的共用測試基底，只在 Linux 執行：把假的 `uname`、`sudo`、`apt-get`、`dnf`、`pacman`、`curl`、`wget`、`uv`、`claude`、`git` 放進只含它們與必要系統指令的 `PATH`，每個假工具都把呼叫記錄到檔案；假 `git` 的 `clone` 與 `remote` 轉給真 git，版本字串可由環境變數設定
-- [ ] T003 [P] 建立 `tests/test_setup_scripts_windows.py` 的共用測試基底，條件為 `os.name == "nt"` 且有 `powershell` 或 `pwsh`（`skipUnless`）：把假的 `.cmd` 工具（`winget`、`git`、`uv`、`claude`、`powershell`）放進隔離的 `PATH` 並記錄呼叫，用絕對路徑啟動真正的 PowerShell 執行 `tools/setup.ps1`，`USERPROFILE` 指向暫存目錄
+- [X] T002 [P] 建立 `tests/test_setup_scripts.py` 的共用測試基底，只在 Linux 執行：把假的 `uname`、`sudo`、`apt-get`、`dnf`、`pacman`、`curl`、`wget`、`uv`、`claude`、`git` 放進只含它們與必要系統指令的 `PATH`，每個假工具都把呼叫記錄到檔案；假 `git` 的 `clone` 與 `remote` 轉給真 git，版本字串可由環境變數設定
+- [X] T003 [P] 建立 `tests/test_setup_scripts_windows.py` 的共用測試基底，條件為 `os.name == "nt"` 且有 `powershell` 或 `pwsh`（`skipUnless`）：把假的 `.cmd` 工具（`winget`、`git`、`uv`、`claude`、`powershell`）放進隔離的 `PATH` 並記錄呼叫，用絕對路徑啟動真正的 PowerShell 執行 `tools/setup.ps1`，`USERPROFILE` 指向暫存目錄
 
 ---
 
@@ -59,18 +59,18 @@ description: "Task list for the license and one-line setup"
 
 ### Tests for User Story 1
 
-- [ ] T006 [US1] 在 `tests/test_setup_scripts.py` 加入事前檢查測試：`uname` 為 `Darwin` 或 `MINGW64_NT` 時不做任何變更且結束碼 1；既有 git 低於 2.20 或 uv 低於 0.4.0 時，在安裝任何東西前停止、列出所需版本且不升級；檢查時不呼叫任何安裝程式
-- [ ] T007 [US1] 在 `tests/test_setup_scripts.py` 加入工具安裝測試：只安裝缺少的工具，既有工具沒有收到任何安裝呼叫；依序偵測 `apt-get`、`dnf`、`pacman` 安裝 git；非 root 才用 `sudo`；`sudo` 不存在或失敗、沒有套件管理工具時，停止並列出手動方式；uv 與 Claude Code 的官方腳本 MUST NOT 透過 `sudo` 執行；只有 `wget` 時也能下載；下載失敗時回報步驟並停止，失敗訊息列出這次已安裝的工具；安裝後工具只在 `~/.local/bin` 時，同一次執行仍能繼續；實際安裝的工具以 `--installed` 傳給 Python 層
-- [ ] T008 [US1] 在 `tests/test_setup_scripts.py` 加入 clone 與管線測試：預設 clone 到 `$HOME/claude-dotfiles`，`--dir` 可覆寫；`CLAUDE_DOTFILES_REPO` 改變來源與比對對象；`origin` 比對依 research 第 8 節，同一個 repo 的 HTTPS、SSH、大小寫不同與沒有 `.git` 結尾的網址都算相符；目標存在但不是 git repo，或 `origin` 不符時，不變更目錄、不執行其中的程式（放一個會留下記號的假 `tools/machine_setup.py` 驗證）且結束碼 1；以 `cat tools/setup.sh | bash -s -- --force` 執行時參數正確傳遞；截斷的腳本內容不會執行任何步驟；子程序不會讀走管線中的腳本
-- [ ] T009 [US1] 在 `tests/test_setup_scripts.py` 加入兩支入口的靜態測試（所有平台都跑）：`tools/setup.sh` 與 `tools/setup.ps1` 只含 ASCII；`tools/setup.ps1` 沒有 `exit` 陳述式，第三方安裝腳本都透過子程序 `powershell -NoProfile -ExecutionPolicy Bypass -Command` 執行；兩支的下載網址都是 `https://`，且只來自 research 第 4 節的來源與此 repo
-- [ ] T010 [US1] 在 `tests/test_setup_scripts_windows.py` 加入行為測試，涵蓋與 T006 到 T008 相同的情境：只安裝缺少的工具；既有 git 或 uv 版本過舊時在安裝前停止；winget 不存在或安裝失敗時列出手動方式；官方腳本下載失敗時回報步驟並列出已安裝的工具；安裝後能在同一次執行找到工具；預設 clone 到 `%USERPROFILE%\claude-dotfiles`，`-Dir` 可覆寫；目標不是這個 repo 時不執行其中的程式；`-Dev`、`-Email`、`-Force` 正確傳給 Python 層；失敗時以 `throw` 回報，`try`/`catch` 內的後續陳述式仍會執行（視窗不會被關閉），透過 `-Command` 執行時結束碼為 1。另加一項測試，在非 Windows 的 `pwsh` 上也會執行：不支援的系統在任何變更前停止
+- [X] T006 [US1] 在 `tests/test_setup_scripts.py` 加入事前檢查測試：`uname` 為 `Darwin` 或 `MINGW64_NT` 時不做任何變更且結束碼 1；既有 git 低於 2.20 或 uv 低於 0.4.0 時，在安裝任何東西前停止、列出所需版本且不升級；檢查時不呼叫任何安裝程式
+- [X] T007 [US1] 在 `tests/test_setup_scripts.py` 加入工具安裝測試：只安裝缺少的工具，既有工具沒有收到任何安裝呼叫；依序偵測 `apt-get`、`dnf`、`pacman` 安裝 git；非 root 才用 `sudo`；`sudo` 不存在或失敗、沒有套件管理工具時，停止並列出手動方式；uv 與 Claude Code 的官方腳本 MUST NOT 透過 `sudo` 執行；只有 `wget` 時也能下載；下載失敗時回報步驟並停止，失敗訊息列出這次已安裝的工具；安裝後工具只在 `~/.local/bin` 時，同一次執行仍能繼續；實際安裝的工具以 `--installed` 傳給 Python 層
+- [X] T008 [US1] 在 `tests/test_setup_scripts.py` 加入 clone 與管線測試：預設 clone 到 `$HOME/claude-dotfiles`，`--dir` 可覆寫；`CLAUDE_DOTFILES_REPO` 改變來源與比對對象；`origin` 比對依 research 第 8 節，同一個 repo 的 HTTPS、SSH、大小寫不同與沒有 `.git` 結尾的網址都算相符；目標存在但不是 git repo，或 `origin` 不符時，不變更目錄、不執行其中的程式（放一個會留下記號的假 `tools/machine_setup.py` 驗證）且結束碼 1；以 `cat tools/setup.sh | bash -s -- --force` 執行時參數正確傳遞；截斷的腳本內容不會執行任何步驟；子程序不會讀走管線中的腳本
+- [X] T009 [US1] 在 `tests/test_setup_scripts.py` 加入兩支入口的靜態測試（所有平台都跑）：`tools/setup.sh` 與 `tools/setup.ps1` 只含 ASCII；`tools/setup.ps1` 沒有 `exit` 陳述式，第三方安裝腳本都透過子程序 `powershell -NoProfile -ExecutionPolicy Bypass -Command` 執行；兩支的下載網址都是 `https://`，且只來自 research 第 4 節的來源與此 repo
+- [X] T010 [US1] 在 `tests/test_setup_scripts_windows.py` 加入行為測試，涵蓋與 T006 到 T008 相同的情境：只安裝缺少的工具；既有 git 或 uv 版本過舊時在安裝前停止；winget 不存在或安裝失敗時列出手動方式；官方腳本下載失敗時回報步驟並列出已安裝的工具；安裝後能在同一次執行找到工具；預設 clone 到 `%USERPROFILE%\claude-dotfiles`，`-Dir` 可覆寫；目標不是這個 repo 時不執行其中的程式；`-Dev`、`-Email`、`-Force` 正確傳給 Python 層；失敗時以 `throw` 回報，`try`/`catch` 內的後續陳述式仍會執行（視窗不會被關閉），透過 `-Command` 執行時結束碼為 1。另加一項測試，在非 Windows 的 `pwsh` 上也會執行：不支援的系統在任何變更前停止
 - [X] T011 [US1] 在 `tests/test_machine_setup.py` 加入 clone 更新測試：來源有新 commit 且可快轉時更新，並重新執行自己恰好一次；`git status --porcelain` 有內容時停止、內容不變、不部署且結束碼 1；已分岔時同樣停止；本機領先或沒有 upstream 時不更新、繼續部署並提示；更新失敗時回報步驟
 - [X] T012 [US1] 在 `tests/test_machine_setup.py` 加入部署與摘要測試：呼叫 `tools/dotfiles.py deploy --target`；連續執行兩次時 `--target` 內容與 clone 都不變，並回報已是最新狀態；既有 `CLAUDE.md` 先備份；同名且不受管的 skill 使結束碼為 2，加 `--force` 才取代；摘要符合 contract 的格式，含已安裝工具、repo 位置與部署結果；有安裝工具時提示開新的終端機；`claude auth status` 回報已登入時不提示登入，未登入或無法判斷時提示；設定紀錄的 `clone` 指向另一個仍存在的目錄時停止且結束碼 1，目錄已不存在才改寫；輸出不含 email 的值
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] 建立 `tools/setup.sh`：全部內容包在函式內且最後一行才呼叫；子程序 stdin 導向 `/dev/null`；只含 ASCII；依序確認作業系統、檢查既有工具版本（git 2.20、uv 0.4.0）、安裝 git、uv、Claude Code、確認 `origin`（比對規則見 research 第 8 節）或建立 clone，最後執行 `uv run <clone>/tools/machine_setup.py install --installed ...` 並傳回其結束碼；接受 `--dir`、`--dev`、`--email`、`--force`，讓 T006 到 T008 通過
-- [ ] T014 [US1] 建立 `tools/setup.ps1`，流程與 T013 相同：開頭為 `param` 區塊（`-Dir`、`-Dev`、`-Email`、`-Force`）；用 `throw` 回報失敗，不用 `exit`；git 用 `winget install --id Git.Git`，uv 與 Claude Code 在子程序內執行官方腳本並以結束碼判斷；安裝後重新讀取系統與使用者的 `Path`，並加入 `%USERPROFILE%\.local\bin`；非 Windows 時任何變更前停止；只含 ASCII，讓 T009、T010 通過
+- [X] T013 [US1] 建立 `tools/setup.sh`：全部內容包在函式內且最後一行才呼叫；子程序 stdin 導向 `/dev/null`；只含 ASCII；依序確認作業系統、檢查既有工具版本（git 2.20、uv 0.4.0）、安裝 git、uv、Claude Code、確認 `origin`（比對規則見 research 第 8 節）或建立 clone，最後執行 `uv run <clone>/tools/machine_setup.py install --installed ...` 並傳回其結束碼；接受 `--dir`、`--dev`、`--email`、`--force`，讓 T006 到 T008 通過
+- [X] T014 [US1] 建立 `tools/setup.ps1`，流程與 T013 相同：開頭為 `param` 區塊（`-Dir`、`-Dev`、`-Email`、`-Force`）；用 `throw` 回報失敗，不用 `exit`；git 用 `winget install --id Git.Git`，uv 與 Claude Code 在子程序內執行官方腳本並以結束碼判斷；安裝後重新讀取系統與使用者的 `Path`，並加入 `%USERPROFILE%\.local\bin`；非 Windows 時任何變更前停止；只含 ASCII，讓 T009、T010 通過
 - [X] T015 [US1] 在 `tools/machine_setup.py` 實作 clone 更新：依 research 第 8 節處理未提交改動、分岔、可快轉、本機領先與沒有 upstream；快轉後以環境變數防止重複，重新執行自己一次，讓 T011 通過
 - [X] T016 [US1] 在 `tools/machine_setup.py` 實作 `install` 的部署與摘要：檢查紀錄的 `clone` 是否指向另一個仍存在的目錄，再寫入 `clone` 與 `installed_tools`，再以 `sys.executable` 執行 `tools/dotfiles.py deploy`；傳遞 `--force` 與 `--target`；用 `claude auth status` 判斷登入狀態，無法判斷時仍提示登入；依 contract 顯示摘要，讓 T012 通過
 - [ ] T017 [US1] 在 Linux 容器或虛擬機（`CLAUDE_DOTFILES_REPO` 指向本機 clone）完成 `specs/003-license-oneline-setup/quickstart.md` 第 3、4 段，把實測的 git 與 uv 版本、耗時與結果記錄到 `specs/003-license-oneline-setup/research.md`；若 git 2.20 或 uv 0.4.0 的下限不正確，同步修正 research、`tools/setup.sh` 與 `tools/setup.ps1`
@@ -111,7 +111,7 @@ description: "Task list for the license and one-line setup"
 
 - [X] T022 [US3] 在 `tests/test_machine_setup.py` 加入開發設定測試：`--dev --email` 時 email 只寫入 clone 的本機設定，全域設定不變；只接受 `@users.noreply.github.com` 結尾，`noreply@example.com` 與一般地址都被拒絕，沿用 clone 既有地址時也採用同一標準；無效或缺少 email，且 clone 尚未設定 noreply 地址時，不做開發設定也不部署且結束碼 1；clone 已有 noreply 地址且未提供 email 時沿用，`dev.email_set` 為 `null`；沒有 `--dev` 時身分與 hook 都不變；`dev.previous_email` 在變更前寫入，重複執行不覆蓋；輸出不含 email 的值
 - [X] T023 [US3] 在 `tests/test_machine_setup.py` 加入 hook 與識別清單測試：安裝前 `--status` 第一行為 `not-installed` 且 `repo_guard.py --install-hook` 成功時 `dev.hook_installed` 為真；原本就已啟用時為假；已為真時重複執行不改變；摘要顯示 `--status` 第一行；其他工具佔用 hook 時不覆蓋、仍完成部署、摘要回報且結束碼 1；設定 `core.hooksPath` 時顯示 `unverified`；本機識別清單不存在時（以 `REPO_GUARD_IDENTITY_FILE` 隔離）摘要提示如何建立，不影響結束碼，也不產生清單；沒有 `--dev` 時不提示
-- [ ] T024 [P] [US3] 在 `tests/test_setup_scripts.py` 加入參數傳遞測試：`--dev --email <假地址>` 經由管線傳到 Python 層，`--email` 缺少值時停止
+- [X] T024 [P] [US3] 在 `tests/test_setup_scripts.py` 加入參數傳遞測試：`--dev --email <假地址>` 經由管線傳到 Python 層，`--email` 缺少值時停止
 
 ### Implementation for User Story 3
 
