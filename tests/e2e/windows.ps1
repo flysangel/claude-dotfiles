@@ -73,6 +73,19 @@ function Enable-Winget {
     return (Test-Tool 'winget')
 }
 
+function Set-WingetDownloader {
+    # The default downloader, Delivery Optimization, kept getting 504 on the runner.
+    try {
+        $settingsFile = (& winget settings export | ConvertFrom-Json).userSettingsFile
+        $directory = Split-Path -Parent $settingsFile
+        New-Item -ItemType Directory -Force -Path $directory | Out-Null
+        Set-Content -LiteralPath $settingsFile -Value '{ "network": { "downloader": "wininet" } }' -Encoding ASCII
+        Write-Host "winget settings: $settingsFile"
+    } catch {
+        Write-Host "winget settings could not be written: $_"
+    }
+}
+
 function Remove-ExistingTools($removeGit) {
     if ($removeGit) {
         $uninstaller = Join-Path $env:ProgramFiles 'Git\unins000.exe'
@@ -221,7 +234,10 @@ if ($BareRepo) { $env:CLAUDE_DOTFILES_REPO = $BareRepo }
 Write-Output '::group::prepare'
 $script:wingetAvailable = Enable-Winget
 Write-Host "winget available: $script:wingetAvailable"
-if ($script:wingetAvailable) { & winget --version | ForEach-Object { Write-Host $_ } }
+if ($script:wingetAvailable) {
+    & winget --version | ForEach-Object { Write-Host $_ }
+    Set-WingetDownloader
+}
 Remove-ExistingTools $script:wingetAvailable
 Write-Output '::endgroup::'
 

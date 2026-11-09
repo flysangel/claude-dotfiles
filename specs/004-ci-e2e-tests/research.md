@@ -121,3 +121,4 @@ Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
 - **winget**：`windows-latest` 上可用（v1.11.510），Git 能被解除安裝，winget 也會開始重新安裝。
 - **外部下載**：Run 2 有兩個環境因 GitHub Releases 回傳 504 失敗（winget 下載 Git、uv 下載 Python），因此重試條件加上 HTTP 伺服器錯誤，並在重試前等 30 秒。
 - **unit-windows 的 clone 失敗**：原本在 Git Bash 下執行測試，這和使用者的環境不同，真實的 git 會是 `mingw64` 的那一份。第一次的修正（把該目錄加回 `PATH`）沒有解決，所以改用 PowerShell 執行測試，假 git 失敗時也會印出結束碼，方便判斷。
+- **Run 3**：`unit-windows` 改用 PowerShell 後全部通過，也證實 clone 失敗來自 Git Bash 的環境。`e2e-windows` 的 winget 下載 Git 又連續回傳 504，加上 Run 2 共四次，而同一時間 Debian 的 uv 下載已恢復，判斷和 winget 預設的 Delivery Optimization 下載方式有關，因此驅動腳本改用 `wininet`。這只影響 CI，不改動 `setup.ps1`。
