@@ -16,7 +16,7 @@ $setupScript = Join-Path $PSScriptRoot '..\..\tools\setup.ps1'
 $script:broken = ''
 $script:failed = 0
 $script:output = ''
-$retryable = 'cannot download|winget failed'
+$retryable = 'cannot download|winget failed|HTTP status server error|Gateway'
 
 function Report($stage, $status, $detail) {
     Write-Output "E2E $environment $stage $status $detail"
@@ -100,6 +100,7 @@ function Stage-Setup {
             Report 'setup' 'FAIL' "download failed after a retry: $failure"
             return
         }
+        Start-Sleep -Seconds 30
     }
     Update-DriverPath
     foreach ($tool in 'uv', 'git', 'claude') {

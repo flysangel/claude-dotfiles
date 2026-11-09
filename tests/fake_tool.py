@@ -101,7 +101,10 @@ def main() -> int:
         # Tests hide the real git's folder, but the programs git starts still need the DLLs there.
         real = os.environ["REAL_GIT"]
         path = os.pathsep.join((str(Path(real).parent), os.environ["PATH"]))
-        return subprocess.run([real, *args], env={**os.environ, "PATH": path}).returncode
+        code = subprocess.run([real, *args], env={**os.environ, "PATH": path}).returncode
+        if code:
+            print(f"fake git: {real} {args[0]} exited with {code}", file=sys.stderr)
+        return code
     return 0
 
 

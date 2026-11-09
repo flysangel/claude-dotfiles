@@ -56,7 +56,7 @@ stage_setup() {
         if run_setup; then
             break
         fi
-        failure=$(grep -E 'cannot download|apt-get failed|dnf failed|pacman failed' "$LOG" | head -1)
+        failure=$(grep -E 'cannot download|apt-get failed|dnf failed|pacman failed|HTTP status server error|Gateway' "$LOG" | head -1)
         if [ -z "$failure" ]; then
             report setup FAIL "the setup failed, see the output above"
             return
@@ -65,6 +65,7 @@ stage_setup() {
             report setup FAIL "download failed after a retry: $failure"
             return
         fi
+        sleep 30
     done
     for tool in uv git claude; do
         command -v "$tool" >/dev/null 2>&1 || {

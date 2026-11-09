@@ -46,21 +46,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      # Not Git Bash: it puts its own git first on PATH, which is not what a Windows user has.
       - name: Run all tests with Windows PowerShell
-        shell: bash
+        shell: pwsh
         env:
           SETUP_PS1_SHELL: powershell
         run: |
-          uv run -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/tests-51.log"
-          exit "${PIPESTATUS[0]}"
+          $ErrorActionPreference = 'Continue'
+          uv run -m unittest discover -s tests -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\tests-51.log"
+          exit $LASTEXITCODE
       - name: Run entry script tests with PowerShell 7
         if: always()
-        shell: bash
+        shell: pwsh
         env:
           SETUP_PS1_SHELL: pwsh
         run: |
-          uv run -m unittest tests.test_setup_scripts_windows -v 2>&1 | tee "$RUNNER_TEMP/tests-7.log"
-          exit "${PIPESTATUS[0]}"
+          $ErrorActionPreference = 'Continue'
+          uv run -m unittest tests.test_setup_scripts_windows -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\tests-7.log"
+          exit $LASTEXITCODE
       - name: Summarize
         if: always()
         shell: bash

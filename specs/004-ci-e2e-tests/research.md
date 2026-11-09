@@ -81,7 +81,7 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 
 ## 9. 外部下載的暫時性失敗
 
-- **Decision**: E2E 驅動在首次設定失敗、且輸出含有 `cannot download`、`apt-get failed`、`dnf failed`、`pacman failed` 或 `winget failed` 時，重試一次；兩次都失敗才算失敗，並在結果中標示是下載失敗（FR-013）。`setup.ps1` 的官方腳本失敗訊息要改成也含 `cannot download` 與網址，兩個系統才一致。
+- **Decision**: E2E 驅動在首次設定失敗、且輸出含有 `cannot download`、`apt-get failed`、`dnf failed`、`pacman failed`、`winget failed`、`HTTP status server error` 或 `Gateway` 時，等 30 秒後重試一次；兩次都失敗才算失敗，並在結果中標示是下載失敗（FR-013）。`setup.ps1` 的官方腳本失敗訊息要改成也含 `cannot download` 與網址，兩個系統才一致。
 - **Rationale**: 官方安裝腳本與套件來源偶爾會短暫失敗，不應被當成程式錯誤；只重試一次，可以避免掩蓋真正的問題。
 
 ## 10. Action 的來源
@@ -114,3 +114,10 @@ Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
 - **PowerShell**: `tests/e2e/windows.ps1` 與 `tools/setup.ps1` 在 PowerShell 7.4 容器內解析沒有錯誤；`REQUIRED_TEST_GROUPS=powershell` 加 `SETUP_PS1_SHELL=pwsh` 時 25 項測試全部通過，測試環境已自行補上 `ProgramFiles` 與 `LOCALAPPDATA`。
 - **閘門**: 這台機器沒有 PowerShell，`REQUIRED_TEST_GROUPS=powershell` 時 24 項失敗，證明閘門有效。
 - **尚未驗證**: `tests/e2e/windows.ps1` 的實際行為與 workflow 本身，都要 push 後才知道。
+
+## 14. CI 實測紀錄
+
+- **Run 1、2**：Linux 的單元測試、入庫檢查與 E2E 都能在 GitHub 上執行。
+- **winget**：`windows-latest` 上可用（v1.11.510），Git 能被解除安裝，winget 也會開始重新安裝。
+- **外部下載**：Run 2 有兩個環境因 GitHub Releases 回傳 504 失敗（winget 下載 Git、uv 下載 Python），因此重試條件加上 HTTP 伺服器錯誤，並在重試前等 30 秒。
+- **unit-windows 的 clone 失敗**：原本在 Git Bash 下執行測試，這和使用者的環境不同，真實的 git 會是 `mingw64` 的那一份。第一次的修正（把該目錄加回 `PATH`）沒有解決，所以改用 PowerShell 執行測試，假 git 失敗時也會印出結束碼，方便判斷。
