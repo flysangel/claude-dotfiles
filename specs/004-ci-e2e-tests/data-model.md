@@ -11,7 +11,7 @@ E2E <環境> <階段> <PASS|FAIL|UNVERIFIED> <說明>
 | 欄位 | 值 |
 |---|---|
 | 環境 | `ubuntu`、`fedora`、`arch`、`minimum`、`windows`，公開後另有 `ubuntu-public`、`windows-public` |
-| 階段 | `setup`、`rerun`、`dev`、`remove`、`refuse` |
+| 階段 | `setup`、`rerun`、`dev`、`remove`、`refuse`；另有項目 `setup-git-install`，只在 Windows 回報，winget 不可用時為 `UNVERIFIED` |
 | 結果 | `PASS`；`FAIL`；`UNVERIFIED` 表示該項在這個環境無法驗證 |
 | 說明 | 一句話；失敗時寫原因，下載失敗要寫出來源 |
 

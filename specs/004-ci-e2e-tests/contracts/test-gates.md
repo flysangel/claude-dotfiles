@@ -25,7 +25,7 @@ requires(group: str, condition: bool, reason: str) -> decorator
 
 | 情況 | 不加選項（不變） | 加 `--without-identity` |
 |---|---|---|
-| 有識別清單 | 全部規則 | 全部規則，不讀取清單 |
+| 有識別清單 | 全部規則 | 識別清單以外的全部規則，不讀取清單 |
 | 沒有識別清單 | 結束碼 3，不通過 | 執行其餘規則；第一行說明未比對個人識別資訊；結束碼依其餘規則 |
 
 `--without-identity` 只能與 `--history` 一起使用，否則結束碼 3。

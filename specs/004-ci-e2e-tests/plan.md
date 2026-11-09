@@ -22,11 +22,11 @@
 
 **Project Type**: CI 設定與測試腳本
 
-**Performance Goals**: 每次 push 20 分鐘內完成（SC-002）；估計每次約 USD 0.27，見 research 第 7 節
+**Performance Goals**: 每次 push 20 分鐘內完成（SC-002）；估計每次約 USD 0.28，見 research 第 7 節
 
-**Constraints**: 不使用任何 secret；輸出不得含真實 email；repo 為私有時不能依賴公開網址；只使用 `actions/*` 與 `astral-sh/setup-uv` 兩個來源的 action，並固定到 commit
+**Constraints**: 不使用任何 secret，checkout 不保留存取權杖；輸出不得含真實 email；repo 為私有時不能依賴公開網址；只使用 `actions/*` 與 `astral-sh/setup-uv` 兩個來源的 action，並固定到 commit
 
-**Scale/Scope**: 1 個 workflow、7 個 job（含 matrix）、2 支 E2E 驅動腳本
+**Scale/Scope**: 1 個 workflow、8 個 job（含 matrix）、2 支 E2E 驅動腳本
 
 ## Constitution Check
 

@@ -17,6 +17,11 @@
 - Q: E2E 多久跑一次？ → A: 每次 push。
 - Q: CI 要不要在伺服器端跑入庫檢查？ → A: 要，一併納入，補上 `git push --no-verify` 的缺口。
 
+### Session 2026-11-09
+
+- Q: 會真的下載 Spec Kit 的網路測試要納入 CI 嗎？ → A: 只納入 Linux 的單元測試。
+- Q: Windows E2E 怎麼模擬沒有 Git？ → A: 執行 Git 的解除安裝程式，真正從系統移除。
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - 每次 push 自動在兩個系統跑測試 (Priority: P1)
@@ -88,7 +93,7 @@
 
 **單元測試**
 
-- **FR-001**: 每次 push 到任何分支，MUST 在 Linux 與 Windows 各執行一次全部自動化測試。
+- **FR-001**: 每次 push 到任何分支，MUST 在 Linux 與 Windows 各執行一次全部自動化測試；需要網路的 Spec Kit 真實安裝測試只在 Linux 執行。
 - **FR-002**: Windows 上 MUST 同時以內建的 Windows PowerShell 與新版 PowerShell 執行入口腳本的測試。
 - **FR-003**: 結果 MUST 依系統分開顯示，並能看到失敗的測試名稱。
 - **FR-004**: 結果 MUST 列出每個系統略過的測試；應在該系統執行的測試被略過時，MUST 視為失敗。
@@ -102,7 +107,7 @@
 - **FR-009**: E2E MUST 使用這次 push 的內容；repo 公開後，MUST 另外以 README 上的真實網址執行首次設定。
 - **FR-010**: E2E 的每個階段 MUST 有獨立的結果與輸出；失敗時 MUST 能看出環境與階段。
 - **FR-011**: 無法在 CI 驗證的項目（例如沒有 winget 時的 git 自動安裝）MUST 明確列為未驗證，MUST NOT 算作通過。
-- **FR-012**: E2E MUST NOT 需要任何帳號、權杖或其他機密，輸出 MUST NOT 含有真實 email。
+- **FR-012**: E2E MUST NOT 需要任何帳號、權杖或其他機密，輸出 MUST NOT 含有真實 email；執行下載來的安裝腳本的環境 MUST NOT 能讀到 CI 提供的存取權杖。
 - **FR-013**: 外部下載的暫時性失敗 MAY 重試一次；重試後仍失敗 MUST 算作失敗，並指出來源。
 
 **入庫檢查**
@@ -133,7 +138,7 @@
 - **SC-004**: 故意破壞工具安裝時，每個 E2E 環境 100% 失敗，並指出環境與階段。
 - **SC-005**: 用 `--no-verify` 推上含假 token 的內容時，CI 100% 失敗，且輸出不含 token 的完整值。
 - **SC-006**: 003 的 T033 中尚未驗證的 Windows 項目，除了明確列為未驗證者，全部由 CI 的 E2E 涵蓋。
-- **SC-007**: 正常開發的一個月內，CI 用量不超過 repo 所屬方案的免費額度；超過時要能在 README 查到如何減少執行。
+- **SC-007**: 每月 40 次 push 以內，CI 用量不超過 GitHub Free 方案的額度（USD 12）；超過時要能在 README 查到如何減少執行。
 
 ## Assumptions
 

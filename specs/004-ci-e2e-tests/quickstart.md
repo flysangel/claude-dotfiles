@@ -23,9 +23,10 @@ uvx check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/
 
 push 分支後，在 GitHub 的 Actions 頁面確認：
 
-- 七個 job 都完成，總時間在 20 分鐘內（SC-002）。
+- 八個 job 都完成，總時間在 20 分鐘內（SC-002）。
 - `unit-windows` 的 PowerShell 5.1 與 7 都有執行，略過數符合預期。
-- `e2e-windows` 的 summary 顯示 winget 是否可用；不可用時 `git` 安裝列為 `UNVERIFIED`。
+- `e2e-windows` 的 summary 顯示 winget 是否可用；不可用時 `setup-git-install` 列為 `UNVERIFIED`。
+- `unit-linux` 的 `RealInstallTests` 有執行，不是略過。
 - 記錄每個 job 的實際分鐘數，更新 research 第 7 節的估算。
 
 ## 4. 故意失敗（每項驗證後就刪除該分支）

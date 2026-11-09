@@ -13,6 +13,7 @@
 - **Decision**:
   - `unit-linux`：在 `ubuntu-latest` 跑全部測試，另外以 runner 內建的 PowerShell 7 加上 `SETUP_PS1_TESTS=1` 跑 Windows 入口腳本的測試。
   - `unit-windows`：在 `windows-latest` 跑全部測試一次（使用 Windows PowerShell 5.1），再以 PowerShell 7 跑一次 `tests/test_setup_scripts_windows.py`。
+- **網路測試**: `unit-linux` 設定 `RUN_NETWORK_TESTS=1`，讓 `/sdd-init` 的真實安裝每次都被驗證；只在 Linux 執行，避免增加 Windows 時間。
 - **Rationale**: FR-002 要求兩種 PowerShell。只重跑入口腳本的測試，可以少花一次完整測試的 Windows 時間。測試目前以 `shutil.which("powershell") or "pwsh"` 選擇 PowerShell，所以要加上 `SETUP_PS1_SHELL` 環境變數來指定。
 - **Alternatives**: 兩種 PowerShell 各跑完整測試，Windows 時間加倍；只跑 5.1 則漏掉 7。
 
@@ -32,7 +33,8 @@
 
 ## 5. Linux E2E 環境
 
-- **Decision**: `ubuntu-latest` 上以 matrix 跑四個容器，用 `docker run` 掛載 checkout 內容：
+- **Decision**: `ubuntu-latest` 上以 matrix 跑四個容器，用 `docker run` 唯讀掛載 bare repo 與 `tests/e2e/`，不掛載 checkout：
+
 
 | 環境 | 映像 | 使用者 | 準備 | 驗證重點 |
 |---|---|---|---|---|
@@ -42,17 +44,18 @@
 | minimum | `debian:10` | root | 從 archive 安裝 git 2.20，安裝 uv 0.4.0，放一個假的 `claude` | 版本下限、只有 `wget` |
 
 - **Rationale**: 與 003 手動實測的組合相同，已知可行。用 `docker run` 而不是 job 的 `container:`，因為後者要在容器內執行 action，Arch 與舊版 Debian 不一定相容。
+- **掛載**: 驅動腳本先把 bare repo 複製到容器內使用者的家目錄，否則擁有者不同時 git 會回報 dubious ownership（003 實測遇過）。結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`，容器不用處理 runner 的檔案權限。
 - **來源**: 在 runner 上把 checkout 做成 bare repo，以 `CLAUDE_DOTFILES_REPO` 指向它，符合「使用這次 push 的內容」（FR-009），也不受 repo 私有影響。checkout 要取完整歷史，入庫檢查也需要。
 
 ## 6. Windows E2E 環境
 
 - **Decision**: 在 `windows-latest` runner 上執行 `tests/e2e/windows.ps1`：
-  1. **隱藏既有工具**：runner 預裝 Git 2.56（在 `C:\Program Files\Git`）。把該目錄改名，並從 `PATH` 移除含有 `git.exe`、`uv.exe`、`claude.exe` 的目錄，確認三者都找不到後才開始。改名是必要的，因為 `setup.ps1` 安裝後會直接檢查這個預設目錄。
+  1. **移除既有工具**：runner 預裝 Git 2.56（在 `C:\Program Files\Git`）。執行它的解除安裝程式 `unins000.exe /VERYSILENT /NORESTART`，並從 `PATH` 移除含有 `git.exe`、`uv.exe`、`claude.exe` 的目錄，確認三者都找不到後才開始。只改名不夠：Windows 的安裝紀錄還在，winget 可能判定 Git 已安裝而回傳非零結束碼。
   2. **winget**：runner-images 的 Windows Server 2025 README 沒有列出 winget。驅動先檢查；找不到時嘗試以 `Microsoft.WinGet.Client` 模組的 `Repair-WinGetPackageManager` 安裝。仍不可用時，不隱藏 git，並把「git 自動安裝」記為未驗證（FR-011）。
   3. 以 Windows PowerShell 5.1 執行入口腳本，因為使用者的一行指令就是在它裡面執行。
-- **Rationale**: runner 以系統管理員身分執行，可以改名目錄；這是在不重灌系統的前提下最接近乾淨環境的做法。
+- **Rationale**: runner 以系統管理員身分執行，可以解除安裝；這是在不重灌系統的前提下最接近乾淨環境的做法。解除安裝必須在 bare repo 建好之後，job 之後的步驟也不能依賴 git；checkout 不保留憑證，收尾步驟不需要 git。
 - **未知**: winget 能否在 runner 上安裝成功，要第一次執行才知道；兩種結果都有對應的處理。
-- **Alternatives**: 只靠 `PATH` 過濾，會被 `setup.ps1` 的預設目錄檢查找到；解除安裝 Git 較慢，也可能留下其他元件。
+- **Alternatives**: 只靠 `PATH` 過濾，會被 `setup.ps1` 的預設目錄檢查找到；只改名目錄，winget 仍看得到舊的安裝紀錄。
 
 ## 7. 用量估算
 
@@ -60,12 +63,12 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 
 | Job | 估計分鐘 | 費用（USD） |
 |---|---|---|
-| `unit-linux` | 3 | 0.018 |
+| `unit-linux`（含網路測試） | 4 | 0.024 |
 | `guard` | 1 | 0.006 |
 | `e2e-linux` × 4 | 12 | 0.072 |
 | `unit-windows` | 10 | 0.100 |
 | `e2e-windows` | 8 | 0.080 |
-| **合計** | 34 | **約 0.28** |
+| **合計** | 35 | **約 0.28** |
 
 - 每月 USD 12 約可支撐 **40 次 push**。單元測試的分鐘數依 003 實測換算：Windows 完整測試約 166 秒，加上 runner 啟動與 uv 安裝。
 - **風險**: 估算未經實測；Windows 佔大部分費用。超過時可以採用的做法依序是：只改 `specs/`、`*.md` 時略過 E2E；Windows E2E 只在 `main` 執行。這兩項都會改變「每次 push」的決定，要由維護者同意，因此寫在 README，不預先實作。
@@ -78,13 +81,13 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 
 ## 9. 外部下載的暫時性失敗
 
-- **Decision**: E2E 驅動在首次設定失敗、且輸出含有入口腳本的下載失敗訊息時，重試一次；兩次都失敗才算失敗，並在結果中標示是下載失敗（FR-013）。
+- **Decision**: E2E 驅動在首次設定失敗、且輸出含有 `cannot download`、`apt-get failed`、`dnf failed`、`pacman failed` 或 `winget failed` 時，重試一次；兩次都失敗才算失敗，並在結果中標示是下載失敗（FR-013）。`setup.ps1` 的官方腳本失敗訊息要改成也含 `cannot download` 與網址，兩個系統才一致。
 - **Rationale**: 官方安裝腳本與套件來源偶爾會短暫失敗，不應被當成程式錯誤；只重試一次，可以避免掩蓋真正的問題。
 
 ## 10. Action 的來源
 
-- **Decision**: 只用 `actions/checkout` 與 `astral-sh/setup-uv`，並固定到 commit SHA，註解標示對應版本。workflow 的 `permissions` 設為 `contents: read`。
-- **Rationale**: 第三方 action 會在有 repo 存取權的環境中執行；固定 SHA 可以避免標籤被改指到其他內容。uv 來自它自己的官方 action，與 003 使用的官方來源一致。
+- **Decision**: 只用 `actions/checkout` 與 `astral-sh/setup-uv`，並固定到 commit SHA，註解標示對應版本。workflow 的 `permissions` 設為 `contents: read`，checkout 一律設 `persist-credentials: false`。
+- **Rationale**: 第三方 action 會在有 repo 存取權的環境中執行；固定 SHA 可以避免標籤被改指到其他內容。checkout 預設會把 token 寫進 `.git/config`，而 E2E 會執行下載來的安裝腳本，不保留憑證才不會讓它們讀到。uv 來自它自己的官方 action，與 003 使用的官方來源一致。
 
 ## 11. 公開後的真實網址
 

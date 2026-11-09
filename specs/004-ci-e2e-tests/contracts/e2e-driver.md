@@ -11,19 +11,17 @@ bash tests/e2e/linux.sh <環境名稱> <bare repo 路徑>
 | 環境變數 | 意義 |
 |---|---|
 | `E2E_SETUP_URL` | 有值時，`setup` 階段改用這個網址的一行指令（公開後的真實網址測試） |
-| `GITHUB_STEP_SUMMARY` | 有值時，把結果行附加到這個檔案 |
-
-容器的準備（安裝 `curl`、建立使用者、版本下限環境的工具）由 workflow 負責，不在驅動腳本內。
+容器的準備（安裝 `curl`、建立使用者、版本下限環境的工具）由 workflow 負責，不在驅動腳本內。驅動腳本把 bare repo 複製到家目錄後才使用；結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`。
 
 ## Windows：`tests/e2e/windows.ps1`
 
-在 Windows runner 上以系統管理員身分執行；它會改名 `C:\Program Files\Git`，不得在個人電腦上執行。
+在 Windows runner 上以系統管理員身分執行；它會**解除安裝系統上的 Git**，不得在個人電腦上執行。
 
 ```text
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\e2e\windows.ps1 -BareRepo <路徑> [-SetupUrl <網址>]
 ```
 
-開始前：隱藏既有工具並確認找不到；處理 winget（見 research 第 6 節）。入口腳本一律以 Windows PowerShell 5.1 執行。
+開始前：解除安裝 Git、移除 `PATH` 上的 uv 與 Claude Code 並確認找不到；處理 winget（見 research 第 6 節）。入口腳本一律以 Windows PowerShell 5.1 執行。
 
 ## 共通
 
