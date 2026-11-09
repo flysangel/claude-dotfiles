@@ -132,7 +132,7 @@ description: "Task list for CI and E2E tests"
 - [X] T034 依第一次執行的結果修正 `tests/e2e/windows.ps1`、`.github/workflows/ci.yml` 與 `tools/setup.ps1`，每次修正 push 前都要維護者同意；把 winget 是否可用記錄到 `specs/004-ci-e2e-tests/research.md` 第 6 節
 - [X] T035 確認 `e2e-windows` 的五個階段結果，把 Windows 上已由 CI 驗證的項目記錄到 `specs/003-license-oneline-setup/research.md` 第 14 節，並更新 `README.md` 的「目前狀態」；CI 涵蓋 003 T033 尚未驗證的項目後，把 `specs/003-license-oneline-setup/tasks.md` 的 T033 標為完成，無法涵蓋的項目明確列為未驗證（SC-006）
 - [X] T036 取得維護者同意後，完成 `specs/004-ci-e2e-tests/quickstart.md` 第 4 段的四個故意失敗情境，每項都用獨立分支，驗證後本機與遠端的分支都要刪除，否則 `--history` 會讓之後的 push 失敗；含假 token 的分支要用測試專用的假值，結果記錄到 `specs/004-ci-e2e-tests/research.md`（SC-003、SC-004、SC-005）
-- [ ] T037 公開後（維護者另外決定），完成 `specs/004-ci-e2e-tests/quickstart.md` 第 5 段，同時完成 `specs/003-license-oneline-setup/tasks.md` 的 T034
+- [X] T037 公開後（維護者另外決定），完成 `specs/004-ci-e2e-tests/quickstart.md` 第 5 段，同時完成 `specs/003-license-oneline-setup/tasks.md` 的 T034
 
 ---
 

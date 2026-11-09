@@ -151,7 +151,7 @@ description: "Task list for the license and one-line setup"
 - [X] T031 確認這個功能沒有改動 `home/`（`git diff --stat main...HEAD -- home/` 沒有輸出），因此不需要執行 `/doctor prompt-audit`；有改動時就要執行
 - [X] T032 在 Linux 容器或虛擬機完成 `specs/003-license-oneline-setup/quickstart.md` 第 5、6 段與第 7 段的自動化部分，結果記錄到 `specs/003-license-oneline-setup/research.md`
 - [X] T033 （由維護者手動與 004 的 CI 共同完成，未涵蓋的項目見 research 第 14 節）請維護者在 Windows 機器先執行 `uv run -m unittest discover -s tests`，確認全部通過且 `tests/test_setup_scripts_windows.py` 沒有被略過，再完成 `specs/003-license-oneline-setup/quickstart.md` 第 3 到第 7 段（`CLAUDE_DOTFILES_REPO` 指向本機 clone），可與 001 的 T029 一起進行；依結果修正 `tools/setup.ps1`，把結果記錄到 `specs/003-license-oneline-setup/research.md`，並更新 `README.md` 的「目前狀態」
-- [ ] T034 公開後（維護者另外決定，先完成 001 的 T030），請維護者在 Linux 與 Windows 乾淨環境完成 `specs/003-license-oneline-setup/quickstart.md` 第 8 段，確認 GitHub 把授權顯示為 Apache-2.0，並把結果記錄到 `specs/003-license-oneline-setup/research.md`
+- [X] T034 公開後（維護者另外決定，先完成 001 的 T030），請維護者在 Linux 與 Windows 乾淨環境完成 `specs/003-license-oneline-setup/quickstart.md` 第 8 段，確認 GitHub 把授權顯示為 Apache-2.0，並把結果記錄到 `specs/003-license-oneline-setup/research.md`
 
 ---
 

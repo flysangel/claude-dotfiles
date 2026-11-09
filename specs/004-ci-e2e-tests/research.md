@@ -142,3 +142,7 @@ Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
 - **本機的 `--history` 同理**：假 token 的本機分支與遠端追蹤參照還在時，其他分支的 push 會被擋下；要兩者都刪除才能繼續。
 - **失敗名稱沒有進 summary**：PowerShell 為 stderr 加上顏色碼，`ci_summary.sh` 比對不到 `FAIL:`。已改為先移除顏色碼，並關閉 PowerShell 的輸出著色。
 - **假 token 的 commit**：分支刪除後，GitHub 上仍可能用 SHA 存取該 commit。內容是測試用假值，不是憑證。
+
+## 16. 公開後（T037，2026-11-09）
+
+公開前再次通過 `repo_guard.py --history` 與 gitleaks 的預設及帳號層規則。公開後的 CI（run 42595034003）九個 job 全部通過，`ubuntu-public` 與 `windows-public` 的五個階段都是 `PASS`。公開 repo 使用標準 runner 不計費，第 7 節的額度估算不再適用。剛公開時 raw 網址與授權偵測有短暫延遲。

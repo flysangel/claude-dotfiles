@@ -118,3 +118,7 @@ Ubuntu 容器內確認的項目：
 **CI 補上的項目**（`specs/004-ci-e2e-tests` 的 `e2e-windows`，2026-11-09）：移除既有工具後，由 winget 安裝 git、官方腳本安裝 uv 與 Claude Code；`-Dev -Email` 與實際 commit；`remove`；目標不是這個 repo 時停止。失敗時視窗不被關閉由單元測試涵蓋。
 
 **尚未驗證**：真正全新的 Windows 機器（CI 機器是移除既有工具來模擬，winget 也改用 `wininet` 下載）；互動視窗的實際操作；公開後的真實網址（T034）。
+
+## 15. 公開後的驗收（T034，2026-11-09）
+
+repo 公開後，CI（run 42595034003）以 README 的真實網址在 Ubuntu 容器與 Windows runner 各跑一次，`setup`、`rerun`、`dev`、`remove`、`refuse` 都通過。GitHub 的授權 API 回報 Apache-2.0。

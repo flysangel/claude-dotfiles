@@ -9,11 +9,9 @@
 | `sdd-derive` | 從既有專案導出 constitution 與 spec |
 | `sdd-grill` | 逐題追問，討論出 constitution 與 spec |
 
-> **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令在 Linux 與 Windows 都由 CI 的 E2E 驗證；Windows 是在 CI 機器上移除既有工具後模擬乾淨環境，尚未在真正的新機器上跑過。macOS 不在支援範圍。
+> **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令在 Linux 與 Windows 都由 CI 的 E2E 驗證，也以公開網址實跑過；Windows 是在 CI 機器上移除既有工具後模擬乾淨環境，尚未在真正的新機器上跑過。macOS 不在支援範圍。
 
 ## 安裝
-
-> repo 公開前無法匿名下載，請改用下方「公開前的安裝」。
 
 Linux：
 
@@ -74,15 +72,6 @@ uv run ~/claude-dotfiles/tools/machine_setup.py remove
 ```
 
 Windows 把路徑換成 `$HOME\claude-dotfiles\tools\machine_setup.py`；clone 在其他位置時也要換。它會還原 `~/.claude/`，曾做開發設定時也會移除 hook 並還原 email。工具與 clone 會保留，並列出移除方式。
-
-### 公開前的安裝
-
-先自行 clone，在 repo 根目錄執行入口腳本；`--dir .` 代表使用目前這個 clone：
-
-```text
-bash tools/setup.sh --dir .
-powershell -ExecutionPolicy Bypass -File tools\setup.ps1 -Dir .
-```
 
 ## 日常使用
 
@@ -147,7 +136,7 @@ powershell -ExecutionPolicy Bypass -File tools\setup.ps1 -Dir .
 |---|---|
 | `uv run tools/repo_guard.py --status` | 查看防護是否已啟用 |
 | `uv run tools/repo_guard.py --all` | 檢查所有已追蹤的檔案 |
-| `uv run tools/repo_guard.py --history` | 檢查完整歷史，公開前必跑；每次 push 也會自動執行 |
+| `uv run tools/repo_guard.py --history` | 檢查完整歷史；每次 push 也會自動執行 |
 | `uv run tools/review_settings.py` | 判斷 `~/.claude/settings.json` 每個項目能否共用，輸出不含設定值 |
 
 `--status` 回報 `unverified` 表示有設定 `core.hooksPath`，工具無法確認它會不會轉交；用一個會被擋下的 commit 實際試過就能確定。
@@ -189,7 +178,7 @@ uv run tools/dotfiles.py deploy
 
 E2E 的驅動腳本會真的安裝工具，`tests/e2e/windows.ps1` 還會解除安裝 Git，**不要在自己的電腦上執行**。
 
-repo 私有時，用量會計入 GitHub 方案的免費額度：實測每次 push 約 USD 0.11，GitHub Free 每月 USD 12，約可支撐 100 次 push；公開後免費。不夠時可以考慮只改文件時略過 E2E，或讓 Windows E2E 只在 `main` 執行，這兩種做法都會減少驗證，要由維護者決定。
+repo 公開後，標準 runner 不計費。`e2e-linux` 的 ubuntu 環境與 `e2e-windows-public` 只在 `main` 上另外用 README 的真實網址跑一次。
 
 ## 已知限制
 
@@ -198,8 +187,7 @@ repo 私有時，用量會計入 GitHub 方案的免費額度：實測每次 pus
 - **一行指令要信任來源**：它會直接執行從 `main` 下載的腳本，以及 uv 與 Claude Code 的官方安裝腳本。不放心時請先下載檢視。
 - **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上；`git push --no-verify` 則只有 CI 能事後發現，無法阻止內容進入遠端。CI 沒有本機識別清單，姓名、主機名稱等個資只有本機檢查會比對。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
 - **Windows E2E 不等於新機器**：CI 的 Windows 機器已預裝許多工具，E2E 是移除既有工具後模擬乾淨環境，且 winget 改用 `wininet` 下載；runner 沒有 winget 時，自動安裝 git 會標為未驗證。
-- **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
-- **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。
+- **憑證規則有限**：內建規則只涵蓋常見格式，需要第二意見時可以再跑 `gitleaks git --no-banner --redact`。
 - **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則檢查不會執行。
 - **模型差異**：Sonnet 的驗收全部通過。Haiku 曾用英文回覆英文提問，也較容易忽略 skill 的收尾步驟與「不加未確認規則」的指示。
 - **未驗證的規則**：「提問使用 AskUserQuestion」無法用 `claude -p` 測試，只靠實際對話確認。
