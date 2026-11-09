@@ -6,8 +6,8 @@
 |---|---|
 | `home/CLAUDE.md` | 所有專案共用的工作偏好 |
 | `/sdd-init` | 在專案導入最新穩定版 Spec Kit，或再移除 |
-| `sdd-derive` | 從既有專案導出 constitution 與 spec |
-| `sdd-grill` | 逐題追問，討論出 constitution 與 spec |
+| `/sdd-derive` | 從既有專案導出 constitution 與 spec |
+| `/sdd-grill` | 逐題追問，討論出 constitution 與 spec |
 
 > **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令在 Linux 與 Windows 都由 CI 的 E2E 驗證，也以公開網址實跑過；Windows 是在 CI 機器上移除既有工具後模擬乾淨環境，尚未在真正的新機器上跑過。macOS 不在支援範圍。
 
@@ -80,8 +80,8 @@ Windows 把路徑換成 `$HOME\claude-dotfiles\tools\machine_setup.py`；clone �
 | 專案狀況 | 做法 |
 |---|---|
 | 還沒導入 Spec Kit | 手動執行 `/sdd-init`，它會提示下一步 |
-| 新專案或方向未定 | 請 Claude 追問討論，會使用 `sdd-grill` |
-| 已有程式碼 | 請 Claude 導出 constitution 與 spec，會使用 `sdd-derive`；專案要重新設計時，可以說只要 spec |
+| 新專案或方向未定 | 請 Claude 追問討論，或執行 `/sdd-grill` |
+| 已有程式碼 | 請 Claude 導出 constitution 與 spec，或執行 `/sdd-derive`；專案要重新設計時，可以說只要 spec |
 
 `sdd-grill` 與 `sdd-derive` 都會先等你確認，才寫入文件，並且止於 spec。之後用 Spec Kit 接續：
 
