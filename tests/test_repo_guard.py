@@ -451,6 +451,35 @@ class HistoryTests(RepoTestCase):
         self.git("commit", "-qm", message, "--no-verify")
         return self.git("rev-parse", "HEAD").stdout.strip()
 
+    def test_without_identity_checks_the_other_rules(self) -> None:
+        self.identity_file.unlink(missing_ok=True)
+        self.commit("allowed/clean.txt", "clean\n")
+        result = self.check("--history", "--without-identity")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("沒有比對本機識別清單", result.stdout.splitlines()[0])
+
+    def test_without_identity_still_finds_violations(self) -> None:
+        self.identity_file.unlink(missing_ok=True)
+        self.commit("allowed/secret.txt", f"token = {FAKE_TOKEN}\n")
+        result = self.check("--history", "--without-identity")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("secret", result.stderr)
+        self.assertNotIn(FAKE_TOKEN, result.stdout + result.stderr)
+
+    def test_without_identity_ignores_an_existing_list(self) -> None:
+        self.identity_file.write_text("uniquemarker\n", encoding="utf-8")
+        self.commit("allowed/name.txt", "uniquemarker\n")
+        self.assertEqual(self.check("--history").returncode, 1)
+        self.assertEqual(self.check("--history", "--without-identity").returncode, 0)
+
+    def test_without_identity_needs_history(self) -> None:
+        self.assertEqual(self.check("--all", "--without-identity").returncode, 3)
+
+    def test_history_without_a_list_is_still_incomplete(self) -> None:
+        self.identity_file.unlink(missing_ok=True)
+        self.commit("allowed/clean.txt", "clean\n")
+        self.assertEqual(self.check("--history").returncode, 3)
+
     def test_clean_history_passes(self) -> None:
         self.commit("allowed/file.txt", "hello\n")
         result = self.check("--history")

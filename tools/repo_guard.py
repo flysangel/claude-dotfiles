@@ -427,9 +427,11 @@ def check_history(root: Path, identity: Identity) -> list[Violation]:
     return found
 
 
-def run_history(root: Path) -> int:
-    identity = load_identity()
-    if not identity.entries:
+def run_history(root: Path, without_identity: bool = False) -> int:
+    if without_identity:
+        print("注意：這次沒有比對本機識別清單，姓名、主機名稱等個資要靠本機檢查。")
+    identity = Identity(()) if without_identity else load_identity()
+    if not identity.entries and not without_identity:
         print(f"本機識別清單不存在或沒有內容：{identity_path()}", file=sys.stderr)
         print("請先建立，否則無法確認歷史中沒有姓名、主機名稱等個資。", file=sys.stderr)
         print("不通過", file=sys.stderr)
@@ -534,10 +536,14 @@ def main(argv: list[str] | None = None) -> int:
     mode.add_argument("--status", action="store_true", help="回報防護是否已啟用")
     mode.add_argument("--install-hook", action="store_true", help="安裝 git hook")
     mode.add_argument("--uninstall-hook", action="store_true", help="移除此工具安裝的 hook")
+    parser.add_argument("--without-identity", action="store_true", help="搭配 --history，用於沒有本機識別清單的 CI")
     args = parser.parse_args(argv)
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+    if args.without_identity and not args.history:
+        print("--without-identity 只能與 --history 一起使用。", file=sys.stderr)
+        return EXIT_INCOMPLETE
     try:
         root = repo_root()
         if args.install_hook:
@@ -547,7 +553,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.status:
             return print_status(root)
         if args.history:
-            return run_history(root)
+            return run_history(root, args.without_identity)
         identity = load_identity()
         if not identity.entries:
             warn_identity_missing()
