@@ -79,7 +79,7 @@ param(
         $command = "`$ErrorActionPreference = 'Stop'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; irm '$url' | iex"
         & powershell -NoProfile -ExecutionPolicy Bypass -Command $command
         if ($LASTEXITCODE -ne 0) {
-            Fail "installing ${label}: the official installer failed or could not be downloaded. Check the network and run this again, or see $docs"
+            Fail "installing ${label}: cannot download or run $url. Check the network and run this again, or see $docs"
         }
         if (-not (Find-InstalledTool $tool)) {
             Fail "installing ${label}: installed, but $tool is not on PATH. Open a new terminal and run this again."

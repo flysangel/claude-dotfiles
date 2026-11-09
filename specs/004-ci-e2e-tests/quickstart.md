@@ -8,7 +8,7 @@ workflow 只能在 GitHub 上驗證。第 3 段以後的每一次 push 都要維
 uv run -m unittest discover -s tests
 REQUIRED_TEST_GROUPS=setup-sh uv run -m unittest tests.test_setup_scripts
 REQUIRED_TEST_GROUPS=powershell uv run -m unittest tests.test_setup_scripts_windows
-uvx check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml
+uv tool run check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml
 ```
 
 預期：第一行全部通過；第二行在 Linux 通過；第三行在沒有 PowerShell 的機器上**失敗**，證明閘門有效；schema 檢查通過。

@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 import fake_tool  # noqa: E402
+from gates import requires  # noqa: E402
 
 SETUP_SH = ROOT / "tools" / "setup.sh"
 SETUP_PS1 = ROOT / "tools" / "setup.ps1"
@@ -37,7 +38,7 @@ sys.exit(int(os.environ.get("FAKE_SETUP_RC", "0")))
 """
 
 
-@unittest.skipUnless(sys.platform.startswith("linux"), "tools/setup.sh targets Linux")
+@requires("setup-sh", sys.platform.startswith("linux"), "tools/setup.sh targets Linux")
 class SetupShTestCase(unittest.TestCase):
     TOOLS = ("uname", "id", "curl", "git", "uv", "claude")
 
@@ -466,6 +467,22 @@ class StaticTests(unittest.TestCase):
         iex_lines = [line for line in text.splitlines() if re.search(r"\|\s*iex", line)]
         self.assertEqual(len(iex_lines), 1)
         self.assertIn("$command = ", iex_lines[0])
+
+    def test_download_failures_share_one_message(self) -> None:
+        for path in self.scripts():
+            self.assertIn("cannot download", path.read_text(encoding="ascii"), path.name)
+
+    def test_e2e_drivers_cover_every_stage(self) -> None:
+        drivers = [ROOT / "tests" / "e2e" / "linux.sh", ROOT / "tests" / "e2e" / "windows.ps1"]
+        (ROOT / "tests" / "e2e" / "windows.ps1").read_bytes().decode("ascii")
+        for path in drivers:
+            text = path.read_text(encoding="utf-8")
+            for stage in ("setup", "rerun", "dev", "remove", "refuse"):
+                self.assertRegex(text, rf"(?i)stage[-_]{stage}", (path.name, stage))
+            addresses = re.findall(r"[\w.+-]+@[\w.-]+", text)
+            self.assertTrue(addresses, path.name)
+            for address in addresses:
+                self.assertTrue(address.endswith("@users.noreply.github.com"), (path.name, address))
 
     def test_powershell_starts_with_parameters(self) -> None:
         code = [

@@ -96,5 +96,5 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 
 ## 12. 本機驗證 workflow
 
-- **Decision**: 以 `uvx check-jsonschema --builtin-schema vendor.github-workflows` 檢查 YAML；E2E 驅動先在本機的 podman 容器內實際執行。
+- **Decision**: 以 `uv tool run check-jsonschema --builtin-schema vendor.github-workflows` 檢查 YAML；E2E 驅動先在本機的 podman 容器內實際執行。
 - **Rationale**: workflow 的行為只能在 GitHub 上驗證，但語法錯誤與驅動腳本的錯誤可以先在本機抓到，減少試錯的 push。

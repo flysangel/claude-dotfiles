@@ -41,7 +41,7 @@ description: "Task list for CI and E2E tests"
 **⚠️ CRITICAL**: 完成前不要開始任何 user story
 
 - [ ] T002 建立 `tests/test_ci_workflow.py`，以標準庫（文字比對，不依賴 YAML 套件）檢查 `.github/workflows/ci.yml`：觸發包含 `push` 與 `workflow_dispatch`；`concurrency` 以 `github.ref` 分組且 `cancel-in-progress: true`（FR-017）；`permissions` 只有 `contents: read`；不含 `secrets.`（FR-012）；每個 `uses:` 都固定到 40 碼 commit SHA，且只來自 `actions/checkout` 與 `astral-sh/setup-uv`；每個 `actions/checkout` 都設 `persist-credentials: false`（FR-012）；不含 `run_trigger_evals`（FR-005）
-- [ ] T003 建立 `.github/workflows/ci.yml` 的骨架：名稱、觸發、`concurrency`、`permissions`，先放一個最小的 `unit-linux` job；查出 `actions/checkout` 與 `astral-sh/setup-uv` 目前穩定版的 commit SHA 並固定，以註解標示版本；讓 T002 通過，並執行 `uvx check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml`
+- [ ] T003 建立 `.github/workflows/ci.yml` 的骨架：名稱、觸發、`concurrency`、`permissions`，先放一個最小的 `unit-linux` job；查出 `actions/checkout` 與 `astral-sh/setup-uv` 目前穩定版的 commit SHA 並固定，以註解標示版本；讓 T002 通過，並執行 `uv tool run check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml`
 
 **Checkpoint**: workflow 合法且符合共通限制
 
@@ -125,7 +125,7 @@ description: "Task list for CI and E2E tests"
 - [ ] T027 在 `README.md` 新增 CI 段落：有哪些 job、到哪裡看結果、每次 push 的預估用量與免費額度；寫明超過額度時可以考慮的兩種做法（只改文件時略過 E2E、Windows E2E 只在 `main` 跑），並註明這兩種做法要維護者決定
 - [ ] T028 更新 `README.md` 的「已知限制」：`git push --no-verify` 的說明改為 CI 能事後發現但無法阻止；CI 沒有比對本機識別清單；Windows E2E 在 CI 機器上模擬乾淨環境，不等於真正的新機器
 - [ ] T029 [P] 在 `tests/test_content.py` 加入檢查：`README.md` 提到 CI 段落，且 `.repo-allowlist` 含 `.github/**`
-- [ ] T030 執行 `uv run -m unittest discover -s tests`、`uv run tools/repo_guard.py --all` 與 `uvx check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml`，全部通過
+- [ ] T030 執行 `uv run -m unittest discover -s tests`、`uv run tools/repo_guard.py --all` 與 `uv tool run check-jsonschema --builtin-schema vendor.github-workflows .github/workflows/ci.yml`，全部通過
 - [ ] T031 確認這個功能沒有改動 `home/`（`git diff --stat main...HEAD -- home/` 沒有輸出），因此不需要執行 `/doctor prompt-audit`；有改動時就要執行
 - [ ] T032 依憲章 Constitution Check 再確認一次：新增檔案都在白名單內，workflow 與驅動腳本不含真實 email、機密或絕對的個人路徑
 - [ ] T033 取得維護者同意後 push 分支，完成 `specs/004-ci-e2e-tests/quickstart.md` 第 3 段的觀察；把實際分鐘數更新到 `specs/004-ci-e2e-tests/research.md` 第 7 節與 `README.md` 的 CI 段落；估算超過額度時回報維護者決定（SC-007）

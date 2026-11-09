@@ -1,0 +1,158 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  unit-linux:
+    runs-on: ubuntu-latest
+    env:
+      REQUIRED_TEST_GROUPS: setup-sh,powershell
+      SETUP_PS1_TESTS: "1"
+      SETUP_PS1_SHELL: pwsh
+      RUN_NETWORK_TESTS: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: Run all tests
+        shell: bash
+        run: |
+          uv run -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/tests.log"
+          exit "${PIPESTATUS[0]}"
+      - name: Summarize
+        if: always()
+        shell: bash
+        run: bash tests/ci_summary.sh "Linux tests" "$RUNNER_TEMP/tests.log"
+
+  unit-windows:
+    runs-on: windows-latest
+    env:
+      REQUIRED_TEST_GROUPS: powershell
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: Run all tests with Windows PowerShell
+        shell: bash
+        env:
+          SETUP_PS1_SHELL: powershell
+        run: |
+          uv run -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/tests-51.log"
+          exit "${PIPESTATUS[0]}"
+      - name: Run entry script tests with PowerShell 7
+        if: always()
+        shell: bash
+        env:
+          SETUP_PS1_SHELL: pwsh
+        run: |
+          uv run -m unittest tests.test_setup_scripts_windows -v 2>&1 | tee "$RUNNER_TEMP/tests-7.log"
+          exit "${PIPESTATUS[0]}"
+      - name: Summarize
+        if: always()
+        shell: bash
+        run: |
+          bash tests/ci_summary.sh "Windows tests (Windows PowerShell)" "$RUNNER_TEMP/tests-51.log"
+          bash tests/ci_summary.sh "Windows entry script tests (PowerShell 7)" "$RUNNER_TEMP/tests-7.log"
+
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: Check the full history
+        run: uv run tools/repo_guard.py --history --without-identity
+
+  e2e-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: ubuntu
+            image: ubuntu:24.04
+          - environment: fedora
+            image: fedora:latest
+          - environment: arch
+            image: archlinux:latest
+          - environment: minimum
+            image: debian:10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prepare what the container may see
+        shell: bash
+        run: |
+          mkdir "$RUNNER_TEMP/e2e"
+          git clone --quiet --bare . "$RUNNER_TEMP/e2e/source.git"
+          cp tools/setup.sh tests/e2e/linux.sh tests/e2e/prepare.sh "$RUNNER_TEMP/e2e/"
+      - name: Run the setup from scratch
+        shell: bash
+        run: |
+          docker run --rm -v "$RUNNER_TEMP/e2e:/e2e:ro" "${{ matrix.image }}" \
+            bash /e2e/prepare.sh "${{ matrix.environment }}" 2>&1 | tee "$RUNNER_TEMP/e2e.log"
+          status=${PIPESTATUS[0]}
+          grep '^E2E ' "$RUNNER_TEMP/e2e.log" >>"$GITHUB_STEP_SUMMARY" || true
+          exit "$status"
+      - name: Run the setup from the public address
+        if: ${{ !github.event.repository.private && github.ref == 'refs/heads/main' && matrix.environment == 'ubuntu' }}
+        shell: bash
+        run: |
+          docker run --rm -e E2E_SETUP_URL=https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.sh \
+            -v "$RUNNER_TEMP/e2e:/e2e:ro" "${{ matrix.image }}" \
+            bash /e2e/prepare.sh ubuntu-public 2>&1 | tee "$RUNNER_TEMP/e2e-public.log"
+          status=${PIPESTATUS[0]}
+          grep '^E2E ' "$RUNNER_TEMP/e2e-public.log" >>"$GITHUB_STEP_SUMMARY" || true
+          exit "$status"
+
+  e2e-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Git is uninstalled by the driver, so this step has to come first.
+      - name: Prepare the source
+        shell: bash
+        run: git clone --quiet --bare . "$RUNNER_TEMP/source.git"
+      - name: Run the setup from scratch
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\e2e\windows.ps1 -BareRepo "$env:RUNNER_TEMP\source.git" | Tee-Object -FilePath "$env:RUNNER_TEMP\e2e.log"
+          $status = $LASTEXITCODE
+          Select-String -Path "$env:RUNNER_TEMP\e2e.log" -Pattern '^E2E ' | ForEach-Object { $_.Line } | Add-Content -Path $env:GITHUB_STEP_SUMMARY
+          exit $status
+
+  e2e-windows-public:
+    if: ${{ !github.event.repository.private && github.ref == 'refs/heads/main' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run the setup from the public address
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\e2e\windows.ps1 -SetupUrl https://raw.githubusercontent.com/flysangel/claude-dotfiles/main/tools/setup.ps1 | Tee-Object -FilePath "$env:RUNNER_TEMP\e2e.log"
+          $status = $LASTEXITCODE
+          Select-String -Path "$env:RUNNER_TEMP\e2e.log" -Pattern '^E2E ' | ForEach-Object { $_.Line } | Add-Content -Path $env:GITHUB_STEP_SUMMARY
+          exit $status

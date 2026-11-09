@@ -18,12 +18,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 import fake_tool  # noqa: E402
+from gates import requires  # noqa: E402
 
 SETUP_PS1 = ROOT / "tools" / "setup.ps1"
 AT = "@"
 EMAIL = f"12345+tester{AT}users.noreply.github.com"
 IS_WINDOWS = os.name == "nt"
-POWERSHELL = shutil.which("powershell") or shutil.which("pwsh")
+REQUESTED_SHELL = os.environ.get("SETUP_PS1_SHELL")
+POWERSHELL = shutil.which(REQUESTED_SHELL) if REQUESTED_SHELL else shutil.which("powershell") or shutil.which("pwsh")
 RUN_ALL = IS_WINDOWS or os.environ.get("SETUP_PS1_TESTS") == "1"
 FAKE_SETUP = """\
 import json, os, sys
@@ -85,6 +87,9 @@ class PowerShellTestCase(unittest.TestCase):
             "GIT_CONFIG_GLOBAL": os.devnull,
             "GIT_CONFIG_NOSYSTEM": "1",
         }
+        if not IS_WINDOWS:
+            # setup.ps1 builds paths from these, and only Windows defines them.
+            self.env.update(ProgramFiles=str(self.base / "pf"), LOCALAPPDATA=str(self.base / "la"))
 
     def make_source(self) -> Path:
         bare = self.base / "source.git"
@@ -135,7 +140,7 @@ class PowerShellTestCase(unittest.TestCase):
         return result.stdout + result.stderr
 
 
-@unittest.skipUnless(POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
+@requires("powershell", POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
 class WindowsPreflightTests(PowerShellTestCase):
     def test_old_git_stops_before_installing_anything(self) -> None:
         self.without("uv", "claude")
@@ -164,7 +169,7 @@ class WindowsPreflightTests(PowerShellTestCase):
         self.assertFalse((self.home / "claude-dotfiles").exists())
 
 
-@unittest.skipUnless(POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
+@requires("powershell", POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
 class WindowsToolInstallTests(PowerShellTestCase):
     def test_nothing_is_installed_when_all_tools_exist(self) -> None:
         result = self.run_script()
@@ -222,7 +227,7 @@ class WindowsToolInstallTests(PowerShellTestCase):
         self.assertEqual(self.setup_calls(), [])
 
 
-@unittest.skipUnless(POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
+@requires("powershell", POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
 class WindowsCloneTests(PowerShellTestCase):
     def existing_repo(self, name: str, origin: str | None) -> Path:
         path = self.base / name
@@ -288,7 +293,7 @@ class WindowsCloneTests(PowerShellTestCase):
         self.assertIn("cannot clone", self.output(result))
 
 
-@unittest.skipUnless(POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
+@requires("powershell", POWERSHELL and RUN_ALL, "needs Windows, or pwsh with SETUP_PS1_TESTS=1")
 class WindowsSessionTests(PowerShellTestCase):
     def test_options_reach_the_second_stage(self) -> None:
         result = self.run_script("-Dev", "-Email", quoted(EMAIL), "-Force")
