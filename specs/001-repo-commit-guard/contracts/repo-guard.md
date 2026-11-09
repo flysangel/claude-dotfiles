@@ -13,6 +13,7 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 | `--all` | 所有已追蹤檔案 | 手動 |
 | `--history` | 所有已追蹤檔案，加上 `git rev-list --all` 每個 commit 的身分、訊息與引入的檔案版本 | `pre-push` hook，以及公開前 |
 | `--status` | 不檢查，回報啟用狀態 | 手動 |
+| `--history --without-identity` | 與 `--history` 相同，但不比對本機識別清單；第一行說明未比對，結束碼依其餘規則 | CI，沒有本機識別清單的環境 |
 | `--install-hook` | 安裝 `pre-commit`、`commit-msg`、`pre-push` 三個 hook，重複執行結果相同；已有其他 hook 時不覆蓋 | 新 clone |
 | `--uninstall-hook` | 只移除由此工具安裝的 hook，含 002 版本 | 手動 |
 
@@ -43,7 +44,7 @@ uv run tools/repo_guard.py [--staged | --all | --history | --commit-msg <file> |
 |---|---|
 | 0 | 通過，或 `--status` 正常回報 |
 | 1 | 有違規，或 hook 安裝被既有 hook 擋下 |
-| 3 | 無法完成檢查，例如白名單遺失、例外檔格式錯誤，或 `--history` 時本機識別清單不存在或沒有內容；視為未通過 |
+| 3 | 無法完成檢查，例如白名單遺失、例外檔格式錯誤，或 `--history` 時本機識別清單不存在或沒有內容（加 `--without-identity` 時除外），或 `--without-identity` 沒有搭配 `--history`；視為未通過 |
 
 本機識別清單不存在或沒有內容時，`--staged`、`--commit-msg` 與 `--all` 只提醒，不影響結束碼。
 

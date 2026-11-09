@@ -66,12 +66,15 @@ specs/004-ci-e2e-tests/
 └── ci.yml                       # 新增：單元測試、入庫檢查、E2E
 
 tests/
+├── ci_summary.sh                # 新增：把測試結果寫進 job summary
 ├── gates.py                     # 新增：宣告必須執行的測試群組
+├── test_ci_workflow.py          # 新增：workflow 的靜態檢查
 ├── test_gates.py                # 新增
 ├── test_setup_scripts.py        # 改用 gates
 ├── test_setup_scripts_windows.py  # 改用 gates，並可指定 PowerShell 版本
 ├── test_repo_guard.py           # 擴充：--without-identity
 └── e2e/
+    ├── prepare.sh               # 新增：容器的環境準備
     ├── linux.sh                 # 新增：容器內的 E2E 驅動
     └── windows.ps1              # 新增：Windows runner 的 E2E 驅動
 

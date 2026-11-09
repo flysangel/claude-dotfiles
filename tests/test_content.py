@@ -123,6 +123,17 @@ class LicenseTests(unittest.TestCase):
         self.assertNotIn("授權條件也要在公開前決定", text)
 
 
+class CiDocumentationTests(unittest.TestCase):
+    def test_readme_explains_ci(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("## CI\n", text)
+        self.assertIn("e2e-windows", text)
+
+    def test_workflows_are_allowed_into_the_repo(self) -> None:
+        lines = (ROOT / ".repo-allowlist").read_text(encoding="utf-8").splitlines()
+        self.assertIn(".github/**", lines)
+
+
 class SkillProblemsTests(unittest.TestCase):
     """The rules behind adding a skill, checked on a throwaway structure."""
 

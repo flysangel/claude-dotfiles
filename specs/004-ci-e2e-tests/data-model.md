@@ -17,7 +17,7 @@ E2E <環境> <階段> <PASS|FAIL|UNVERIFIED> <說明>
 
 規則：
 
-- 階段依序執行；前一階段失敗時，後續階段記為 `FAIL`，說明為「前一階段失敗」。
+- 階段依序執行；前一階段失敗時，後續階段記為 `FAIL`，說明為 `previous stage failed`。
 - 任一階段為 `FAIL`，驅動腳本以結束碼 1 結束。`UNVERIFIED` 不影響結束碼，但必須出現在 summary。
 - 說明與輸出不得含真實 email；開發設定使用的地址固定為假的 `@users.noreply.github.com` 地址。
 

@@ -2,7 +2,9 @@
 
 ## Linux：`tests/e2e/linux.sh`
 
-在拋棄式容器內以要測試的使用者身分執行；不得在開發機上直接執行，因為它會真的安裝工具並改動家目錄。
+在拋棄式容器內以要測試的使用者身分執行，由 `tests/e2e/prepare.sh <環境名稱>` 準備環境後啟動；不得在開發機上直接執行，因為它會真的安裝工具並改動家目錄。
+
+workflow 把 `source.git`（bare repo）、`setup.sh`、`linux.sh`、`prepare.sh` 放進同一個目錄，唯讀掛載到容器的 `/e2e`，不掛載 checkout。
 
 ```text
 bash tests/e2e/linux.sh <環境名稱> <bare repo 路徑>
@@ -11,7 +13,7 @@ bash tests/e2e/linux.sh <環境名稱> <bare repo 路徑>
 | 環境變數 | 意義 |
 |---|---|
 | `E2E_SETUP_URL` | 有值時，`setup` 階段改用這個網址的一行指令（公開後的真實網址測試） |
-容器的準備（安裝 `curl`、建立使用者、版本下限環境的工具）由 workflow 負責，不在驅動腳本內。驅動腳本把 bare repo 複製到家目錄後才使用；結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`。
+容器的準備（安裝 `curl`、建立使用者、版本下限環境的工具）在 `prepare.sh`，不在驅動腳本內。驅動腳本把 bare repo 複製到家目錄後才使用；結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`。
 
 ## Windows：`tests/e2e/windows.ps1`
 

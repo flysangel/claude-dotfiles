@@ -176,12 +176,28 @@ uv run tools/dotfiles.py deploy
 
 要加入新的 skill，請見 [docs/adding-a-skill.md](docs/adding-a-skill.md)。新增其他路徑的檔案前，要先加進 `.repo-allowlist`，否則 commit 會被擋下。
 
+## CI
+
+每次 push 到任何分支，`.github/workflows/ci.yml` 都會執行以下工作，結果在 GitHub 的 Actions 頁面與各 job 的 summary：
+
+| Job | 內容 |
+|---|---|
+| `unit-linux`、`unit-windows` | 全部單元測試；Windows 上兩種 PowerShell 都會跑入口腳本的測試。該跑的測試被略過時算失敗 |
+| `guard` | 對完整歷史做入庫檢查，不比對本機識別清單 |
+| `e2e-linux` | 在 Ubuntu、Fedora、Arch 與版本下限的容器內，實際跑完一行指令的流程 |
+| `e2e-windows` | 在 Windows 上移除既有工具後跑同一套流程 |
+
+E2E 的驅動腳本會真的安裝工具，`tests/e2e/windows.ps1` 還會解除安裝 Git，**不要在自己的電腦上執行**。
+
+repo 私有時，用量會計入 GitHub 方案的免費額度：估計每次 push 約 USD 0.28，GitHub Free 每月 USD 12，約可支撐 40 次 push；公開後免費。不夠時可以考慮只改文件時略過 E2E，或讓 Windows E2E 只在 `main` 執行，這兩種做法都會減少驗證，要由維護者決定。
+
 ## 已知限制
 
 - **解除不移除工具與 clone**：uv、git、Claude Code 可能已被其他專案使用，clone 內也可能有未推送的工作，所以只列出移除方式。
 - **自動安裝 git 有範圍**：只支援 apt、dnf、pacman 與 winget，其他環境要先自行安裝 git。在進入設定階段前就失敗時，這次裝好的工具只列在當次訊息，解除時不會列出。
 - **一行指令要信任來源**：它會直接執行從 `main` 下載的腳本，以及 uv 與 Claude Code 的官方安裝腳本。不放心時請先下載檢視。
-- **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上，但 `git push --no-verify` 就沒有防護了，要靠之後的 CI。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
+- **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上；`git push --no-verify` 則只有 CI 能事後發現，無法阻止內容進入遠端。CI 沒有本機識別清單，姓名、主機名稱等個資只有本機檢查會比對。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
+- **Windows E2E 不等於新機器**：CI 的 Windows 機器已預裝許多工具，E2E 是移除既有工具後模擬乾淨環境；runner 沒有 winget 時，自動安裝 git 會標為未驗證。
 - **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
 - **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。
 - **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則檢查不會執行。

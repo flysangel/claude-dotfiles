@@ -44,7 +44,7 @@
 | minimum | `debian:10` | root | 從 archive 安裝 git 2.20，安裝 uv 0.4.0，放一個假的 `claude` | 版本下限、只有 `wget` |
 
 - **Rationale**: 與 003 手動實測的組合相同，已知可行。用 `docker run` 而不是 job 的 `container:`，因為後者要在容器內執行 action，Arch 與舊版 Debian 不一定相容。
-- **掛載**: 驅動腳本先把 bare repo 複製到容器內使用者的家目錄，否則擁有者不同時 git 會回報 dubious ownership（003 實測遇過）。結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`，容器不用處理 runner 的檔案權限。
+- **準備與掛載**: 環境準備寫在 `tests/e2e/prepare.sh`，本機容器與 CI 用同一份。驅動腳本先把 bare repo 複製到容器內使用者的家目錄，否則擁有者不同時 git 會回報 dubious ownership（003 實測遇過）。結果行寫到標準輸出，由 workflow 轉寫到 `$GITHUB_STEP_SUMMARY`，容器不用處理 runner 的檔案權限。
 - **來源**: 在 runner 上把 checkout 做成 bare repo，以 `CLAUDE_DOTFILES_REPO` 指向它，符合「使用這次 push 的內容」（FR-009），也不受 repo 私有影響。checkout 要取完整歷史，入庫檢查也需要。
 
 ## 6. Windows E2E 環境
@@ -98,3 +98,19 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 
 - **Decision**: 以 `uv tool run check-jsonschema --builtin-schema vendor.github-workflows` 檢查 YAML；E2E 驅動先在本機的 podman 容器內實際執行。
 - **Rationale**: workflow 的行為只能在 GitHub 上驗證，但語法錯誤與驅動腳本的錯誤可以先在本機抓到，減少試錯的 push。
+
+## 13. 本機實測（2026-11-09）
+
+Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
+
+| 環境 | 結果 | 耗時 |
+|---|---|---|
+| ubuntu | 五個階段 `PASS` | 49 秒 |
+| fedora | 五個階段 `PASS` | 34 秒 |
+| arch | 五個階段 `PASS` | 18 秒 |
+| minimum（git 2.20.1、uv 0.4.0） | 五個階段 `PASS` | 19 秒 |
+
+- **反向驗證**: 把 `setup.sh` 的 uv 網址改成不存在的路徑後，`setup` 重試一次仍失敗，結果指出下載來源，後續階段記為 `previous stage failed`，結束碼 1。
+- **PowerShell**: `tests/e2e/windows.ps1` 與 `tools/setup.ps1` 在 PowerShell 7.4 容器內解析沒有錯誤；`REQUIRED_TEST_GROUPS=powershell` 加 `SETUP_PS1_SHELL=pwsh` 時 25 項測試全部通過，測試環境已自行補上 `ProgramFiles` 與 `LOCALAPPDATA`。
+- **閘門**: 這台機器沒有 PowerShell，`REQUIRED_TEST_GROUPS=powershell` 時 24 項失敗，證明閘門有效。
+- **尚未驗證**: `tests/e2e/windows.ps1` 的實際行為與 workflow 本身，都要 push 後才知道。
