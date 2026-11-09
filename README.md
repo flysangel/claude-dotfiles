@@ -81,7 +81,7 @@ Windows 把路徑換成 `$HOME\claude-dotfiles\tools\machine_setup.py`；clone �
 |---|---|
 | 還沒導入 Spec Kit | 手動執行 `/sdd-init`，它會提示下一步 |
 | 新專案或方向未定 | 請 Claude 追問討論，會使用 `sdd-grill` |
-| 已有程式碼 | 請 Claude 導出 constitution 與 spec，會使用 `sdd-derive` |
+| 已有程式碼 | 請 Claude 導出 constitution 與 spec，會使用 `sdd-derive`；專案要重新設計時，可以說只要 spec |
 
 `sdd-grill` 與 `sdd-derive` 都會先等你確認，才寫入文件，並且止於 spec。之後用 Spec Kit 接續：
 
