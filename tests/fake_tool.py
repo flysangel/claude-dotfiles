@@ -98,7 +98,10 @@ def main() -> int:
         if args[:1] == ["--version"]:
             print(f"git version {os.environ.get('FAKE_GIT_VERSION', '2.43.0')}")
             return 0
-        return subprocess.run([os.environ["REAL_GIT"], *args]).returncode
+        # Tests hide the real git's folder, but the programs git starts still need the DLLs there.
+        real = os.environ["REAL_GIT"]
+        path = os.pathsep.join((str(Path(real).parent), os.environ["PATH"]))
+        return subprocess.run([real, *args], env={**os.environ, "PATH": path}).returncode
     return 0
 
 

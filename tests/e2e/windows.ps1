@@ -36,7 +36,8 @@ function Invoke-Setup([string[]]$options) {
     $lines = & powershell -NoProfile -ExecutionPolicy Bypass -Command $command 2>&1 | ForEach-Object { "$_" }
     $code = $LASTEXITCODE
     $script:output = $lines -join "`n"
-    $lines | ForEach-Object { Write-Output $_ }
+    # Write-Host, because anything written to the pipeline here would become part of the return value.
+    $lines | ForEach-Object { Write-Host $_ }
     return $code
 }
 
@@ -62,11 +63,11 @@ function Enable-Winget {
     if (Test-Tool 'winget') { return $true }
     try {
         Install-PackageProvider -Name NuGet -Force -Scope AllUsers | Out-Null
-        Install-Module -Name Microsoft.WinGet.Client -Force -Scope AllUsers -Repository PSGallery
-        Import-Module Microsoft.WinGet.Client
+        Install-Module -Name Microsoft.WinGet.Client -Force -Scope AllUsers -Repository PSGallery | Out-Null
+        Import-Module Microsoft.WinGet.Client | Out-Null
         Repair-WinGetPackageManager -Latest -Force -AllUsers | Out-Null
     } catch {
-        Write-Output "winget could not be installed: $_"
+        Write-Host "winget could not be installed: $_"
     }
     $env:PATH = "$env:PATH;$env:LOCALAPPDATA\Microsoft\WindowsApps"
     return (Test-Tool 'winget')
@@ -218,6 +219,8 @@ if ($BareRepo) { $env:CLAUDE_DOTFILES_REPO = $BareRepo }
 
 Write-Output '::group::prepare'
 $script:wingetAvailable = Enable-Winget
+Write-Host "winget available: $script:wingetAvailable"
+if ($script:wingetAvailable) { & winget --version | ForEach-Object { Write-Host $_ } }
 Remove-ExistingTools $script:wingetAvailable
 Write-Output '::endgroup::'
 
