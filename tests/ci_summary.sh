@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 # Add a unittest -v log to the GitHub job summary: counts, failed tests, and every skipped test.
 title=$1
-log=$2
+raw=$2
+# PowerShell colors stderr lines, which would hide them from the patterns below.
+log=$(mktemp)
+if [ -f "$raw" ]; then
+    sed -E 's/\x1b\[[0-9;]*m//g' "$raw" >"$log"
+else
+    rm -f "$log"
+fi
 {
     printf '### %s\n\n' "$title"
     if [ ! -f "$log" ]; then

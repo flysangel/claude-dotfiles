@@ -53,6 +53,7 @@ jobs:
           SETUP_PS1_SHELL: powershell
         run: |
           $ErrorActionPreference = 'Continue'
+          $PSStyle.OutputRendering = 'PlainText'
           uv run -m unittest discover -s tests -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\tests-51.log"
           exit $LASTEXITCODE
       - name: Run entry script tests with PowerShell 7
@@ -62,6 +63,7 @@ jobs:
           SETUP_PS1_SHELL: pwsh
         run: |
           $ErrorActionPreference = 'Continue'
+          $PSStyle.OutputRendering = 'PlainText'
           uv run -m unittest tests.test_setup_scripts_windows -v 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP\tests-7.log"
           exit $LASTEXITCODE
       - name: Summarize

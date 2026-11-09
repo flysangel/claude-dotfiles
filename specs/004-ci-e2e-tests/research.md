@@ -124,3 +124,21 @@ Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
 - **unit-windows 的 clone 失敗**：原本在 Git Bash 下執行測試，這和使用者的環境不同，真實的 git 會是 `mingw64` 的那一份。第一次的修正（把該目錄加回 `PATH`）沒有解決，所以改用 PowerShell 執行測試，假 git 失敗時也會印出結束碼，方便判斷。
 - **Run 3**：`unit-windows` 改用 PowerShell 後全部通過，也證實 clone 失敗來自 Git Bash 的環境。`e2e-windows` 的 winget 下載 Git 又連續回傳 504，加上 Run 2 共四次，而同一時間 Debian 的 uv 下載已恢復，判斷和 winget 預設的 Delivery Optimization 下載方式有關，因此驅動腳本改用 `wininet`。這只影響 CI，不改動 `setup.ps1`。
 - **Run 4**：改用 `wininet` 後，八個 job 全部通過。`e2e-windows` 實際解除安裝 Git，由 winget 重新安裝，uv 與 Claude Code 由官方腳本安裝，五個階段都是 `PASS`，`setup-git-install` 也是 `PASS`。
+
+## 15. 故意失敗的驗證（T036，2026-11-09）
+
+每項用獨立分支，驗證後本機與遠端都已刪除。
+
+| 情境 | 結果 |
+|---|---|
+| 只在 Windows 失敗的測試 | `unit-windows` 失敗並列出測試名稱，`unit-linux` 通過（SC-003） |
+| 必須執行的測試被略過 | `unit-windows` 失敗，訊息為 `test group powershell is required here`，不是略過 |
+| 破壞 uv 的安裝網址 | ubuntu、fedora、arch、windows 的 `setup` 失敗並指出網址（SC-004）；`minimum` 已預裝 uv，不受影響，符合預期 |
+| 以 `--no-verify` 推假 token | `guard` 失敗並指出檔案，日誌不含 token 完整值（SC-005） |
+
+發現：
+
+- **`guard` 檢查所有分支**：CI 的完整歷史包含遠端全部分支，假 token 分支存在時，其他分支的 `guard` 也會失敗。這符合「公開前要整個 repo 乾淨」的目的。
+- **本機的 `--history` 同理**：假 token 的本機分支與遠端追蹤參照還在時，其他分支的 push 會被擋下；要兩者都刪除才能繼續。
+- **失敗名稱沒有進 summary**：PowerShell 為 stderr 加上顏色碼，`ci_summary.sh` 比對不到 `FAIL:`。已改為先移除顏色碼，並關閉 PowerShell 的輸出著色。
+- **假 token 的 commit**：分支刪除後，GitHub 上仍可能用 SHA 存取該 commit。內容是測試用假值，不是憑證。

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import os
 import re
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -107,6 +110,30 @@ class WorkflowTests(unittest.TestCase):
         job = self.jobs["guard"]
         self.assertIn("repo_guard.py --history --without-identity", job)
         self.assertIn("fetch-depth: 0", job)
+
+
+@unittest.skipIf(os.name == "nt", "bash on Windows may be a WSL stub")
+class SummaryTests(unittest.TestCase):
+    def test_colored_failures_still_show_up(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            log = Path(temp) / "tests.log"
+            summary = Path(temp) / "summary.md"
+            log.write_text(
+                "test_a (m.C.test_a) ... skipped 'no'\n"
+                "\x1b[31;1mFAIL: test_b (m.C.test_b)\x1b[0m\n"
+                "Ran 2 tests in 0.1s\n"
+                "\x1b[31;1mFAILED (failures=1, skipped=1)\x1b[0m\n",
+                encoding="utf-8",
+            )
+            subprocess.run(
+                ["bash", str(ROOT / "tests" / "ci_summary.sh"), "Title", str(log)],
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary)},
+                check=True,
+            )
+            text = summary.read_text(encoding="utf-8")
+        self.assertIn("- FAIL: test_b (m.C.test_b)", text)
+        self.assertIn("FAILED (failures=1, skipped=1)", text)
+        self.assertIn("Skipped tests: 1", text)
 
 
 if __name__ == "__main__":
