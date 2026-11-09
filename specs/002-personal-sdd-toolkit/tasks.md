@@ -170,7 +170,7 @@ description: "Task list for the personal SDD toolkit"
 - [X] T039 在 Linux 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間；對真實 `~/.claude/` 部署前先取得維護者同意。部署、還原與 skill 載入已完成，部署 0.04 秒、導入 3.65 秒。`/doctor prompt-audit` 由維護者執行，結果從 session 讀取，其衝突已在 CLAUDE.md 解決。語言與 commit 規則已實測；AskUserQuestion 規則無法在 `claude -p` 驗證，維護者同意以未驗證結案
 - [X] T040 在 Windows 上完整執行 `specs/002-personal-sdd-toolkit/quickstart.md`，記錄 SC-001、SC-003 的實際時間，修正發現的差異（FR-028）；新 clone 先依前置條件設定 `user.email` 並安裝 hook；此步驟需要維護者在 Windows 機器上進行。維護者回報可用，skill 測試也正常；SC-001、SC-003 的 Windows 時間未記錄
 - [X] T041 取得維護者同意後，依 `specs/002-personal-sdd-toolkit/quickstart.md` 第 8 段在每台機器正式部署（Linux 已完成；Windows 隨 T040 由維護者進行）
-- [ ] T042 `sdd-derive` 第一次實際使用後，在 `specs/002-personal-sdd-toolkit/plan.md` 記錄結果，未被使用則討論移除；同時記錄 SC-005 的實際比例
+- [X] T042 `sdd-derive` 第一次實際使用後，在 `specs/002-personal-sdd-toolkit/plan.md` 記錄結果，未被使用則討論移除；同時記錄 SC-005 的實際比例
 
 ---
 
