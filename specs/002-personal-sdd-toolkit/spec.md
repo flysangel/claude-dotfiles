@@ -163,6 +163,7 @@
 - **FR-016**: skill MUST 區分「專案已經這樣做」與「專案應該這樣做」，後者 MUST 由維護者確認才能成為原則。
 - **FR-017**: 維護者確認前，skill MUST NOT 修改目標專案；已有 constitution 或 spec 時 MUST 提出差異，MUST NOT 直接覆蓋。
 - **FR-018**: 產出 MUST NOT 包含專案內的機密值。
+- **FR-034**: 維護者 MUST 能選擇只產生 spec；此時 skill MUST NOT 改動 constitution，也 MUST NOT 因不採用原則而停止。
 
 **追問討論 skill**
 

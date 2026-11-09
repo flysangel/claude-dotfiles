@@ -13,6 +13,7 @@
 | 7 | spec 產生後 | 停止，不進入 plan，沒有 `plan.md` |
 | 8 | 選擇多個功能 | 帳號編號在筆記之前，結束時列出清單與相依關係，`feature.json` 指向第一份 |
 | 9 | constitution 產生後 | 只有確認過的規則，沒有多出來的內容 |
+| 10 | 維護者只要 spec | 不改動 constitution，spec 正常產生，`feature.json` 指向第一份 |
 
 Edge cases：
 
