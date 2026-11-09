@@ -115,4 +115,6 @@ Ubuntu 容器內確認的項目：
 | 在既有 clone 內執行 `. tools\setup.ps1` | 成功；未加 `-Dir .`，所以另外 clone 到家目錄，並發現第 13 節的 `deployed_before` 問題 |
 | `remove` | 符合預期 |
 
-**尚未驗證**：Windows 上缺少工具時的自動安裝（winget 與兩個官方腳本）、`-Dev -Email`、失敗情境與互動視窗不被關閉；公開後的真實網址（T034）。
+**CI 補上的項目**（`specs/004-ci-e2e-tests` 的 `e2e-windows`，2026-11-09）：移除既有工具後，由 winget 安裝 git、官方腳本安裝 uv 與 Claude Code；`-Dev -Email` 與實際 commit；`remove`；目標不是這個 repo 時停止。失敗時視窗不被關閉由單元測試涵蓋。
+
+**尚未驗證**：真正全新的 Windows 機器（CI 機器是移除既有工具來模擬，winget 也改用 `wininet` 下載）；互動視窗的實際操作；公開後的真實網址（T034）。

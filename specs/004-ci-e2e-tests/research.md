@@ -70,7 +70,8 @@ GitHub Free 每月含 USD 12 的運算額度；標準 runner 的費率是 Linux 
 | `e2e-windows` | 8 | 0.080 |
 | **合計** | 35 | **約 0.28** |
 
-- 每月 USD 12 約可支撐 **40 次 push**。單元測試的分鐘數依 003 實測換算：Windows 完整測試約 166 秒，加上 runner 啟動與 uv 安裝。
+- **實測（Run 4，全部通過）**：每個 job 無條件進位到整分鐘後，Linux 7 分鐘、Windows 7 分鐘（`unit-windows` 5、`e2e-windows` 2），約 **USD 0.11**，整體 4 分 25 秒完成，所以每月 USD 12 約可支撐 **100 次 push**。下面的 0.28 是實測前的估算，保留作為比較。
+- 實測前的估算：每月 USD 12 約可支撐 40 次 push。單元測試的分鐘數依 003 實測換算：Windows 完整測試約 166 秒，加上 runner 啟動與 uv 安裝。
 - **風險**: 估算未經實測；Windows 佔大部分費用。超過時可以採用的做法依序是：只改 `specs/`、`*.md` 時略過 E2E；Windows E2E 只在 `main` 執行。這兩項都會改變「每次 push」的決定，要由維護者同意，因此寫在 README，不預先實作。
 - **公開後**: 費用歸零，以上限制都不再需要。
 
@@ -122,3 +123,4 @@ Linux 驅動在 podman 容器內實際執行，工具都是真實下載：
 - **外部下載**：Run 2 有兩個環境因 GitHub Releases 回傳 504 失敗（winget 下載 Git、uv 下載 Python），因此重試條件加上 HTTP 伺服器錯誤，並在重試前等 30 秒。
 - **unit-windows 的 clone 失敗**：原本在 Git Bash 下執行測試，這和使用者的環境不同，真實的 git 會是 `mingw64` 的那一份。第一次的修正（把該目錄加回 `PATH`）沒有解決，所以改用 PowerShell 執行測試，假 git 失敗時也會印出結束碼，方便判斷。
 - **Run 3**：`unit-windows` 改用 PowerShell 後全部通過，也證實 clone 失敗來自 Git Bash 的環境。`e2e-windows` 的 winget 下載 Git 又連續回傳 504，加上 Run 2 共四次，而同一時間 Debian 的 uv 下載已恢復，判斷和 winget 預設的 Delivery Optimization 下載方式有關，因此驅動腳本改用 `wininet`。這只影響 CI，不改動 `setup.ps1`。
+- **Run 4**：改用 `wininet` 後，八個 job 全部通過。`e2e-windows` 實際解除安裝 Git，由 winget 重新安裝，uv 與 Claude Code 由官方腳本安裝，五個階段都是 `PASS`，`setup-git-install` 也是 `PASS`。

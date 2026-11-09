@@ -9,7 +9,7 @@
 | `sdd-derive` | 從既有專案導出 constitution 與 spec |
 | `sdd-grill` | 逐題追問，討論出 constitution 與 spec |
 
-> **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令在 Linux 完整實測過；Windows 通過自動化測試與解除，自動安裝與開發設定尚未實測。macOS 不在支援範圍。
+> **目前狀態**：部署與 commit 檢查在 Windows 與 Linux 都已驗收；一行指令在 Linux 與 Windows 都由 CI 的 E2E 驗證；Windows 是在 CI 機器上移除既有工具後模擬乾淨環境，尚未在真正的新機器上跑過。macOS 不在支援範圍。
 
 ## 安裝
 
@@ -189,7 +189,7 @@ uv run tools/dotfiles.py deploy
 
 E2E 的驅動腳本會真的安裝工具，`tests/e2e/windows.ps1` 還會解除安裝 Git，**不要在自己的電腦上執行**。
 
-repo 私有時，用量會計入 GitHub 方案的免費額度：估計每次 push 約 USD 0.28，GitHub Free 每月 USD 12，約可支撐 40 次 push；公開後免費。不夠時可以考慮只改文件時略過 E2E，或讓 Windows E2E 只在 `main` 執行，這兩種做法都會減少驗證，要由維護者決定。
+repo 私有時，用量會計入 GitHub 方案的免費額度：實測每次 push 約 USD 0.11，GitHub Free 每月 USD 12，約可支撐 100 次 push；公開後免費。不夠時可以考慮只改文件時略過 E2E，或讓 Windows E2E 只在 `main` 執行，這兩種做法都會減少驗證，要由維護者決定。
 
 ## 已知限制
 
@@ -197,7 +197,7 @@ repo 私有時，用量會計入 GitHub 方案的免費額度：估計每次 pus
 - **自動安裝 git 有範圍**：只支援 apt、dnf、pacman 與 winget，其他環境要先自行安裝 git。在進入設定階段前就失敗時，這次裝好的工具只列在當次訊息，解除時不會列出。
 - **一行指令要信任來源**：它會直接執行從 `main` 下載的腳本，以及 uv 與 Claude Code 的官方安裝腳本。不放心時請先下載檢視。
 - **檢查能被略過**：`git commit --no-verify` 會由 push 前的檢查補上；`git push --no-verify` 則只有 CI 能事後發現，無法阻止內容進入遠端。CI 沒有本機識別清單，姓名、主機名稱等個資只有本機檢查會比對。hook 也不會隨 clone 帶走，每個 clone 都要安裝一次。
-- **Windows E2E 不等於新機器**：CI 的 Windows 機器已預裝許多工具，E2E 是移除既有工具後模擬乾淨環境；runner 沒有 winget 時，自動安裝 git 會標為未驗證。
+- **Windows E2E 不等於新機器**：CI 的 Windows 機器已預裝許多工具，E2E 是移除既有工具後模擬乾淨環境，且 winget 改用 `wininet` 下載；runner 沒有 winget 時，自動安裝 git 會標為未驗證。
 - **憑證規則有限**：內建規則只涵蓋常見格式，公開前請再跑一次 `gitleaks git --no-banner --redact`。
 - **公開順序**：先推到私有 repo，Windows 驗收與上述檢查都通過才公開。
 - **`core.hooksPath`**：有設定時，要確認它會轉交給 `.git/hooks`，否則檢查不會執行。
